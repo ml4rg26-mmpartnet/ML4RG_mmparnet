@@ -1,0 +1,15 @@
+# Best-effort pip mirror of the pixi runtime (pixi.toml is the source of truth).
+# Install the package itself with:  pip install -e .
+numpy>=1.24
+torch>=2.1
+pyfaidx>=0.7
+scikit-learn>=1.3
+# interpretability (nb04 / interpret.py):
+captum>=0.7
+# dev:
+pytest>=7
+ruff>=0.4
+nbstripout>=0.7
+# protein embeddings (scripts/build_embeddings.py only — heavy, optional):
+# fair-esm>=2.0
+# transformers>=4.40

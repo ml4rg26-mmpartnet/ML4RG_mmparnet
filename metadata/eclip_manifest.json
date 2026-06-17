@@ -1,0 +1,2174 @@
+{
+ "AARS": [
+  {
+   "exp": "ENCSR825SVO",
+   "file": "ENCFF128BDG",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "AARS__ENCSR825SVO__ENCFF128BDG.bed.gz",
+   "nbytes": 1424
+  }
+ ],
+ "AATF": [
+  {
+   "exp": "ENCSR819XBT",
+   "file": "ENCFF955LYD",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "AATF__ENCSR819XBT__ENCFF955LYD.bed.gz",
+   "nbytes": 25482
+  }
+ ],
+ "ABCF1": [
+  {
+   "exp": "ENCSR089BXO",
+   "file": "ENCFF941GJK",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "ABCF1__ENCSR089BXO__ENCFF941GJK.bed.gz",
+   "nbytes": 1503
+  }
+ ],
+ "AGGF1": [
+  {
+   "exp": "ENCSR725ARB",
+   "file": "ENCFF810NKV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "AGGF1__ENCSR725ARB__ENCFF810NKV.bed.gz",
+   "nbytes": 169717
+  },
+  {
+   "exp": "ENCSR543TPH",
+   "file": "ENCFF992LCW",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "AGGF1__ENCSR543TPH__ENCFF992LCW.bed.gz",
+   "nbytes": 92533
+  }
+ ],
+ "AKAP1": [
+  {
+   "exp": "ENCSR356ZMO",
+   "file": "ENCFF749IUB",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "AKAP1__ENCSR356ZMO__ENCFF749IUB.bed.gz",
+   "nbytes": 140962
+  },
+  {
+   "exp": "ENCSR177QQY",
+   "file": "ENCFF033EFV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "AKAP1__ENCSR177QQY__ENCFF033EFV.bed.gz",
+   "nbytes": 34611
+  }
+ ],
+ "AKAP8L": [
+  {
+   "exp": "ENCSR206RXT",
+   "file": "ENCFF205UTG",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "AKAP8L__ENCSR206RXT__ENCFF205UTG.bed.gz",
+   "nbytes": 48675
+  }
+ ],
+ "APOBEC3C": [
+  {
+   "exp": "ENCSR739VVT",
+   "file": "ENCFF472CCL",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "APOBEC3C__ENCSR739VVT__ENCFF472CCL.bed.gz",
+   "nbytes": 24393
+  }
+ ],
+ "AQR": [
+  {
+   "exp": "ENCSR018WPY",
+   "file": "ENCFF323PUC",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "AQR__ENCSR018WPY__ENCFF323PUC.bed.gz",
+   "nbytes": 234555
+  },
+  {
+   "exp": "ENCSR606BPV",
+   "file": "ENCFF949QGM",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "AQR__ENCSR606BPV__ENCFF949QGM.bed.gz",
+   "nbytes": 517110
+  }
+ ],
+ "BCCIP": [
+  {
+   "exp": "ENCSR485QCG",
+   "file": "ENCFF134LIU",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "BCCIP__ENCSR485QCG__ENCFF134LIU.bed.gz",
+   "nbytes": 13146
+  }
+ ],
+ "BCLAF1": [
+  {
+   "exp": "ENCSR876EYA",
+   "file": "ENCFF810EUA",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "BCLAF1__ENCSR876EYA__ENCFF810EUA.bed.gz",
+   "nbytes": 745489
+  }
+ ],
+ "BUD13": [
+  {
+   "exp": "ENCSR663WES",
+   "file": "ENCFF262ILV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "BUD13__ENCSR663WES__ENCFF262ILV.bed.gz",
+   "nbytes": 190962
+  },
+  {
+   "exp": "ENCSR830BSQ",
+   "file": "ENCFF011NAP",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "BUD13__ENCSR830BSQ__ENCFF011NAP.bed.gz",
+   "nbytes": 99084
+  }
+ ],
+ "CDC40": [
+  {
+   "exp": "ENCSR815VVI",
+   "file": "ENCFF027MEO",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "CDC40__ENCSR815VVI__ENCFF027MEO.bed.gz",
+   "nbytes": 25096
+  }
+ ],
+ "CPEB4": [
+  {
+   "exp": "ENCSR046JHH",
+   "file": "ENCFF665BGJ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "CPEB4__ENCSR046JHH__ENCFF665BGJ.bed.gz",
+   "nbytes": 4797
+  }
+ ],
+ "CPSF6": [
+  {
+   "exp": "ENCSR532VUB",
+   "file": "ENCFF635NZZ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "CPSF6__ENCSR532VUB__ENCFF635NZZ.bed.gz",
+   "nbytes": 18375
+  }
+ ],
+ "CSTF2": [
+  {
+   "exp": "ENCSR384MWO",
+   "file": "ENCFF349SVY",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "CSTF2__ENCSR384MWO__ENCFF349SVY.bed.gz",
+   "nbytes": 72957
+  }
+ ],
+ "CSTF2T": [
+  {
+   "exp": "ENCSR840DRD",
+   "file": "ENCFF878VVA",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "CSTF2T__ENCSR840DRD__ENCFF878VVA.bed.gz",
+   "nbytes": 238798
+  },
+  {
+   "exp": "ENCSR919HSE",
+   "file": "ENCFF141DOI",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "CSTF2T__ENCSR919HSE__ENCFF141DOI.bed.gz",
+   "nbytes": 478117
+  }
+ ],
+ "DDX21": [
+  {
+   "exp": "ENCSR040QLV",
+   "file": "ENCFF378OYA",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DDX21__ENCSR040QLV__ENCFF378OYA.bed.gz",
+   "nbytes": 2109
+  }
+ ],
+ "DDX24": [
+  {
+   "exp": "ENCSR999WKT",
+   "file": "ENCFF537KWB",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DDX24__ENCSR999WKT__ENCFF537KWB.bed.gz",
+   "nbytes": 210748
+  }
+ ],
+ "DDX3X": [
+  {
+   "exp": "ENCSR930BZL",
+   "file": "ENCFF087MAJ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DDX3X__ENCSR930BZL__ENCFF087MAJ.bed.gz",
+   "nbytes": 160726
+  },
+  {
+   "exp": "ENCSR648LAH",
+   "file": "ENCFF777NMK",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DDX3X__ENCSR648LAH__ENCFF777NMK.bed.gz",
+   "nbytes": 204034
+  }
+ ],
+ "DDX42": [
+  {
+   "exp": "ENCSR576SHT",
+   "file": "ENCFF399GGH",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DDX42__ENCSR576SHT__ENCFF399GGH.bed.gz",
+   "nbytes": 3034
+  }
+ ],
+ "DDX51": [
+  {
+   "exp": "ENCSR145NLR",
+   "file": "ENCFF799ERK",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DDX51__ENCSR145NLR__ENCFF799ERK.bed.gz",
+   "nbytes": 10505
+  }
+ ],
+ "DDX52": [
+  {
+   "exp": "ENCSR154CSN",
+   "file": "ENCFF198ULC",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DDX52__ENCSR154CSN__ENCFF198ULC.bed.gz",
+   "nbytes": 26153
+  },
+  {
+   "exp": "ENCSR970FEW",
+   "file": "ENCFF005GER",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DDX52__ENCSR970FEW__ENCFF005GER.bed.gz",
+   "nbytes": 3828
+  }
+ ],
+ "DDX55": [
+  {
+   "exp": "ENCSR923NKN",
+   "file": "ENCFF462WAI",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DDX55__ENCSR923NKN__ENCFF462WAI.bed.gz",
+   "nbytes": 25090
+  },
+  {
+   "exp": "ENCSR845VGB",
+   "file": "ENCFF797QRS",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DDX55__ENCSR845VGB__ENCFF797QRS.bed.gz",
+   "nbytes": 41662
+  }
+ ],
+ "DDX59": [
+  {
+   "exp": "ENCSR214BZA",
+   "file": "ENCFF899AWZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DDX59__ENCSR214BZA__ENCFF899AWZ.bed.gz",
+   "nbytes": 70103
+  }
+ ],
+ "DDX6": [
+  {
+   "exp": "ENCSR893EFU",
+   "file": "ENCFF904KTV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DDX6__ENCSR893EFU__ENCFF904KTV.bed.gz",
+   "nbytes": 45744
+  },
+  {
+   "exp": "ENCSR141OIM",
+   "file": "ENCFF614NUP",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DDX6__ENCSR141OIM__ENCFF614NUP.bed.gz",
+   "nbytes": 13100
+  }
+ ],
+ "DGCR8": [
+  {
+   "exp": "ENCSR634MFO",
+   "file": "ENCFF553PTT",
+   "output_type": "peaks",
+   "cell": "years)",
+   "path": "DGCR8__ENCSR634MFO__ENCFF553PTT.bed.gz",
+   "nbytes": 8218
+  },
+  {
+   "exp": "ENCSR947JVR",
+   "file": "ENCFF023YVD",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DGCR8__ENCSR947JVR__ENCFF023YVD.bed.gz",
+   "nbytes": 29950
+  },
+  {
+   "exp": "ENCSR061SZV",
+   "file": "ENCFF193URO",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DGCR8__ENCSR061SZV__ENCFF193URO.bed.gz",
+   "nbytes": 42316
+  }
+ ],
+ "DHX30": [
+  {
+   "exp": "ENCSR529GSJ",
+   "file": "ENCFF128AKC",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DHX30__ENCSR529GSJ__ENCFF128AKC.bed.gz",
+   "nbytes": 21467
+  },
+  {
+   "exp": "ENCSR565DGW",
+   "file": "ENCFF663QIZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DHX30__ENCSR565DGW__ENCFF663QIZ.bed.gz",
+   "nbytes": 4504
+  }
+ ],
+ "DKC1": [
+  {
+   "exp": "ENCSR301TFY",
+   "file": "ENCFF633LQC",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DKC1__ENCSR301TFY__ENCFF633LQC.bed.gz",
+   "nbytes": 55218
+  }
+ ],
+ "DROSHA": [
+  {
+   "exp": "ENCSR653HQC",
+   "file": "ENCFF797BHU",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "DROSHA__ENCSR653HQC__ENCFF797BHU.bed.gz",
+   "nbytes": 85981
+  },
+  {
+   "exp": "ENCSR834YLD",
+   "file": "ENCFF854BHP",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "DROSHA__ENCSR834YLD__ENCFF854BHP.bed.gz",
+   "nbytes": 53963
+  }
+ ],
+ "EFTUD2": [
+  {
+   "exp": "ENCSR844RVX",
+   "file": "ENCFF862ZPV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "EFTUD2__ENCSR844RVX__ENCFF862ZPV.bed.gz",
+   "nbytes": 120684
+  },
+  {
+   "exp": "ENCSR527DXF",
+   "file": "ENCFF796RMF",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "EFTUD2__ENCSR527DXF__ENCFF796RMF.bed.gz",
+   "nbytes": 173686
+  }
+ ],
+ "EIF3D": [
+  {
+   "exp": "ENCSR041NUV",
+   "file": "ENCFF056UAW",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "EIF3D__ENCSR041NUV__ENCFF056UAW.bed.gz",
+   "nbytes": 17399
+  }
+ ],
+ "EIF3G": [
+  {
+   "exp": "ENCSR023PKW",
+   "file": "ENCFF634UAC",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "EIF3G__ENCSR023PKW__ENCFF634UAC.bed.gz",
+   "nbytes": 7435
+  }
+ ],
+ "EIF3H": [
+  {
+   "exp": "ENCSR916XIV",
+   "file": "ENCFF813JIK",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "EIF3H__ENCSR916XIV__ENCFF813JIK.bed.gz",
+   "nbytes": 64220
+  }
+ ],
+ "EIF4G2": [
+  {
+   "exp": "ENCSR307YIW",
+   "file": "ENCFF207BXK",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "EIF4G2__ENCSR307YIW__ENCFF207BXK.bed.gz",
+   "nbytes": 100407
+  }
+ ],
+ "EWSR1": [
+  {
+   "exp": "ENCSR887LPK",
+   "file": "ENCFF607ZRF",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "EWSR1__ENCSR887LPK__ENCFF607ZRF.bed.gz",
+   "nbytes": 185854
+  }
+ ],
+ "EXOSC5": [
+  {
+   "exp": "ENCSR693JWP",
+   "file": "ENCFF862EKD",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "EXOSC5__ENCSR693JWP__ENCFF862EKD.bed.gz",
+   "nbytes": 16641
+  },
+  {
+   "exp": "ENCSR013CTQ",
+   "file": "ENCFF858CSS",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "EXOSC5__ENCSR013CTQ__ENCFF858CSS.bed.gz",
+   "nbytes": 244660
+  }
+ ],
+ "FAM120A": [
+  {
+   "exp": "ENCSR006OEQ",
+   "file": "ENCFF158AOV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FAM120A__ENCSR006OEQ__ENCFF158AOV.bed.gz",
+   "nbytes": 138877
+  },
+  {
+   "exp": "ENCSR987NYS",
+   "file": "ENCFF208ZMI",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "FAM120A__ENCSR987NYS__ENCFF208ZMI.bed.gz",
+   "nbytes": 192712
+  }
+ ],
+ "FASTKD2": [
+  {
+   "exp": "ENCSR887FHF",
+   "file": "ENCFF423SOR",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FASTKD2__ENCSR887FHF__ENCFF423SOR.bed.gz",
+   "nbytes": 14852
+  },
+  {
+   "exp": "ENCSR023UHL",
+   "file": "ENCFF498IGK",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "FASTKD2__ENCSR023UHL__ENCFF498IGK.bed.gz",
+   "nbytes": 20927
+  }
+ ],
+ "FKBP4": [
+  {
+   "exp": "ENCSR018ZUE",
+   "file": "ENCFF957AOZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "FKBP4__ENCSR018ZUE__ENCFF957AOZ.bed.gz",
+   "nbytes": 29362
+  }
+ ],
+ "FMR1": [
+  {
+   "exp": "ENCSR554UVB",
+   "file": "ENCFF630KXK",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FMR1__ENCSR554UVB__ENCFF630KXK.bed.gz",
+   "nbytes": 98743
+  },
+  {
+   "exp": "ENCSR331VNX",
+   "file": "ENCFF480NUZ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FMR1__ENCSR331VNX__ENCFF480NUZ.bed.gz",
+   "nbytes": 75663
+  }
+ ],
+ "FTO": [
+  {
+   "exp": "ENCSR903PRV",
+   "file": "ENCFF351ZDU",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "FTO__ENCSR903PRV__ENCFF351ZDU.bed.gz",
+   "nbytes": 12762
+  },
+  {
+   "exp": "ENCSR989SMC",
+   "file": "ENCFF924OVC",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FTO__ENCSR989SMC__ENCFF924OVC.bed.gz",
+   "nbytes": 18634
+  }
+ ],
+ "FUBP3": [
+  {
+   "exp": "ENCSR486YGP",
+   "file": "ENCFF466UMQ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "FUBP3__ENCSR486YGP__ENCFF466UMQ.bed.gz",
+   "nbytes": 62410
+  }
+ ],
+ "FUS": [
+  {
+   "exp": "ENCSR464OSH",
+   "file": "ENCFF972DFZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "FUS__ENCSR464OSH__ENCFF972DFZ.bed.gz",
+   "nbytes": 18840
+  },
+  {
+   "exp": "ENCSR069EVH",
+   "file": "ENCFF861KMV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FUS__ENCSR069EVH__ENCFF861KMV.bed.gz",
+   "nbytes": 101484
+  }
+ ],
+ "FXR1": [
+  {
+   "exp": "ENCSR248TXP",
+   "file": "ENCFF136CWQ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FXR1__ENCSR248TXP__ENCFF136CWQ.bed.gz",
+   "nbytes": 68204
+  },
+  {
+   "exp": "ENCSR774RFN",
+   "file": "ENCFF366UJP",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FXR1__ENCSR774RFN__ENCFF366UJP.bed.gz",
+   "nbytes": 32915
+  }
+ ],
+ "FXR2": [
+  {
+   "exp": "ENCSR767OEY",
+   "file": "ENCFF111LMZ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FXR2__ENCSR767OEY__ENCFF111LMZ.bed.gz",
+   "nbytes": 109563
+  },
+  {
+   "exp": "ENCSR973HOJ",
+   "file": "ENCFF112MVG",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "FXR2__ENCSR973HOJ__ENCFF112MVG.bed.gz",
+   "nbytes": 86089
+  },
+  {
+   "exp": "ENCSR224QWC",
+   "file": "ENCFF315HYU",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "FXR2__ENCSR224QWC__ENCFF315HYU.bed.gz",
+   "nbytes": 95917
+  }
+ ],
+ "G3BP1": [
+  {
+   "exp": "ENCSR721HPX",
+   "file": "ENCFF899HHP",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "G3BP1__ENCSR721HPX__ENCFF899HHP.bed.gz",
+   "nbytes": 147031
+  }
+ ],
+ "GEMIN5": [
+  {
+   "exp": "ENCSR238CLX",
+   "file": "ENCFF050VVI",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "GEMIN5__ENCSR238CLX__ENCFF050VVI.bed.gz",
+   "nbytes": 60664
+  }
+ ],
+ "GNL3": [
+  {
+   "exp": "ENCSR301UQM",
+   "file": "ENCFF048RLZ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "GNL3__ENCSR301UQM__ENCFF048RLZ.bed.gz",
+   "nbytes": 1069
+  }
+ ],
+ "GPKOW": [
+  {
+   "exp": "ENCSR647CLF",
+   "file": "ENCFF674BUM",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "GPKOW__ENCSR647CLF__ENCFF674BUM.bed.gz",
+   "nbytes": 24072
+  }
+ ],
+ "GRSF1": [
+  {
+   "exp": "ENCSR668MJX",
+   "file": "ENCFF929AWR",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "GRSF1__ENCSR668MJX__ENCFF929AWR.bed.gz",
+   "nbytes": 25391
+  }
+ ],
+ "GRWD1": [
+  {
+   "exp": "ENCSR999YGP",
+   "file": "ENCFF327DLL",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "GRWD1__ENCSR999YGP__ENCFF327DLL.bed.gz",
+   "nbytes": 100649
+  },
+  {
+   "exp": "ENCSR893NWB",
+   "file": "ENCFF159MMZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "GRWD1__ENCSR893NWB__ENCFF159MMZ.bed.gz",
+   "nbytes": 508762
+  }
+ ],
+ "GTF2F1": [
+  {
+   "exp": "ENCSR736AAG",
+   "file": "ENCFF278ZCU",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "GTF2F1__ENCSR736AAG__ENCFF278ZCU.bed.gz",
+   "nbytes": 105027
+  },
+  {
+   "exp": "ENCSR265ZIS",
+   "file": "ENCFF002HYO",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "GTF2F1__ENCSR265ZIS__ENCFF002HYO.bed.gz",
+   "nbytes": 93856
+  }
+ ],
+ "HLTF": [
+  {
+   "exp": "ENCSR647HOX",
+   "file": "ENCFF048FDF",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "HLTF__ENCSR647HOX__ENCFF048FDF.bed.gz",
+   "nbytes": 75321
+  },
+  {
+   "exp": "ENCSR589YHM",
+   "file": "ENCFF406MSI",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HLTF__ENCSR589YHM__ENCFF406MSI.bed.gz",
+   "nbytes": 6439
+  }
+ ],
+ "HNRNPA1": [
+  {
+   "exp": "ENCSR154HRN",
+   "file": "ENCFF392AEV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HNRNPA1__ENCSR154HRN__ENCFF392AEV.bed.gz",
+   "nbytes": 4831
+  },
+  {
+   "exp": "ENCSR769UEW",
+   "file": "ENCFF797GSK",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "HNRNPA1__ENCSR769UEW__ENCFF797GSK.bed.gz",
+   "nbytes": 2565
+  }
+ ],
+ "HNRNPC": [
+  {
+   "exp": "ENCSR249ROI",
+   "file": "ENCFF167CDB",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HNRNPC__ENCSR249ROI__ENCFF167CDB.bed.gz",
+   "nbytes": 12782
+  },
+  {
+   "exp": "ENCSR550DVK",
+   "file": "ENCFF440ROZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "HNRNPC__ENCSR550DVK__ENCFF440ROZ.bed.gz",
+   "nbytes": 71740
+  }
+ ],
+ "HNRNPK": [
+  {
+   "exp": "ENCSR953ZOA",
+   "file": "ENCFF318RSO",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HNRNPK__ENCSR953ZOA__ENCFF318RSO.bed.gz",
+   "nbytes": 110713
+  },
+  {
+   "exp": "ENCSR268ETU",
+   "file": "ENCFF918XJQ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HNRNPK__ENCSR268ETU__ENCFF918XJQ.bed.gz",
+   "nbytes": 63842
+  },
+  {
+   "exp": "ENCSR828ZID",
+   "file": "ENCFF855CPQ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "HNRNPK__ENCSR828ZID__ENCFF855CPQ.bed.gz",
+   "nbytes": 123250
+  }
+ ],
+ "HNRNPL": [
+  {
+   "exp": "ENCSR795CAI",
+   "file": "ENCFF917CBK",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HNRNPL__ENCSR795CAI__ENCFF917CBK.bed.gz",
+   "nbytes": 139977
+  },
+  {
+   "exp": "ENCSR724RDN",
+   "file": "ENCFF266TKW",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "HNRNPL__ENCSR724RDN__ENCFF266TKW.bed.gz",
+   "nbytes": 214660
+  }
+ ],
+ "HNRNPM": [
+  {
+   "exp": "ENCSR267UCX",
+   "file": "ENCFF752JNY",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "HNRNPM__ENCSR267UCX__ENCFF752JNY.bed.gz",
+   "nbytes": 278603
+  },
+  {
+   "exp": "ENCSR412NOW",
+   "file": "ENCFF445ENC",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HNRNPM__ENCSR412NOW__ENCFF445ENC.bed.gz",
+   "nbytes": 137556
+  }
+ ],
+ "HNRNPU": [
+  {
+   "exp": "ENCSR368GER",
+   "file": "ENCFF223JMV",
+   "output_type": "peaks",
+   "cell": "years)",
+   "path": "HNRNPU__ENCSR368GER__ENCFF223JMV.bed.gz",
+   "nbytes": 2230
+  },
+  {
+   "exp": "ENCSR520BZQ",
+   "file": "ENCFF241DVU",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HNRNPU__ENCSR520BZQ__ENCFF241DVU.bed.gz",
+   "nbytes": 4892
+  },
+  {
+   "exp": "ENCSR240MVJ",
+   "file": "ENCFF039XQD",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "HNRNPU__ENCSR240MVJ__ENCFF039XQD.bed.gz",
+   "nbytes": 7395
+  }
+ ],
+ "HNRNPUL1": [
+  {
+   "exp": "ENCSR571VHI",
+   "file": "ENCFF889AWX",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "HNRNPUL1__ENCSR571VHI__ENCFF889AWX.bed.gz",
+   "nbytes": 5590
+  },
+  {
+   "exp": "ENCSR755TJC",
+   "file": "ENCFF610JVZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "HNRNPUL1__ENCSR755TJC__ENCFF610JVZ.bed.gz",
+   "nbytes": 10383
+  }
+ ],
+ "IGF2BP1": [
+  {
+   "exp": "ENCSR975KIR",
+   "file": "ENCFF650LMV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "IGF2BP1__ENCSR975KIR__ENCFF650LMV.bed.gz",
+   "nbytes": 131721
+  },
+  {
+   "exp": "ENCSR744GEU",
+   "file": "ENCFF442USD",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "IGF2BP1__ENCSR744GEU__ENCFF442USD.bed.gz",
+   "nbytes": 103091
+  }
+ ],
+ "IGF2BP2": [
+  {
+   "exp": "ENCSR062NNB",
+   "file": "ENCFF524ZZB",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "IGF2BP2__ENCSR062NNB__ENCFF524ZZB.bed.gz",
+   "nbytes": 91038
+  }
+ ],
+ "IGF2BP3": [
+  {
+   "exp": "ENCSR993OLA",
+   "file": "ENCFF886SDQ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "IGF2BP3__ENCSR993OLA__ENCFF886SDQ.bed.gz",
+   "nbytes": 54850
+  }
+ ],
+ "ILF3": [
+  {
+   "exp": "ENCSR438KWZ",
+   "file": "ENCFF385MJU",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "ILF3__ENCSR438KWZ__ENCFF385MJU.bed.gz",
+   "nbytes": 64472
+  },
+  {
+   "exp": "ENCSR786TSC",
+   "file": "ENCFF071QDP",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "ILF3__ENCSR786TSC__ENCFF071QDP.bed.gz",
+   "nbytes": 76573
+  }
+ ],
+ "KHDRBS1": [
+  {
+   "exp": "ENCSR628IDK",
+   "file": "ENCFF027UTH",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "KHDRBS1__ENCSR628IDK__ENCFF027UTH.bed.gz",
+   "nbytes": 26622
+  }
+ ],
+ "KHSRP": [
+  {
+   "exp": "ENCSR366DGX",
+   "file": "ENCFF771QAU",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "KHSRP__ENCSR366DGX__ENCFF771QAU.bed.gz",
+   "nbytes": 108513
+  },
+  {
+   "exp": "ENCSR438GZQ",
+   "file": "ENCFF031FMO",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "KHSRP__ENCSR438GZQ__ENCFF031FMO.bed.gz",
+   "nbytes": 523786
+  }
+ ],
+ "LARP4": [
+  {
+   "exp": "ENCSR888YTT",
+   "file": "ENCFF947CIN",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "LARP4__ENCSR888YTT__ENCFF947CIN.bed.gz",
+   "nbytes": 11261
+  },
+  {
+   "exp": "ENCSR805SRN",
+   "file": "ENCFF534JCV",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "LARP4__ENCSR805SRN__ENCFF534JCV.bed.gz",
+   "nbytes": 129055
+  }
+ ],
+ "LARP7": [
+  {
+   "exp": "ENCSR456KXI",
+   "file": "ENCFF809CKN",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "LARP7__ENCSR456KXI__ENCFF809CKN.bed.gz",
+   "nbytes": 6396
+  },
+  {
+   "exp": "ENCSR961OKA",
+   "file": "ENCFF307MDW",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "LARP7__ENCSR961OKA__ENCFF307MDW.bed.gz",
+   "nbytes": 6857
+  }
+ ],
+ "LIN28B": [
+  {
+   "exp": "ENCSR970NKP",
+   "file": "ENCFF061XNA",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "LIN28B__ENCSR970NKP__ENCFF061XNA.bed.gz",
+   "nbytes": 164031
+  },
+  {
+   "exp": "ENCSR861GYE",
+   "file": "ENCFF341XMP",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "LIN28B__ENCSR861GYE__ENCFF341XMP.bed.gz",
+   "nbytes": 88646
+  }
+ ],
+ "LSM11": [
+  {
+   "exp": "ENCSR022BVV",
+   "file": "ENCFF858EHN",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "LSM11__ENCSR022BVV__ENCFF858EHN.bed.gz",
+   "nbytes": 28927
+  },
+  {
+   "exp": "ENCSR135VMS",
+   "file": "ENCFF985ECA",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "LSM11__ENCSR135VMS__ENCFF985ECA.bed.gz",
+   "nbytes": 56931
+  }
+ ],
+ "MATR3": [
+  {
+   "exp": "ENCSR440SUX",
+   "file": "ENCFF246EPM",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "MATR3__ENCSR440SUX__ENCFF246EPM.bed.gz",
+   "nbytes": 95618
+  },
+  {
+   "exp": "ENCSR290VLT",
+   "file": "ENCFF587KKM",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "MATR3__ENCSR290VLT__ENCFF587KKM.bed.gz",
+   "nbytes": 142751
+  }
+ ],
+ "METAP2": [
+  {
+   "exp": "ENCSR303OQD",
+   "file": "ENCFF644LPB",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "METAP2__ENCSR303OQD__ENCFF644LPB.bed.gz",
+   "nbytes": 70277
+  }
+ ],
+ "MTPAP": [
+  {
+   "exp": "ENCSR200DKE",
+   "file": "ENCFF883KCN",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "MTPAP__ENCSR200DKE__ENCFF883KCN.bed.gz",
+   "nbytes": 23514
+  }
+ ],
+ "NCBP2": [
+  {
+   "exp": "ENCSR484LTQ",
+   "file": "ENCFF886MLH",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "NCBP2__ENCSR484LTQ__ENCFF886MLH.bed.gz",
+   "nbytes": 9883
+  },
+  {
+   "exp": "ENCSR018RVZ",
+   "file": "ENCFF692RZM",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "NCBP2__ENCSR018RVZ__ENCFF692RZM.bed.gz",
+   "nbytes": 72197
+  }
+ ],
+ "NIP7": [
+  {
+   "exp": "ENCSR361OCV",
+   "file": "ENCFF033MGP",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "NIP7__ENCSR361OCV__ENCFF033MGP.bed.gz",
+   "nbytes": 7542
+  }
+ ],
+ "NIPBL": [
+  {
+   "exp": "ENCSR891RIC",
+   "file": "ENCFF554NIV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "NIPBL__ENCSR891RIC__ENCFF554NIV.bed.gz",
+   "nbytes": 8531
+  }
+ ],
+ "NKRF": [
+  {
+   "exp": "ENCSR277DEO",
+   "file": "ENCFF045HSV",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "NKRF__ENCSR277DEO__ENCFF045HSV.bed.gz",
+   "nbytes": 85129
+  }
+ ],
+ "NOL12": [
+  {
+   "exp": "ENCSR820DQJ",
+   "file": "ENCFF914WFQ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "NOL12__ENCSR820DQJ__ENCFF914WFQ.bed.gz",
+   "nbytes": 7191
+  }
+ ],
+ "NOLC1": [
+  {
+   "exp": "ENCSR001VAC",
+   "file": "ENCFF327YTD",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "NOLC1__ENCSR001VAC__ENCFF327YTD.bed.gz",
+   "nbytes": 36997
+  },
+  {
+   "exp": "ENCSR194HZU",
+   "file": "ENCFF137YFD",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "NOLC1__ENCSR194HZU__ENCFF137YFD.bed.gz",
+   "nbytes": 33882
+  }
+ ],
+ "NONO": [
+  {
+   "exp": "ENCSR861PAR",
+   "file": "ENCFF730QRI",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "NONO__ENCSR861PAR__ENCFF730QRI.bed.gz",
+   "nbytes": 235710
+  }
+ ],
+ "NPM1": [
+  {
+   "exp": "ENCSR867DSZ",
+   "file": "ENCFF154AYH",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "NPM1__ENCSR867DSZ__ENCFF154AYH.bed.gz",
+   "nbytes": 1360
+  }
+ ],
+ "NSUN2": [
+  {
+   "exp": "ENCSR379GZS",
+   "file": "ENCFF642QVZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "NSUN2__ENCSR379GZS__ENCFF642QVZ.bed.gz",
+   "nbytes": 10169
+  },
+  {
+   "exp": "ENCSR081JYH",
+   "file": "ENCFF233PRB",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "NSUN2__ENCSR081JYH__ENCFF233PRB.bed.gz",
+   "nbytes": 4116
+  }
+ ],
+ "PABPC4": [
+  {
+   "exp": "ENCSR958FKZ",
+   "file": "ENCFF452MJL",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PABPC4__ENCSR958FKZ__ENCFF452MJL.bed.gz",
+   "nbytes": 140840
+  }
+ ],
+ "PABPN1": [
+  {
+   "exp": "ENCSR820UYE",
+   "file": "ENCFF709FEU",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "PABPN1__ENCSR820UYE__ENCFF709FEU.bed.gz",
+   "nbytes": 89887
+  }
+ ],
+ "PCBP1": [
+  {
+   "exp": "ENCSR922WJV",
+   "file": "ENCFF900IOH",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PCBP1__ENCSR922WJV__ENCFF900IOH.bed.gz",
+   "nbytes": 46411
+  },
+  {
+   "exp": "ENCSR256CHX",
+   "file": "ENCFF098REE",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "PCBP1__ENCSR256CHX__ENCFF098REE.bed.gz",
+   "nbytes": 22087
+  }
+ ],
+ "PCBP2": [
+  {
+   "exp": "ENCSR339FUY",
+   "file": "ENCFF642GNE",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "PCBP2__ENCSR339FUY__ENCFF642GNE.bed.gz",
+   "nbytes": 206727
+  }
+ ],
+ "PHF6": [
+  {
+   "exp": "ENCSR001KKZ",
+   "file": "ENCFF588ITW",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PHF6__ENCSR001KKZ__ENCFF588ITW.bed.gz",
+   "nbytes": 16122
+  }
+ ],
+ "POLR2G": [
+  {
+   "exp": "ENCSR820WHR",
+   "file": "ENCFF591BUK",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "POLR2G__ENCSR820WHR__ENCFF591BUK.bed.gz",
+   "nbytes": 1538
+  }
+ ],
+ "PPIG": [
+  {
+   "exp": "ENCSR097NEE",
+   "file": "ENCFF986XOC",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "PPIG__ENCSR097NEE__ENCFF986XOC.bed.gz",
+   "nbytes": 522975
+  }
+ ],
+ "PPIL4": [
+  {
+   "exp": "ENCSR197INS",
+   "file": "ENCFF559HGK",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PPIL4__ENCSR197INS__ENCFF559HGK.bed.gz",
+   "nbytes": 14300
+  }
+ ],
+ "PRPF4": [
+  {
+   "exp": "ENCSR977OXG",
+   "file": "ENCFF227EJF",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "PRPF4__ENCSR977OXG__ENCFF227EJF.bed.gz",
+   "nbytes": 214522
+  }
+ ],
+ "PRPF8": [
+  {
+   "exp": "ENCSR534YOI",
+   "file": "ENCFF858UKE",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PRPF8__ENCSR534YOI__ENCFF858UKE.bed.gz",
+   "nbytes": 232710
+  },
+  {
+   "exp": "ENCSR121NVA",
+   "file": "ENCFF048YPA",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "PRPF8__ENCSR121NVA__ENCFF048YPA.bed.gz",
+   "nbytes": 466157
+  }
+ ],
+ "PTBP1": [
+  {
+   "exp": "ENCSR384KAN",
+   "file": "ENCFF726SQU",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "PTBP1__ENCSR384KAN__ENCFF726SQU.bed.gz",
+   "nbytes": 183649
+  },
+  {
+   "exp": "ENCSR981WKN",
+   "file": "ENCFF907HNN",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PTBP1__ENCSR981WKN__ENCFF907HNN.bed.gz",
+   "nbytes": 162406
+  }
+ ],
+ "PUM1": [
+  {
+   "exp": "ENCSR308YNT",
+   "file": "ENCFF094MQV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PUM1__ENCSR308YNT__ENCFF094MQV.bed.gz",
+   "nbytes": 62504
+  }
+ ],
+ "PUM2": [
+  {
+   "exp": "ENCSR661ICQ",
+   "file": "ENCFF880MWQ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PUM2__ENCSR661ICQ__ENCFF880MWQ.bed.gz",
+   "nbytes": 130563
+  }
+ ],
+ "PUS1": [
+  {
+   "exp": "ENCSR291XPT",
+   "file": "ENCFF247NXL",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "PUS1__ENCSR291XPT__ENCFF247NXL.bed.gz",
+   "nbytes": 895
+  }
+ ],
+ "QKI": [
+  {
+   "exp": "ENCSR366YOG",
+   "file": "ENCFF786UOW",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "QKI__ENCSR366YOG__ENCFF786UOW.bed.gz",
+   "nbytes": 51681
+  },
+  {
+   "exp": "ENCSR570WLM",
+   "file": "ENCFF704OCI",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "QKI__ENCSR570WLM__ENCFF704OCI.bed.gz",
+   "nbytes": 219021
+  }
+ ],
+ "RBFOX2": [
+  {
+   "exp": "ENCSR756CKJ",
+   "file": "ENCFF206RIM",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "RBFOX2__ENCSR756CKJ__ENCFF206RIM.bed.gz",
+   "nbytes": 81673
+  },
+  {
+   "exp": "ENCSR987FTF",
+   "file": "ENCFF871NYM",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "RBFOX2__ENCSR987FTF__ENCFF871NYM.bed.gz",
+   "nbytes": 172924
+  }
+ ],
+ "RBM15": [
+  {
+   "exp": "ENCSR196INN",
+   "file": "ENCFF597MMG",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "RBM15__ENCSR196INN__ENCFF597MMG.bed.gz",
+   "nbytes": 198449
+  },
+  {
+   "exp": "ENCSR754NDA",
+   "file": "ENCFF054VLU",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "RBM15__ENCSR754NDA__ENCFF054VLU.bed.gz",
+   "nbytes": 33244
+  }
+ ],
+ "RBM22": [
+  {
+   "exp": "ENCSR295OKT",
+   "file": "ENCFF972ZMJ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "RBM22__ENCSR295OKT__ENCFF972ZMJ.bed.gz",
+   "nbytes": 20400
+  },
+  {
+   "exp": "ENCSR456JJQ",
+   "file": "ENCFF293IZG",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "RBM22__ENCSR456JJQ__ENCFF293IZG.bed.gz",
+   "nbytes": 40630
+  }
+ ],
+ "RBM5": [
+  {
+   "exp": "ENCSR489ABS",
+   "file": "ENCFF927KRA",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "RBM5__ENCSR489ABS__ENCFF927KRA.bed.gz",
+   "nbytes": 14132
+  }
+ ],
+ "RPS11": [
+  {
+   "exp": "ENCSR269AJF",
+   "file": "ENCFF313WDF",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "RPS11__ENCSR269AJF__ENCFF313WDF.bed.gz",
+   "nbytes": 1307
+  }
+ ],
+ "RPS3": [
+  {
+   "exp": "ENCSR120EAR",
+   "file": "ENCFF530HTL",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "RPS3__ENCSR120EAR__ENCFF530HTL.bed.gz",
+   "nbytes": 57992
+  },
+  {
+   "exp": "ENCSR766FAC",
+   "file": "ENCFF301IJW",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "RPS3__ENCSR766FAC__ENCFF301IJW.bed.gz",
+   "nbytes": 138466
+  }
+ ],
+ "SAFB": [
+  {
+   "exp": "ENCSR484LAB",
+   "file": "ENCFF953WTP",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SAFB__ENCSR484LAB__ENCFF953WTP.bed.gz",
+   "nbytes": 11723
+  },
+  {
+   "exp": "ENCSR337XGI",
+   "file": "ENCFF232WUE",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SAFB__ENCSR337XGI__ENCFF232WUE.bed.gz",
+   "nbytes": 6752
+  }
+ ],
+ "SAFB2": [
+  {
+   "exp": "ENCSR943MHU",
+   "file": "ENCFF594EDV",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SAFB2__ENCSR943MHU__ENCFF594EDV.bed.gz",
+   "nbytes": 81096
+  }
+ ],
+ "SBDS": [
+  {
+   "exp": "ENCSR059CWF",
+   "file": "ENCFF051EEW",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SBDS__ENCSR059CWF__ENCFF051EEW.bed.gz",
+   "nbytes": 666
+  }
+ ],
+ "SDAD1": [
+  {
+   "exp": "ENCSR050BDZ",
+   "file": "ENCFF825UVD",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SDAD1__ENCSR050BDZ__ENCFF825UVD.bed.gz",
+   "nbytes": 23440
+  },
+  {
+   "exp": "ENCSR906ZJF",
+   "file": "ENCFF114EUH",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SDAD1__ENCSR906ZJF__ENCFF114EUH.bed.gz",
+   "nbytes": 1808
+  }
+ ],
+ "SERBP1": [
+  {
+   "exp": "ENCSR121GQH",
+   "file": "ENCFF295HRZ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SERBP1__ENCSR121GQH__ENCFF295HRZ.bed.gz",
+   "nbytes": 4406
+  }
+ ],
+ "SF3A3": [
+  {
+   "exp": "ENCSR331MIC",
+   "file": "ENCFF950VZO",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SF3A3__ENCSR331MIC__ENCFF950VZO.bed.gz",
+   "nbytes": 55273
+  }
+ ],
+ "SF3B1": [
+  {
+   "exp": "ENCSR133QEA",
+   "file": "ENCFF887ARJ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SF3B1__ENCSR133QEA__ENCFF887ARJ.bed.gz",
+   "nbytes": 1016
+  }
+ ],
+ "SF3B4": [
+  {
+   "exp": "ENCSR267OLV",
+   "file": "ENCFF649GEE",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SF3B4__ENCSR267OLV__ENCFF649GEE.bed.gz",
+   "nbytes": 227953
+  },
+  {
+   "exp": "ENCSR279UJF",
+   "file": "ENCFF073IJF",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SF3B4__ENCSR279UJF__ENCFF073IJF.bed.gz",
+   "nbytes": 129503
+  }
+ ],
+ "SFPQ": [
+  {
+   "exp": "ENCSR965DLL",
+   "file": "ENCFF139NXB",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SFPQ__ENCSR965DLL__ENCFF139NXB.bed.gz",
+   "nbytes": 51600
+  }
+ ],
+ "SLBP": [
+  {
+   "exp": "ENCSR483NOP",
+   "file": "ENCFF623WGE",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SLBP__ENCSR483NOP__ENCFF623WGE.bed.gz",
+   "nbytes": 3859
+  }
+ ],
+ "SLTM": [
+  {
+   "exp": "ENCSR000SSH",
+   "file": "ENCFF696QWE",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SLTM__ENCSR000SSH__ENCFF696QWE.bed.gz",
+   "nbytes": 75128
+  },
+  {
+   "exp": "ENCSR351PVI",
+   "file": "ENCFF121RVH",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SLTM__ENCSR351PVI__ENCFF121RVH.bed.gz",
+   "nbytes": 27643
+  }
+ ],
+ "SMNDC1": [
+  {
+   "exp": "ENCSR658IQB",
+   "file": "ENCFF943XOU",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SMNDC1__ENCSR658IQB__ENCFF943XOU.bed.gz",
+   "nbytes": 53819
+  },
+  {
+   "exp": "ENCSR373ODC",
+   "file": "ENCFF736RYV",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SMNDC1__ENCSR373ODC__ENCFF736RYV.bed.gz",
+   "nbytes": 7957
+  }
+ ],
+ "SND1": [
+  {
+   "exp": "ENCSR128VXC",
+   "file": "ENCFF211TRO",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SND1__ENCSR128VXC__ENCFF211TRO.bed.gz",
+   "nbytes": 98820
+  },
+  {
+   "exp": "ENCSR061EVO",
+   "file": "ENCFF609LWQ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SND1__ENCSR061EVO__ENCFF609LWQ.bed.gz",
+   "nbytes": 171827
+  }
+ ],
+ "SRSF1": [
+  {
+   "exp": "ENCSR321PWZ",
+   "file": "ENCFF223KVR",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SRSF1__ENCSR321PWZ__ENCFF223KVR.bed.gz",
+   "nbytes": 88774
+  },
+  {
+   "exp": "ENCSR432XUP",
+   "file": "ENCFF886XUO",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SRSF1__ENCSR432XUP__ENCFF886XUO.bed.gz",
+   "nbytes": 45862
+  },
+  {
+   "exp": "ENCSR989VIY",
+   "file": "ENCFF934ANS",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SRSF1__ENCSR989VIY__ENCFF934ANS.bed.gz",
+   "nbytes": 41449
+  }
+ ],
+ "SRSF7": [
+  {
+   "exp": "ENCSR468FSW",
+   "file": "ENCFF780OCY",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SRSF7__ENCSR468FSW__ENCFF780OCY.bed.gz",
+   "nbytes": 12258
+  },
+  {
+   "exp": "ENCSR513NDD",
+   "file": "ENCFF317HGW",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SRSF7__ENCSR513NDD__ENCFF317HGW.bed.gz",
+   "nbytes": 10106
+  }
+ ],
+ "SRSF9": [
+  {
+   "exp": "ENCSR381VNR",
+   "file": "ENCFF781BNS",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SRSF9__ENCSR381VNR__ENCFF781BNS.bed.gz",
+   "nbytes": 6758
+  },
+  {
+   "exp": "ENCSR773KRC",
+   "file": "ENCFF765PIF",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SRSF9__ENCSR773KRC__ENCFF765PIF.bed.gz",
+   "nbytes": 15314
+  }
+ ],
+ "SSB": [
+  {
+   "exp": "ENCSR356MSW",
+   "file": "ENCFF328KJW",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SSB__ENCSR356MSW__ENCFF328KJW.bed.gz",
+   "nbytes": 4765
+  },
+  {
+   "exp": "ENCSR352STY",
+   "file": "ENCFF848JWA",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SSB__ENCSR352STY__ENCFF848JWA.bed.gz",
+   "nbytes": 2402
+  }
+ ],
+ "STAU2": [
+  {
+   "exp": "ENCSR979EWD",
+   "file": "ENCFF678FCX",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "STAU2__ENCSR979EWD__ENCFF678FCX.bed.gz",
+   "nbytes": 18986
+  }
+ ],
+ "SUB1": [
+  {
+   "exp": "ENCSR406OOZ",
+   "file": "ENCFF335JTC",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SUB1__ENCSR406OOZ__ENCFF335JTC.bed.gz",
+   "nbytes": 77566
+  }
+ ],
+ "SUGP2": [
+  {
+   "exp": "ENCSR506UPY",
+   "file": "ENCFF191XRG",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SUGP2__ENCSR506UPY__ENCFF191XRG.bed.gz",
+   "nbytes": 312454
+  }
+ ],
+ "SUPV3L1": [
+  {
+   "exp": "ENCSR580OFI",
+   "file": "ENCFF239GPP",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "SUPV3L1__ENCSR580OFI__ENCFF239GPP.bed.gz",
+   "nbytes": 1683
+  },
+  {
+   "exp": "ENCSR580MFX",
+   "file": "ENCFF999ZAW",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "SUPV3L1__ENCSR580MFX__ENCFF999ZAW.bed.gz",
+   "nbytes": 6273
+  }
+ ],
+ "TAF15": [
+  {
+   "exp": "ENCSR568DZW",
+   "file": "ENCFF822NWY",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "TAF15__ENCSR568DZW__ENCFF822NWY.bed.gz",
+   "nbytes": 12367
+  },
+  {
+   "exp": "ENCSR841EQA",
+   "file": "ENCFF566EAE",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "TAF15__ENCSR841EQA__ENCFF566EAE.bed.gz",
+   "nbytes": 16281
+  }
+ ],
+ "TARDBP": [
+  {
+   "exp": "ENCSR720BJU",
+   "file": "ENCFF593RED",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "TARDBP__ENCSR720BJU__ENCFF593RED.bed.gz",
+   "nbytes": 91663
+  },
+  {
+   "exp": "ENCSR187VEQ",
+   "file": "ENCFF673QBV",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "TARDBP__ENCSR187VEQ__ENCFF673QBV.bed.gz",
+   "nbytes": 443962
+  },
+  {
+   "exp": "ENCSR584TCR",
+   "file": "ENCFF037TVC",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "TARDBP__ENCSR584TCR__ENCFF037TVC.bed.gz",
+   "nbytes": 152254
+  }
+ ],
+ "TBRG4": [
+  {
+   "exp": "ENCSR506OTC",
+   "file": "ENCFF618WYU",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "TBRG4__ENCSR506OTC__ENCFF618WYU.bed.gz",
+   "nbytes": 8114
+  },
+  {
+   "exp": "ENCSR916SRV",
+   "file": "ENCFF869RUC",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "TBRG4__ENCSR916SRV__ENCFF869RUC.bed.gz",
+   "nbytes": 2463
+  }
+ ],
+ "TIA1": [
+  {
+   "exp": "ENCSR057DWB",
+   "file": "ENCFF918KMT",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "TIA1__ENCSR057DWB__ENCFF918KMT.bed.gz",
+   "nbytes": 131030
+  },
+  {
+   "exp": "ENCSR623VEQ",
+   "file": "ENCFF759KCD",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "TIA1__ENCSR623VEQ__ENCFF759KCD.bed.gz",
+   "nbytes": 41378
+  }
+ ],
+ "TIAL1": [
+  {
+   "exp": "ENCSR322HHA",
+   "file": "ENCFF612HOP",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "TIAL1__ENCSR322HHA__ENCFF612HOP.bed.gz",
+   "nbytes": 53192
+  }
+ ],
+ "TRA2A": [
+  {
+   "exp": "ENCSR365NVO",
+   "file": "ENCFF726PFJ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "TRA2A__ENCSR365NVO__ENCFF726PFJ.bed.gz",
+   "nbytes": 39732
+  },
+  {
+   "exp": "ENCSR314UMJ",
+   "file": "ENCFF766OCH",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "TRA2A__ENCSR314UMJ__ENCFF766OCH.bed.gz",
+   "nbytes": 21519
+  }
+ ],
+ "TROVE2": [
+  {
+   "exp": "ENCSR539ZTS",
+   "file": "ENCFF794RJQ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "TROVE2__ENCSR539ZTS__ENCFF794RJQ.bed.gz",
+   "nbytes": 11488
+  },
+  {
+   "exp": "ENCSR993FMY",
+   "file": "ENCFF611SOO",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "TROVE2__ENCSR993FMY__ENCFF611SOO.bed.gz",
+   "nbytes": 4314
+  }
+ ],
+ "U2AF1": [
+  {
+   "exp": "ENCSR862QCH",
+   "file": "ENCFF640IHY",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "U2AF1__ENCSR862QCH__ENCFF640IHY.bed.gz",
+   "nbytes": 27933
+  },
+  {
+   "exp": "ENCSR328LLU",
+   "file": "ENCFF056LEW",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "U2AF1__ENCSR328LLU__ENCFF056LEW.bed.gz",
+   "nbytes": 25706
+  }
+ ],
+ "U2AF2": [
+  {
+   "exp": "ENCSR893RAV",
+   "file": "ENCFF290DFO",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "U2AF2__ENCSR893RAV__ENCFF290DFO.bed.gz",
+   "nbytes": 88482
+  },
+  {
+   "exp": "ENCSR202BFN",
+   "file": "ENCFF721PWF",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "U2AF2__ENCSR202BFN__ENCFF721PWF.bed.gz",
+   "nbytes": 230034
+  }
+ ],
+ "UCHL5": [
+  {
+   "exp": "ENCSR349KMG",
+   "file": "ENCFF365LFU",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "UCHL5__ENCSR349KMG__ENCFF365LFU.bed.gz",
+   "nbytes": 424786
+  },
+  {
+   "exp": "ENCSR490IEE",
+   "file": "ENCFF573DXD",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "UCHL5__ENCSR490IEE__ENCFF573DXD.bed.gz",
+   "nbytes": 51641
+  }
+ ],
+ "UPF1": [
+  {
+   "exp": "ENCSR539BEV",
+   "file": "ENCFF687EQE",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "UPF1__ENCSR539BEV__ENCFF687EQE.bed.gz",
+   "nbytes": 231137
+  },
+  {
+   "exp": "ENCSR456ASB",
+   "file": "ENCFF597NVR",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "UPF1__ENCSR456ASB__ENCFF597NVR.bed.gz",
+   "nbytes": 323361
+  }
+ ],
+ "UTP18": [
+  {
+   "exp": "ENCSR964VOX",
+   "file": "ENCFF783INO",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "UTP18__ENCSR964VOX__ENCFF783INO.bed.gz",
+   "nbytes": 3716
+  },
+  {
+   "exp": "ENCSR488JKQ",
+   "file": "ENCFF644EIR",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "UTP18__ENCSR488JKQ__ENCFF644EIR.bed.gz",
+   "nbytes": 1346
+  }
+ ],
+ "UTP3": [
+  {
+   "exp": "ENCSR734ZHL",
+   "file": "ENCFF028GAJ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "UTP3__ENCSR734ZHL__ENCFF028GAJ.bed.gz",
+   "nbytes": 472
+  }
+ ],
+ "WDR3": [
+  {
+   "exp": "ENCSR202HKN",
+   "file": "ENCFF560RWD",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "WDR3__ENCSR202HKN__ENCFF560RWD.bed.gz",
+   "nbytes": 838
+  }
+ ],
+ "WDR43": [
+  {
+   "exp": "ENCSR085JPB",
+   "file": "ENCFF945NFS",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "WDR43__ENCSR085JPB__ENCFF945NFS.bed.gz",
+   "nbytes": 4831
+  },
+  {
+   "exp": "ENCSR349CMI",
+   "file": "ENCFF244JER",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "WDR43__ENCSR349CMI__ENCFF244JER.bed.gz",
+   "nbytes": 3822
+  }
+ ],
+ "WRN": [
+  {
+   "exp": "ENCSR038JME",
+   "file": "ENCFF404HHM",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "WRN__ENCSR038JME__ENCFF404HHM.bed.gz",
+   "nbytes": 3110
+  }
+ ],
+ "XPO5": [
+  {
+   "exp": "ENCSR921SXC",
+   "file": "ENCFF327VCE",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "XPO5__ENCSR921SXC__ENCFF327VCE.bed.gz",
+   "nbytes": 98958
+  }
+ ],
+ "XRCC6": [
+  {
+   "exp": "ENCSR258QKO",
+   "file": "ENCFF958GMP",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "XRCC6__ENCSR258QKO__ENCFF958GMP.bed.gz",
+   "nbytes": 18497
+  },
+  {
+   "exp": "ENCSR571ROL",
+   "file": "ENCFF993VRZ",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "XRCC6__ENCSR571ROL__ENCFF993VRZ.bed.gz",
+   "nbytes": 2821
+  }
+ ],
+ "XRN2": [
+  {
+   "exp": "ENCSR657TZB",
+   "file": "ENCFF695OLO",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "XRN2__ENCSR657TZB__ENCFF695OLO.bed.gz",
+   "nbytes": 30095
+  },
+  {
+   "exp": "ENCSR655NZA",
+   "file": "ENCFF321HPH",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "XRN2__ENCSR655NZA__ENCFF321HPH.bed.gz",
+   "nbytes": 35365
+  }
+ ],
+ "YBX3": [
+  {
+   "exp": "ENCSR735HOK",
+   "file": "ENCFF185OEI",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "YBX3__ENCSR735HOK__ENCFF185OEI.bed.gz",
+   "nbytes": 48712
+  },
+  {
+   "exp": "ENCSR529FKI",
+   "file": "ENCFF746XLE",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "YBX3__ENCSR529FKI__ENCFF746XLE.bed.gz",
+   "nbytes": 432111
+  }
+ ],
+ "YWHAG": [
+  {
+   "exp": "ENCSR867ZVK",
+   "file": "ENCFF932UXC",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "YWHAG__ENCSR867ZVK__ENCFF932UXC.bed.gz",
+   "nbytes": 16560
+  }
+ ],
+ "ZC3H11A": [
+  {
+   "exp": "ENCSR712IAG",
+   "file": "ENCFF258HOX",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "ZC3H11A__ENCSR712IAG__ENCFF258HOX.bed.gz",
+   "nbytes": 27989
+  },
+  {
+   "exp": "ENCSR907GUB",
+   "file": "ENCFF592WIH",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "ZC3H11A__ENCSR907GUB__ENCFF592WIH.bed.gz",
+   "nbytes": 26038
+  }
+ ],
+ "ZC3H8": [
+  {
+   "exp": "ENCSR181NRW",
+   "file": "ENCFF382URH",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "ZC3H8__ENCSR181NRW__ENCFF382URH.bed.gz",
+   "nbytes": 6924
+  }
+ ],
+ "ZNF622": [
+  {
+   "exp": "ENCSR657TZZ",
+   "file": "ENCFF285IGP",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "ZNF622__ENCSR657TZZ__ENCFF285IGP.bed.gz",
+   "nbytes": 343176
+  }
+ ],
+ "ZNF800": [
+  {
+   "exp": "ENCSR685AUR",
+   "file": "ENCFF343TCO",
+   "output_type": "peaks",
+   "cell": "HepG2",
+   "path": "ZNF800__ENCSR685AUR__ENCFF343TCO.bed.gz",
+   "nbytes": 68915
+  },
+  {
+   "exp": "ENCSR586DGV",
+   "file": "ENCFF105HMJ",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "ZNF800__ENCSR586DGV__ENCFF105HMJ.bed.gz",
+   "nbytes": 56208
+  }
+ ],
+ "ZRANB2": [
+  {
+   "exp": "ENCSR663NRA",
+   "file": "ENCFF058OOW",
+   "output_type": "peaks",
+   "cell": "K562",
+   "path": "ZRANB2__ENCSR663NRA__ENCFF058OOW.bed.gz",
+   "nbytes": 9628
+  }
+ ]
+}

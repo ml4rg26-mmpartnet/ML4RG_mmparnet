@@ -1,0 +1,6 @@
+# Normalize line endings: text is LF in the repo + on checkout (scripts must stay LF for Linux).
+* text=auto eol=lf
+*.png binary
+*.gz binary
+*.npz binary
+*.pt binary

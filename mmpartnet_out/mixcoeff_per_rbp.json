@@ -1,0 +1,1567 @@
+{
+ "n_windows": 675,
+ "corpus": "example.lncRNA",
+ "rows": [
+  {
+   "idx": 21,
+   "rbp": "DDX21",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.998431921005249
+  },
+  {
+   "idx": 88,
+   "rbp": "HNRNPUL1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.9685437679290771
+  },
+  {
+   "idx": 150,
+   "rbp": "SAFB2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.9486901164054871
+  },
+  {
+   "idx": 77,
+   "rbp": "HNRNPC",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.9477407336235046
+  },
+  {
+   "idx": 181,
+   "rbp": "TAF15",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.9476357102394104
+  },
+  {
+   "idx": 87,
+   "rbp": "HNRNPUL1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.9473063349723816
+  },
+  {
+   "idx": 75,
+   "rbp": "HNRNPA1",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.9465634822845459
+  },
+  {
+   "idx": 128,
+   "rbp": "PPIG",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.9430087804794312
+  },
+  {
+   "idx": 187,
+   "rbp": "TIA1",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.9420226812362671
+  },
+  {
+   "idx": 161,
+   "rbp": "SFPQ",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.9384949207305908
+  },
+  {
+   "idx": 74,
+   "rbp": "HLTF",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.9378990530967712
+  },
+  {
+   "idx": 18,
+   "rbp": "CSTF2",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.9301006197929382
+  },
+  {
+   "idx": 118,
+   "rbp": "NONO",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.9244171380996704
+  },
+  {
+   "idx": 70,
+   "rbp": "GRWD1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.923926591873169
+  },
+  {
+   "idx": 60,
+   "rbp": "FUS",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.923480749130249
+  },
+  {
+   "idx": 47,
+   "rbp": "EWSR1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.9198774099349976
+  },
+  {
+   "idx": 199,
+   "rbp": "UPF1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.9162045121192932
+  },
+  {
+   "idx": 222,
+   "rbp": "ZRANB2",
+   "cell": "K562",
+   "family": "ZF_RANBP",
+   "mix_coeff": 0.9160526990890503
+  },
+  {
+   "idx": 83,
+   "rbp": "HNRNPM",
+   "cell": "HepG2",
+   "family": "HNRNP_M;RRM",
+   "mix_coeff": 0.9159409403800964
+  },
+  {
+   "idx": 178,
+   "rbp": "SUGP2",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.9122707843780518
+  },
+  {
+   "idx": 76,
+   "rbp": "HNRNPA1",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.9099535942077637
+  },
+  {
+   "idx": 211,
+   "rbp": "XRN2",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.9087779521942139
+  },
+  {
+   "idx": 203,
+   "rbp": "UTP3",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.9082638621330261
+  },
+  {
+   "idx": 78,
+   "rbp": "HNRNPC",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.9060739278793335
+  },
+  {
+   "idx": 186,
+   "rbp": "TIA1",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.9058879613876343
+  },
+  {
+   "idx": 106,
+   "rbp": "MATR3",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.9055830240249634
+  },
+  {
+   "idx": 19,
+   "rbp": "CSTF2T",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.905265748500824
+  },
+  {
+   "idx": 84,
+   "rbp": "HNRNPM",
+   "cell": "K562",
+   "family": "HNRNP_M;RRM",
+   "mix_coeff": 0.9047907590866089
+  },
+  {
+   "idx": 90,
+   "rbp": "IGF2BP1",
+   "cell": "K562",
+   "family": "KH;RRM",
+   "mix_coeff": 0.90276700258255
+  },
+  {
+   "idx": 92,
+   "rbp": "IGF2BP3",
+   "cell": "HepG2",
+   "family": "KH;RRM",
+   "mix_coeff": 0.9011300802230835
+  },
+  {
+   "idx": 91,
+   "rbp": "IGF2BP2",
+   "cell": "K562",
+   "family": "KH;RRM",
+   "mix_coeff": 0.9010381698608398
+  },
+  {
+   "idx": 148,
+   "rbp": "RPS3",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.9007435441017151
+  },
+  {
+   "idx": 127,
+   "rbp": "POLR2G",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8987025022506714
+  },
+  {
+   "idx": 71,
+   "rbp": "GTF2F1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8960302472114563
+  },
+  {
+   "idx": 72,
+   "rbp": "GTF2F1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.893940269947052
+  },
+  {
+   "idx": 146,
+   "rbp": "RBM5",
+   "cell": "HepG2",
+   "family": "ZF_RANBP",
+   "mix_coeff": 0.8905982971191406
+  },
+  {
+   "idx": 95,
+   "rbp": "KHDRBS1",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.8903253674507141
+  },
+  {
+   "idx": 130,
+   "rbp": "PRPF4",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8902038931846619
+  },
+  {
+   "idx": 41,
+   "rbp": "EFTUD2",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8897277116775513
+  },
+  {
+   "idx": 220,
+   "rbp": "ZNF800",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8866990208625793
+  },
+  {
+   "idx": 59,
+   "rbp": "FUS",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.8852605223655701
+  },
+  {
+   "idx": 151,
+   "rbp": "SAFB",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8843979835510254
+  },
+  {
+   "idx": 169,
+   "rbp": "SRSF1",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.8783553838729858
+  },
+  {
+   "idx": 27,
+   "rbp": "DDX52",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8765150308609009
+  },
+  {
+   "idx": 43,
+   "rbp": "EIF3D",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8743112683296204
+  },
+  {
+   "idx": 13,
+   "rbp": "BUD13",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8694634437561035
+  },
+  {
+   "idx": 79,
+   "rbp": "HNRNPK",
+   "cell": "HepG2",
+   "family": "KH",
+   "mix_coeff": 0.8655605912208557
+  },
+  {
+   "idx": 125,
+   "rbp": "PCBP2",
+   "cell": "HepG2",
+   "family": "KH",
+   "mix_coeff": 0.8649354577064514
+  },
+  {
+   "idx": 55,
+   "rbp": "FMR1",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.8586207032203674
+  },
+  {
+   "idx": 51,
+   "rbp": "FAM120A",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8586177229881287
+  },
+  {
+   "idx": 81,
+   "rbp": "HNRNPL",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.8583312630653381
+  },
+  {
+   "idx": 80,
+   "rbp": "HNRNPK",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.8579220175743103
+  },
+  {
+   "idx": 22,
+   "rbp": "DDX24",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8575915694236755
+  },
+  {
+   "idx": 97,
+   "rbp": "KHSRP",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.8566651344299316
+  },
+  {
+   "idx": 8,
+   "rbp": "APOBEC3C",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8558139801025391
+  },
+  {
+   "idx": 94,
+   "rbp": "ILF3",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8557526469230652
+  },
+  {
+   "idx": 28,
+   "rbp": "DDX52",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8550665378570557
+  },
+  {
+   "idx": 45,
+   "rbp": "EIF3H",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8544447422027588
+  },
+  {
+   "idx": 167,
+   "rbp": "SND1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8542557954788208
+  },
+  {
+   "idx": 82,
+   "rbp": "HNRNPL",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.8538404107093811
+  },
+  {
+   "idx": 89,
+   "rbp": "IGF2BP1",
+   "cell": "HepG2",
+   "family": "KH;RRM",
+   "mix_coeff": 0.8524810075759888
+  },
+  {
+   "idx": 152,
+   "rbp": "SAFB",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8522807359695435
+  },
+  {
+   "idx": 132,
+   "rbp": "PRPF8",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8510145545005798
+  },
+  {
+   "idx": 11,
+   "rbp": "BCCIP",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8491349220275879
+  },
+  {
+   "idx": 17,
+   "rbp": "CPSF6",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8485252857208252
+  },
+  {
+   "idx": 64,
+   "rbp": "G3BP1",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.8481067419052124
+  },
+  {
+   "idx": 107,
+   "rbp": "MATR3",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.8466094136238098
+  },
+  {
+   "idx": 117,
+   "rbp": "NOLC1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8463535308837891
+  },
+  {
+   "idx": 185,
+   "rbp": "TBRG4",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8462086915969849
+  },
+  {
+   "idx": 177,
+   "rbp": "SUB1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8443406224250793
+  },
+  {
+   "idx": 114,
+   "rbp": "NKRF",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8436496257781982
+  },
+  {
+   "idx": 12,
+   "rbp": "BCLAF1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8430177569389343
+  },
+  {
+   "idx": 209,
+   "rbp": "XRCC6",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.842947781085968
+  },
+  {
+   "idx": 172,
+   "rbp": "SRSF7",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.8420431017875671
+  },
+  {
+   "idx": 50,
+   "rbp": "FAM120A",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8419133424758911
+  },
+  {
+   "idx": 159,
+   "rbp": "SF3B4",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.840054452419281
+  },
+  {
+   "idx": 69,
+   "rbp": "GRWD1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8386454582214355
+  },
+  {
+   "idx": 219,
+   "rbp": "ZNF622",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8326199054718018
+  },
+  {
+   "idx": 182,
+   "rbp": "TAF15",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8307888507843018
+  },
+  {
+   "idx": 200,
+   "rbp": "UPF1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.830630898475647
+  },
+  {
+   "idx": 212,
+   "rbp": "XRN2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8300744891166687
+  },
+  {
+   "idx": 221,
+   "rbp": "ZNF800",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8276031017303467
+  },
+  {
+   "idx": 217,
+   "rbp": "ZC3H11A",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8275959491729736
+  },
+  {
+   "idx": 215,
+   "rbp": "YWHAG",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.827376663684845
+  },
+  {
+   "idx": 110,
+   "rbp": "NCBP2",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8251526951789856
+  },
+  {
+   "idx": 218,
+   "rbp": "ZC3H8",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8229667544364929
+  },
+  {
+   "idx": 193,
+   "rbp": "U2AF1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8226662874221802
+  },
+  {
+   "idx": 14,
+   "rbp": "BUD13",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8215721845626831
+  },
+  {
+   "idx": 142,
+   "rbp": "RBM15",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8209666013717651
+  },
+  {
+   "idx": 86,
+   "rbp": "HNRNPU",
+   "cell": "K562",
+   "family": "SAP;SPRY",
+   "mix_coeff": 0.8192448616027832
+  },
+  {
+   "idx": 170,
+   "rbp": "SRSF1",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.8142189979553223
+  },
+  {
+   "idx": 154,
+   "rbp": "SDAD1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8122196197509766
+  },
+  {
+   "idx": 6,
+   "rbp": "AKAP1",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.8115394711494446
+  },
+  {
+   "idx": 197,
+   "rbp": "UCHL5",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8110909461975098
+  },
+  {
+   "idx": 164,
+   "rbp": "SLTM",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.809962272644043
+  },
+  {
+   "idx": 214,
+   "rbp": "YBX3",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.8082437515258789
+  },
+  {
+   "idx": 183,
+   "rbp": "TARDBP",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.8065751791000366
+  },
+  {
+   "idx": 5,
+   "rbp": "AKAP1",
+   "cell": "HepG2",
+   "family": "KH",
+   "mix_coeff": 0.8041742444038391
+  },
+  {
+   "idx": 85,
+   "rbp": "HNRNPU",
+   "cell": "HepG2",
+   "family": "SAP;SPRY",
+   "mix_coeff": 0.8026987314224243
+  },
+  {
+   "idx": 189,
+   "rbp": "TRA2A",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.8021602630615234
+  },
+  {
+   "idx": 216,
+   "rbp": "ZC3H11A",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.8009284734725952
+  },
+  {
+   "idx": 62,
+   "rbp": "FXR2",
+   "cell": "HepG2",
+   "family": "KH",
+   "mix_coeff": 0.8006246089935303
+  },
+  {
+   "idx": 52,
+   "rbp": "FASTKD2",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7981399297714233
+  },
+  {
+   "idx": 49,
+   "rbp": "EXOSC5",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7963846325874329
+  },
+  {
+   "idx": 93,
+   "rbp": "ILF3",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7955988049507141
+  },
+  {
+   "idx": 15,
+   "rbp": "CDC40",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.794145941734314
+  },
+  {
+   "idx": 96,
+   "rbp": "KHSRP",
+   "cell": "HepG2",
+   "family": "KH",
+   "mix_coeff": 0.7919760942459106
+  },
+  {
+   "idx": 173,
+   "rbp": "SRSF9",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.791451096534729
+  },
+  {
+   "idx": 111,
+   "rbp": "NCBP2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7903203964233398
+  },
+  {
+   "idx": 37,
+   "rbp": "DHX30",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7888785004615784
+  },
+  {
+   "idx": 38,
+   "rbp": "DKC1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7852094173431396
+  },
+  {
+   "idx": 129,
+   "rbp": "PPIL4",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7836499810218811
+  },
+  {
+   "idx": 140,
+   "rbp": "RBFOX2",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.7834131121635437
+  },
+  {
+   "idx": 32,
+   "rbp": "DDX6",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7792298793792725
+  },
+  {
+   "idx": 33,
+   "rbp": "DDX6",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7741867303848267
+  },
+  {
+   "idx": 160,
+   "rbp": "SF3B4",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7734395861625671
+  },
+  {
+   "idx": 135,
+   "rbp": "PUM1",
+   "cell": "K562",
+   "family": "PUF",
+   "mix_coeff": 0.7702092528343201
+  },
+  {
+   "idx": 7,
+   "rbp": "AKAP8L",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7681031227111816
+  },
+  {
+   "idx": 198,
+   "rbp": "UCHL5",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7675826549530029
+  },
+  {
+   "idx": 138,
+   "rbp": "QKI",
+   "cell": "HepG2",
+   "family": "KH",
+   "mix_coeff": 0.7671118974685669
+  },
+  {
+   "idx": 163,
+   "rbp": "SLTM",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7663429379463196
+  },
+  {
+   "idx": 39,
+   "rbp": "DROSHA",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7626217007637024
+  },
+  {
+   "idx": 184,
+   "rbp": "TBRG4",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7611778378486633
+  },
+  {
+   "idx": 68,
+   "rbp": "GRSF1",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.7603518962860107
+  },
+  {
+   "idx": 73,
+   "rbp": "HLTF",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7596272826194763
+  },
+  {
+   "idx": 109,
+   "rbp": "MTPAP",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7532958984375
+  },
+  {
+   "idx": 122,
+   "rbp": "PABPN1",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.7483177185058594
+  },
+  {
+   "idx": 25,
+   "rbp": "DDX42",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7478323578834534
+  },
+  {
+   "idx": 143,
+   "rbp": "RBM15",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.746582567691803
+  },
+  {
+   "idx": 141,
+   "rbp": "RBFOX2",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.7455605864524841
+  },
+  {
+   "idx": 42,
+   "rbp": "EFTUD2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7434254884719849
+  },
+  {
+   "idx": 57,
+   "rbp": "FTO",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7432663440704346
+  },
+  {
+   "idx": 103,
+   "rbp": "LIN28B",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7424352765083313
+  },
+  {
+   "idx": 121,
+   "rbp": "PABPC4",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.7423648238182068
+  },
+  {
+   "idx": 67,
+   "rbp": "GPKOW",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7381598353385925
+  },
+  {
+   "idx": 166,
+   "rbp": "SMNDC1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7378395199775696
+  },
+  {
+   "idx": 99,
+   "rbp": "LARP4",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7366036772727966
+  },
+  {
+   "idx": 188,
+   "rbp": "TIAL1",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.7362752556800842
+  },
+  {
+   "idx": 63,
+   "rbp": "FXR2",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.732378363609314
+  },
+  {
+   "idx": 120,
+   "rbp": "NSUN2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7304219603538513
+  },
+  {
+   "idx": 196,
+   "rbp": "U2AF2",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.7250434756278992
+  },
+  {
+   "idx": 139,
+   "rbp": "QKI",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.7243331074714661
+  },
+  {
+   "idx": 171,
+   "rbp": "SRSF7",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.7206606864929199
+  },
+  {
+   "idx": 115,
+   "rbp": "NOL12",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.720258355140686
+  },
+  {
+   "idx": 44,
+   "rbp": "EIF3G",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.717373788356781
+  },
+  {
+   "idx": 175,
+   "rbp": "SSB",
+   "cell": "K562",
+   "family": "LA;RRM",
+   "mix_coeff": 0.7173519134521484
+  },
+  {
+   "idx": 24,
+   "rbp": "DDX3X",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7138473987579346
+  },
+  {
+   "idx": 4,
+   "rbp": "AGGF1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.713685929775238
+  },
+  {
+   "idx": 104,
+   "rbp": "LSM11",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7136757373809814
+  },
+  {
+   "idx": 176,
+   "rbp": "STAU2",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7127490639686584
+  },
+  {
+   "idx": 195,
+   "rbp": "U2AF2",
+   "cell": "HepG2",
+   "family": "RRM",
+   "mix_coeff": 0.7105315327644348
+  },
+  {
+   "idx": 102,
+   "rbp": "LIN28B",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.7091494202613831
+  },
+  {
+   "idx": 30,
+   "rbp": "DDX55",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.7040425539016724
+  },
+  {
+   "idx": 108,
+   "rbp": "METAP2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6980187296867371
+  },
+  {
+   "idx": 149,
+   "rbp": "RPS3",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6931667923927307
+  },
+  {
+   "idx": 112,
+   "rbp": "NIP7",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.69307941198349
+  },
+  {
+   "idx": 23,
+   "rbp": "DDX3X",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6921501755714417
+  },
+  {
+   "idx": 194,
+   "rbp": "U2AF1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6916841864585876
+  },
+  {
+   "idx": 133,
+   "rbp": "PTBP1",
+   "cell": "HepG2",
+   "family": "PTBP1",
+   "mix_coeff": 0.6890427470207214
+  },
+  {
+   "idx": 98,
+   "rbp": "LARP4",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6868996620178223
+  },
+  {
+   "idx": 16,
+   "rbp": "CPEB4",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.6862100958824158
+  },
+  {
+   "idx": 153,
+   "rbp": "SBDS",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6820362210273743
+  },
+  {
+   "idx": 168,
+   "rbp": "SND1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6793265342712402
+  },
+  {
+   "idx": 126,
+   "rbp": "PHF6",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6748060584068298
+  },
+  {
+   "idx": 145,
+   "rbp": "RBM22",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6684210300445557
+  },
+  {
+   "idx": 61,
+   "rbp": "FXR1",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.6664530038833618
+  },
+  {
+   "idx": 134,
+   "rbp": "PTBP1",
+   "cell": "K562",
+   "family": "PTBP1",
+   "mix_coeff": 0.6657811999320984
+  },
+  {
+   "idx": 116,
+   "rbp": "NOLC1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6608794331550598
+  },
+  {
+   "idx": 180,
+   "rbp": "SUPV3L1",
+   "cell": "K562",
+   "family": "HELICASE_C;SUV3",
+   "mix_coeff": 0.660041332244873
+  },
+  {
+   "idx": 136,
+   "rbp": "PUM2",
+   "cell": "K562",
+   "family": "PUF",
+   "mix_coeff": 0.6517583727836609
+  },
+  {
+   "idx": 190,
+   "rbp": "TRA2A",
+   "cell": "K562",
+   "family": "RRM",
+   "mix_coeff": 0.6511410474777222
+  },
+  {
+   "idx": 213,
+   "rbp": "YBX3",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.646610677242279
+  },
+  {
+   "idx": 9,
+   "rbp": "AQR",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6433643102645874
+  },
+  {
+   "idx": 56,
+   "rbp": "FTO",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.639402449131012
+  },
+  {
+   "idx": 144,
+   "rbp": "RBM22",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6381908059120178
+  },
+  {
+   "idx": 162,
+   "rbp": "SLBP",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6378237009048462
+  },
+  {
+   "idx": 147,
+   "rbp": "RPS11",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.637484610080719
+  },
+  {
+   "idx": 58,
+   "rbp": "FUBP3",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6339375972747803
+  },
+  {
+   "idx": 137,
+   "rbp": "PUS1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6288337111473083
+  },
+  {
+   "idx": 158,
+   "rbp": "SF3B1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6277068853378296
+  },
+  {
+   "idx": 54,
+   "rbp": "FKBP4",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6231235861778259
+  },
+  {
+   "idx": 0,
+   "rbp": "AARS",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.6194353699684143
+  },
+  {
+   "idx": 131,
+   "rbp": "PRPF8",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6177827715873718
+  },
+  {
+   "idx": 34,
+   "rbp": "DGCR8",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6121717095375061
+  },
+  {
+   "idx": 157,
+   "rbp": "SF3A3",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.6108998656272888
+  },
+  {
+   "idx": 123,
+   "rbp": "PCBP1",
+   "cell": "HepG2",
+   "family": "KH",
+   "mix_coeff": 0.6095256805419922
+  },
+  {
+   "idx": 210,
+   "rbp": "XRCC6",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.601252019405365
+  },
+  {
+   "idx": 124,
+   "rbp": "PCBP1",
+   "cell": "K562",
+   "family": "KH",
+   "mix_coeff": 0.6011261343955994
+  },
+  {
+   "idx": 20,
+   "rbp": "CSTF2T",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.5959011316299438
+  },
+  {
+   "idx": 2,
+   "rbp": "ABCF1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.5841102600097656
+  },
+  {
+   "idx": 53,
+   "rbp": "FASTKD2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.5811972618103027
+  },
+  {
+   "idx": 165,
+   "rbp": "SMNDC1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.574057936668396
+  },
+  {
+   "idx": 100,
+   "rbp": "LARP7",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.5681789517402649
+  },
+  {
+   "idx": 29,
+   "rbp": "DDX55",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.5516300201416016
+  },
+  {
+   "idx": 48,
+   "rbp": "EXOSC5",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.5513315796852112
+  },
+  {
+   "idx": 105,
+   "rbp": "LSM11",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.5405557155609131
+  },
+  {
+   "idx": 66,
+   "rbp": "GNL3",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.5344710350036621
+  },
+  {
+   "idx": 179,
+   "rbp": "SUPV3L1",
+   "cell": "HepG2",
+   "family": "HELICASE_C;SUV3",
+   "mix_coeff": 0.532980740070343
+  },
+  {
+   "idx": 26,
+   "rbp": "DDX51",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.528414249420166
+  },
+  {
+   "idx": 207,
+   "rbp": "WRN",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.49850907921791077
+  },
+  {
+   "idx": 156,
+   "rbp": "SERBP1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.49710842967033386
+  },
+  {
+   "idx": 10,
+   "rbp": "AQR",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.49294543266296387
+  },
+  {
+   "idx": 40,
+   "rbp": "DROSHA",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.4891550540924072
+  },
+  {
+   "idx": 119,
+   "rbp": "NPM1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.47723519802093506
+  },
+  {
+   "idx": 3,
+   "rbp": "AGGF1",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.47219356894493103
+  },
+  {
+   "idx": 46,
+   "rbp": "EIF4G2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.4599156379699707
+  },
+  {
+   "idx": 208,
+   "rbp": "XPO5",
+   "cell": "HepG2",
+   "family": "XPO1",
+   "mix_coeff": 0.4590340554714203
+  },
+  {
+   "idx": 113,
+   "rbp": "NIPBL",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.44875505566596985
+  },
+  {
+   "idx": 31,
+   "rbp": "DDX59",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.4414437711238861
+  },
+  {
+   "idx": 36,
+   "rbp": "DHX30",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.41653427481651306
+  },
+  {
+   "idx": 1,
+   "rbp": "AATF",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.4153174161911011
+  },
+  {
+   "idx": 206,
+   "rbp": "WDR43",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.3744186460971832
+  },
+  {
+   "idx": 155,
+   "rbp": "SDAD1",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.37077251076698303
+  },
+  {
+   "idx": 204,
+   "rbp": "WDR3",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.36761441826820374
+  },
+  {
+   "idx": 65,
+   "rbp": "GEMIN5",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.35787516832351685
+  },
+  {
+   "idx": 205,
+   "rbp": "WDR43",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.34408727288246155
+  },
+  {
+   "idx": 202,
+   "rbp": "UTP18",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.3334997296333313
+  },
+  {
+   "idx": 35,
+   "rbp": "DGCR8",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.3247697353363037
+  },
+  {
+   "idx": 191,
+   "rbp": "TROVE2",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.23282092809677124
+  },
+  {
+   "idx": 192,
+   "rbp": "TROVE2",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.21634060144424438
+  },
+  {
+   "idx": 101,
+   "rbp": "LARP7",
+   "cell": "K562",
+   "family": "?",
+   "mix_coeff": 0.15937373042106628
+  },
+  {
+   "idx": 174,
+   "rbp": "SSB",
+   "cell": "HepG2",
+   "family": "LA;RRM",
+   "mix_coeff": 0.15051323175430298
+  },
+  {
+   "idx": 201,
+   "rbp": "UTP18",
+   "cell": "HepG2",
+   "family": "?",
+   "mix_coeff": 0.06144481524825096
+  }
+ ]
+}

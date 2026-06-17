@@ -1,0 +1,41 @@
+# Large / external assets - NEVER commit (fetched by scripts/fetch_data.sh)
+# /data/ is anchored to the repo root so it never matches the src/mmpartnet/data/ python package
+/data/
+!/data/README.md
+# keep the python package tracked even if an outer "data/" ignore rule would otherwise exclude it
+!/src/mmpartnet/data/
+*.npz
+*.pt
+*.pth
+*.fa
+*.fai
+hg38.*
+*.bigWig
+*.bw
+*.bed
+*.bed.gz
+*.bam
+*.hfds
+*.h5
+*.zip
+
+# Env / build / cache
+.pixi/
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.log
+# scoped real-run outputs
+runs/
+# local machine asset paths (per-clone)
+scripts/env.local.sh
+
+# NOTE: mmpartnet_out/*.json (precomputed results) ARE committed - small, and they
+# make the notebooks render on a fresh clone. Only large data/weights are excluded.
