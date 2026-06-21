@@ -23,6 +23,40 @@ def _install_stubs():
     if _LOADED:
         return
     pkgdir = str(config.PARNET_PKG)
+    if "gin" not in sys.modules:
+        gin = types.ModuleType("gin")
+
+        def configurable(*args, **_kwargs):
+            if args and callable(args[0]):
+                return args[0]
+
+            def deco(fn):
+                return fn
+
+            return deco
+
+        gin.configurable = configurable
+        sys.modules["gin"] = gin
+    if "tensorflow" not in sys.modules:
+        tf = types.ModuleType("tensorflow")
+        tf.nest = types.SimpleNamespace(map_structure=lambda fn, x: x)
+        sys.modules["tensorflow"] = tf
+    if "transformers" not in sys.modules:
+        tr = types.ModuleType("transformers")
+        tr.EsmConfig = type("EsmConfig", (), {"from_pretrained": classmethod(lambda cls, *_a, **_k: cls())})
+        tr.EsmModel = type("EsmModel", (), {})
+        sys.modules["transformers"] = tr
+    if "sequence_models" not in sys.modules:
+        sm = types.ModuleType("sequence_models")
+        conv = types.ModuleType("sequence_models.convolutional")
+        layers = types.ModuleType("sequence_models.layers")
+        conv.ByteNet = type("ByteNet", (), {})
+        layers.PositionFeedForward = type("PositionFeedForward", (), {})
+        sys.modules.update({
+            "sequence_models": sm,
+            "sequence_models.convolutional": conv,
+            "sequence_models.layers": layers,
+        })
     if "parnet" not in sys.modules:
         pkg = types.ModuleType("parnet")
         pkg.__path__ = [pkgdir]
