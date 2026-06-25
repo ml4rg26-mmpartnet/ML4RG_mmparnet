@@ -62,6 +62,11 @@ def load_track_protein_map(path: str | Path) -> list[TrackProtein]:
     return rows
 
 
+def build_cell_vocab(track_map: Sequence[TrackProtein]) -> dict[str, int]:
+    """Stable cell-line vocabulary for conditioning tensors."""
+    return {cell: i for i, cell in enumerate(sorted({row.cell for row in track_map}))}
+
+
 def sparse_track_to_dense(sparse: dict[str, Any], track_index: int, seq_len: int | None = None) -> torch.Tensor:
     """Extract one track from a sparse [n_tracks, L] label into a dense [L] vector."""
     size = sparse["size"]
@@ -109,6 +114,7 @@ class ParnetMultimodalDataset(Dataset):
         track_indices: Sequence[int] | None = None,
         max_windows: int | None = None,
         exact_length: int | None = None,
+        max_length: int | None = None,
     ):
         self.hfds_split = hfds_split
         self.track_map_by_index = {row.track_index: row for row in track_map}
@@ -122,7 +128,10 @@ class ParnetMultimodalDataset(Dataset):
         limit = len(hfds_split) if max_windows is None else min(max_windows, len(hfds_split))
         self.window_indices: list[int] = []
         for i in range(limit):
-            if exact_length is not None and len(hfds_split[i]["inputs"]["sequence"]) != exact_length:
+            seq_len = len(hfds_split[i]["inputs"]["sequence"])
+            if exact_length is not None and seq_len != exact_length:
+                continue
+            if max_length is not None and seq_len > max_length:
                 continue
             self.window_indices.append(i)
 
@@ -157,9 +166,10 @@ class ParnetMultimodalDataset(Dataset):
 class MultimodalCollator:
     """Turn a list of multimodal samples into tensors for model input."""
 
-    def __init__(self, protein_h5: str | Path, seq_len: int = 600):
+    def __init__(self, protein_h5: str | Path, seq_len: int = 600, cell_to_index: dict[str, int] | None = None):
         self.protein_h5 = Path(protein_h5)
         self.seq_len = seq_len
+        self.cell_to_index = cell_to_index or {"HepG2": 0, "K562": 1}
         self._h5 = None
 
     @property
@@ -195,6 +205,7 @@ class MultimodalCollator:
             "eclip": torch.stack(eclip),
             "control": torch.stack(control),
             "track_index": torch.tensor([s["track_index"] for s in samples], dtype=torch.long),
+            "cell_index": torch.tensor([self.cell_to_index[s["cell"]] for s in samples], dtype=torch.long),
             "window_index": torch.tensor([s["window_index"] for s in samples], dtype=torch.long),
             "rbp": [s["rbp"] for s in samples],
             "cell": [s["cell"] for s in samples],

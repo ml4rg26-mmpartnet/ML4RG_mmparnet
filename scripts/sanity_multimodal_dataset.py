@@ -20,6 +20,7 @@ from torch.utils.data import DataLoader
 from mmpartnet.data.multimodal import (
     MultimodalCollator,
     ParnetMultimodalDataset,
+    build_cell_vocab,
     load_track_protein_map,
 )
 
@@ -62,6 +63,7 @@ def main() -> None:
 
     track_indices = [int(x) for x in args.tracks.split(",") if x.strip()]
     track_map = load_track_protein_map(args.track_map)
+    cell_to_index = build_cell_vocab(track_map)
     split = load_from_disk(str(args.hfds))[args.split]
     dataset = ParnetMultimodalDataset(
         split,
@@ -69,8 +71,9 @@ def main() -> None:
         track_indices=track_indices,
         max_windows=args.max_windows,
         exact_length=None if args.include_short else args.seq_len,
+        max_length=args.seq_len if args.include_short else None,
     )
-    collator = MultimodalCollator(args.protein_h5, seq_len=args.seq_len)
+    collator = MultimodalCollator(args.protein_h5, seq_len=args.seq_len, cell_to_index=cell_to_index)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, collate_fn=collator)
     batch = next(iter(loader))
 
@@ -83,6 +86,8 @@ def main() -> None:
     print(f"eclip:          {tuple(batch['eclip'].shape)} total_counts={batch['eclip'].sum(dim=1).tolist()}")
     print(f"control:        {tuple(batch['control'].shape)} total_counts={batch['control'].sum(dim=1).tolist()}")
     print(f"track_index:    {batch['track_index'].tolist()}")
+    print(f"cell_vocab:     {cell_to_index}")
+    print(f"cell_index:     {batch['cell_index'].tolist()}")
     print(f"rbp_ct:         {batch['rbp_ct']}")
     print(f"protein_h5_key: {batch['protein_h5_key']}")
     print(f"window_index:   {batch['window_index'].tolist()}")
@@ -91,6 +96,7 @@ def main() -> None:
     assert batch["onehot"].shape[1:] == (4, args.seq_len)
     assert batch["mask"].shape[1:] == (args.seq_len,)
     assert batch["protein_embedding"].shape[1] == 1024
+    assert batch["cell_index"].shape == batch["track_index"].shape
     assert batch["eclip"].shape[1:] == (args.seq_len,)
     assert batch["control"].shape[1:] == (args.seq_len,)
     assert torch.isfinite(batch["protein_embedding"]).all()
