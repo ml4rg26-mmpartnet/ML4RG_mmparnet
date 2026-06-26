@@ -36,12 +36,13 @@ git. Checkpoints should be stored on shared storage, not committed.
 ## Loss
 
 ```text
-loss = profile_loss + lambda_binary * binary_loss
+loss = lambda_profile * profile_loss + lambda_binary * binary_loss
 ```
 
 Current default experiment uses:
 
 ```text
+lambda_profile = 1
 lambda_binary = 20
 profile_mask_source = binding
 ```
@@ -133,3 +134,30 @@ last.pt:         Pearson 0.4705, AUPRC 0.2171
 For a single FiLM baseline checkpoint, use `best_pearson.pt` because profile
 prediction is the primary signal-profile objective and its AUPRC is similar to
 the other checkpoints.
+
+## Single-Task Ablations
+
+The same workflow can train single-task controls.
+
+Binary-only control:
+
+```text
+lambda_profile = 0
+lambda_binary = 1
+balanced_pos_fraction = 0.5
+steps_per_epoch = 1000
+```
+
+Profile-only control:
+
+```text
+lambda_profile = 1
+lambda_binary = 0
+balanced_pos_fraction = 1.0
+steps_per_epoch = 500
+```
+
+The profile-only setup uses positive-only sampling because negative pairs do not
+contribute profile loss. With batch size 32, this gives about 16k positive
+profile examples per epoch, matching the multitask setup's 50/50 sampling with
+1000 steps per epoch.

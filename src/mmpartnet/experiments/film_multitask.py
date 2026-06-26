@@ -82,8 +82,8 @@ class BindingBalancedSampler(Sampler[int]):
     ):
         if dataset.binding_split is None:
             raise ValueError("balanced sampling requires binding labels")
-        if not 0.0 < positive_fraction < 1.0:
-            raise ValueError("positive_fraction must be between 0 and 1")
+        if not 0.0 <= positive_fraction <= 1.0:
+            raise ValueError("positive_fraction must be between 0 and 1 inclusive")
         self.dataset = dataset
         self.positive_fraction = positive_fraction
         self.num_samples = int(num_samples)
@@ -328,6 +328,7 @@ def run_epoch(
     min_count: float,
     max_batches: int | None,
     mix_penalty: float,
+    lambda_profile: float,
     lambda_binary: float,
     binary_pos_weight: float | None,
     profile_mask_source: str,
@@ -377,6 +378,7 @@ def run_epoch(
             mask=batch["mask"],
             min_count=min_count,
             mix_penalty=mix_penalty,
+            lambda_profile=lambda_profile,
             lambda_binary=lambda_binary,
             profile_mask=profile_mask,
             binary_pos_weight=binary_pos_weight,
@@ -468,6 +470,7 @@ def train_main() -> None:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--min-count", type=float, default=10.0)
     parser.add_argument("--mix-penalty", type=float, default=0.0)
+    parser.add_argument("--lambda-profile", type=float, default=1.0)
     parser.add_argument("--lambda-binary", type=float, default=1.0)
     parser.add_argument("--binary-pos-weight", type=float, default=None)
     parser.add_argument(
@@ -624,6 +627,7 @@ def train_main() -> None:
             min_count=args.min_count,
             max_batches=args.max_train_batches,
             mix_penalty=args.mix_penalty,
+            lambda_profile=args.lambda_profile,
             lambda_binary=args.lambda_binary,
             binary_pos_weight=args.binary_pos_weight,
             profile_mask_source=args.profile_mask_source,
@@ -640,6 +644,7 @@ def train_main() -> None:
                 min_count=args.min_count,
                 max_batches=args.max_valid_batches,
                 mix_penalty=args.mix_penalty,
+                lambda_profile=args.lambda_profile,
                 lambda_binary=args.lambda_binary,
                 binary_pos_weight=args.binary_pos_weight,
                 profile_mask_source=args.profile_mask_source,
@@ -761,6 +766,7 @@ def eval_main() -> None:
     parser.add_argument("--mode", default=None, choices=[None, "multimodal", "rna-only", "protein-shuffle"])
     parser.add_argument("--min-count", type=float, default=None)
     parser.add_argument("--mix-penalty", type=float, default=None)
+    parser.add_argument("--lambda-profile", type=float, default=None)
     parser.add_argument("--lambda-binary", type=float, default=None)
     parser.add_argument("--binary-pos-weight", type=float, default=None)
     parser.add_argument(
@@ -790,6 +796,7 @@ def eval_main() -> None:
     mode = arg_or_checkpoint(args.mode, ckpt_args, "mode", "multimodal")
     min_count = float(arg_or_checkpoint(args.min_count, ckpt_args, "min_count", 10.0))
     mix_penalty = float(arg_or_checkpoint(args.mix_penalty, ckpt_args, "mix_penalty", 0.0))
+    lambda_profile = float(arg_or_checkpoint(args.lambda_profile, ckpt_args, "lambda_profile", 1.0))
     lambda_binary = float(arg_or_checkpoint(args.lambda_binary, ckpt_args, "lambda_binary", 1.0))
     binary_pos_weight = arg_or_checkpoint(args.binary_pos_weight, ckpt_args, "binary_pos_weight", None)
     profile_mask_source = arg_or_checkpoint(args.profile_mask_source, ckpt_args, "profile_mask_source", "binding")
@@ -848,6 +855,7 @@ def eval_main() -> None:
             min_count=min_count,
             max_batches=args.max_batches,
             mix_penalty=mix_penalty,
+            lambda_profile=lambda_profile,
             lambda_binary=lambda_binary,
             binary_pos_weight=binary_pos_weight,
             profile_mask_source=profile_mask_source,
@@ -868,6 +876,7 @@ def eval_main() -> None:
             "max_batches": args.max_batches,
             "include_short": include_short,
             "mode": mode,
+            "lambda_profile": lambda_profile,
             "lambda_binary": lambda_binary,
             "profile_mask_source": profile_mask_source,
         },

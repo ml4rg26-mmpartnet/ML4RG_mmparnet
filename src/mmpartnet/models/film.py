@@ -129,6 +129,7 @@ class ProteinCellFiLMProfileHead(nn.Module):
         *,
         min_count: float = 10.0,
         mix_penalty: float = 0.0,
+        lambda_profile: float = 1.0,
         lambda_binary: float = 1.0,
         profile_mask: torch.Tensor | None = None,
         binary_pos_weight: float | None = None,
@@ -155,7 +156,7 @@ class ProteinCellFiLMProfileHead(nn.Module):
                 binding_label.to(dtype=out["binding_logit"].dtype),
                 pos_weight=pos_weight,
             )
-        loss = profile_loss + lambda_binary * binary_loss
+        loss = lambda_profile * profile_loss + lambda_binary * binary_loss
         if mix_penalty:
             loss = loss + mix_penalty * out["mix_coeff"].mean()
         return {
@@ -177,6 +178,7 @@ class ProteinCellFiLMProfileHead(nn.Module):
         *,
         min_count: float = 10.0,
         mix_penalty: float = 0.0,
+        lambda_profile: float = 1.0,
         lambda_binary: float = 1.0,
         profile_mask: torch.Tensor | None = None,
         binary_pos_weight: float | None = None,
@@ -191,6 +193,7 @@ class ProteinCellFiLMProfileHead(nn.Module):
             mask=mask,
             min_count=min_count,
             mix_penalty=mix_penalty,
+            lambda_profile=lambda_profile,
             lambda_binary=lambda_binary,
             profile_mask=profile_mask,
             binary_pos_weight=binary_pos_weight,
