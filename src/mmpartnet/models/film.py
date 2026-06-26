@@ -10,6 +10,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+TASKS = {"multitask", "binary-only", "profile-only"}
+
 
 class ProteinCellFiLMProfileHead(nn.Module):
     """FiLM-condition PARNET body features with protein and cell context.
@@ -75,40 +77,54 @@ class ProteinCellFiLMProfileHead(nn.Module):
         protein_embedding: torch.Tensor,
         cell_index: torch.Tensor,
         mask: torch.Tensor | None = None,
+        *,
+        task: str = "multitask",
     ) -> dict[str, torch.Tensor]:
+        if task not in TASKS:
+            raise ValueError(f"unknown task {task!r}; expected one of {sorted(TASKS)}")
         fused, cond = self._condition(rna_features, protein_embedding, cell_index)
-        target_logits = self.target(fused).squeeze(1)
-        control_logits = self.control(fused).squeeze(1)
-        if mask is not None:
-            target_logits = target_logits.masked_fill(~mask, torch.finfo(target_logits.dtype).min)
-            control_logits = control_logits.masked_fill(~mask, torch.finfo(control_logits.dtype).min)
-
-        target_logprob = torch.log_softmax(target_logits, dim=-1)
-        control_logprob = torch.log_softmax(control_logits, dim=-1)
         pooled = self._masked_mean(fused, mask)
-        mix_input = pooled
-        mix_coeff = torch.sigmoid(self.mix(mix_input)).squeeze(-1)
-        mix = mix_coeff.unsqueeze(-1)
-        binding_logit = self.binding(pooled).squeeze(-1)
+        out = {}
 
-        max_logprob = torch.maximum(target_logprob, control_logprob)
-        total_logprob = max_logprob + torch.log(
-            mix * torch.exp(target_logprob - max_logprob)
-            + (1.0 - mix) * torch.exp(control_logprob - max_logprob)
-            + 1e-10
-        )
+        if task in {"multitask", "profile-only"}:
+            target_logits = self.target(fused).squeeze(1)
+            control_logits = self.control(fused).squeeze(1)
+            if mask is not None:
+                target_logits = target_logits.masked_fill(~mask, torch.finfo(target_logits.dtype).min)
+                control_logits = control_logits.masked_fill(~mask, torch.finfo(control_logits.dtype).min)
 
-        return {
-            "target_logprob": target_logprob,
-            "control_logprob": control_logprob,
-            "total_logprob": total_logprob,
-            "target": torch.exp(target_logprob),
-            "control": torch.exp(control_logprob),
-            "total": torch.exp(total_logprob),
-            "mix_coeff": mix_coeff,
-            "binding_logit": binding_logit,
-            "binding_prob": torch.sigmoid(binding_logit),
-        }
+            target_logprob = torch.log_softmax(target_logits, dim=-1)
+            control_logprob = torch.log_softmax(control_logits, dim=-1)
+            mix_coeff = torch.sigmoid(self.mix(pooled)).squeeze(-1)
+            mix = mix_coeff.unsqueeze(-1)
+
+            max_logprob = torch.maximum(target_logprob, control_logprob)
+            total_logprob = max_logprob + torch.log(
+                mix * torch.exp(target_logprob - max_logprob)
+                + (1.0 - mix) * torch.exp(control_logprob - max_logprob)
+                + 1e-10
+            )
+            out.update(
+                {
+                    "target_logprob": target_logprob,
+                    "control_logprob": control_logprob,
+                    "total_logprob": total_logprob,
+                    "target": torch.exp(target_logprob),
+                    "control": torch.exp(control_logprob),
+                    "total": torch.exp(total_logprob),
+                    "mix_coeff": mix_coeff,
+                }
+            )
+
+        if task in {"multitask", "binary-only"}:
+            binding_logit = self.binding(pooled).squeeze(-1)
+            out.update(
+                {
+                    "binding_logit": binding_logit,
+                    "binding_prob": torch.sigmoid(binding_logit),
+                }
+            )
+        return out
 
     @staticmethod
     def _masked_mean(features: torch.Tensor, mask: torch.Tensor | None) -> torch.Tensor:
@@ -133,8 +149,9 @@ class ProteinCellFiLMProfileHead(nn.Module):
         lambda_binary: float = 1.0,
         profile_mask: torch.Tensor | None = None,
         binary_pos_weight: float | None = None,
+        task: str = "multitask",
     ) -> dict[str, torch.Tensor]:
-        out = self.forward(rna_features, protein_embedding, cell_index, mask=mask)
+        out = self.forward(rna_features, protein_embedding, cell_index, mask=mask, task=task)
         eclip_depth = eclip_counts.sum(dim=-1)
         control_depth = control_counts.sum(dim=-1)
         if profile_mask is None:
@@ -142,12 +159,17 @@ class ProteinCellFiLMProfileHead(nn.Module):
         else:
             profile_keep = profile_mask.bool()
 
-        eclip_nll = -(eclip_counts * out["total_logprob"]).sum(dim=-1) / eclip_depth.clamp_min(1.0)
-        control_nll = -(control_counts * out["control_logprob"]).sum(dim=-1) / control_depth.clamp_min(1.0)
-        profile_loss = (eclip_nll * profile_keep).sum() / profile_keep.sum().clamp_min(1)
-        profile_loss = profile_loss + (control_nll * profile_keep).sum() / profile_keep.sum().clamp_min(1)
+        profile_loss = eclip_counts.new_tensor(0.0)
+        profile_n = eclip_counts.new_tensor(0, dtype=torch.long)
+        if task in {"multitask", "profile-only"}:
+            eclip_nll = -(eclip_counts * out["total_logprob"]).sum(dim=-1) / eclip_depth.clamp_min(1.0)
+            control_nll = -(control_counts * out["control_logprob"]).sum(dim=-1) / control_depth.clamp_min(1.0)
+            profile_loss = (eclip_nll * profile_keep).sum() / profile_keep.sum().clamp_min(1)
+            profile_loss = profile_loss + (control_nll * profile_keep).sum() / profile_keep.sum().clamp_min(1)
+            profile_n = profile_keep.sum()
+
         binary_loss = eclip_counts.new_tensor(0.0)
-        if binding_label is not None:
+        if task in {"multitask", "binary-only"} and binding_label is not None:
             pos_weight = None
             if binary_pos_weight is not None:
                 pos_weight = eclip_counts.new_tensor(binary_pos_weight)
@@ -155,15 +177,15 @@ class ProteinCellFiLMProfileHead(nn.Module):
                 out["binding_logit"],
                 binding_label.to(dtype=out["binding_logit"].dtype),
                 pos_weight=pos_weight,
-            )
+        )
         loss = lambda_profile * profile_loss + lambda_binary * binary_loss
-        if mix_penalty:
+        if mix_penalty and "mix_coeff" in out:
             loss = loss + mix_penalty * out["mix_coeff"].mean()
         return {
             "loss": loss,
             "profile_loss": profile_loss,
             "binary_loss": binary_loss,
-            "profile_n": profile_keep.sum(),
+            "profile_n": profile_n,
         }
 
     def loss(
@@ -182,6 +204,7 @@ class ProteinCellFiLMProfileHead(nn.Module):
         lambda_binary: float = 1.0,
         profile_mask: torch.Tensor | None = None,
         binary_pos_weight: float | None = None,
+        task: str = "multitask",
     ) -> torch.Tensor:
         return self.loss_components(
             rna_features,
@@ -197,6 +220,7 @@ class ProteinCellFiLMProfileHead(nn.Module):
             lambda_binary=lambda_binary,
             profile_mask=profile_mask,
             binary_pos_weight=binary_pos_weight,
+            task=task,
         )["loss"]
 
 

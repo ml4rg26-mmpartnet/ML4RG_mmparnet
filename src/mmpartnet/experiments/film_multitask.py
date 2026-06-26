@@ -324,6 +324,7 @@ def run_epoch(
     loader: Iterable,
     optimizer: torch.optim.Optimizer | None,
     device: str,
+    task: str,
     mode: str,
     min_count: float,
     max_batches: int | None,
@@ -382,6 +383,7 @@ def run_epoch(
             lambda_binary=lambda_binary,
             profile_mask=profile_mask,
             binary_pos_weight=binary_pos_weight,
+            task=task,
         )
         loss = losses["loss"]
         if training:
@@ -395,12 +397,13 @@ def run_epoch(
         profile_mask_n += int(losses["profile_n"].detach().cpu())
         loss_n += 1
         with torch.no_grad():
-            out = head(rna_features, protein, cell_index, mask=batch["mask"])
-            pred = out["total"]
-            ps, pn = pearson_sum(pred, batch["eclip"], min_count, mask=batch["mask"], valid_mask=profile_mask)
-            pear_sum += ps
-            pear_n += pn
-            if binding is not None:
+            out = head(rna_features, protein, cell_index, mask=batch["mask"], task=task)
+            if task in {"multitask", "profile-only"}:
+                pred = out["total"]
+                ps, pn = pearson_sum(pred, batch["eclip"], min_count, mask=batch["mask"], valid_mask=profile_mask)
+                pear_sum += ps
+                pear_n += pn
+            if task in {"multitask", "binary-only"} and binding is not None:
                 bs = binary_stats(out["binding_logit"], binding)
                 binding_n += bs["n"]
                 binding_pos += bs["pos"]
@@ -470,6 +473,7 @@ def train_main() -> None:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--min-count", type=float, default=10.0)
     parser.add_argument("--mix-penalty", type=float, default=0.0)
+    parser.add_argument("--task", default="multitask", choices=["multitask", "binary-only", "profile-only"])
     parser.add_argument("--lambda-profile", type=float, default=1.0)
     parser.add_argument("--lambda-binary", type=float, default=1.0)
     parser.add_argument("--binary-pos-weight", type=float, default=None)
@@ -546,6 +550,7 @@ def train_main() -> None:
     )
 
     print(f"device:         {device}")
+    print(f"task:           {args.task}")
     print(f"mode:           {args.mode}")
     print(f"include_short:  {args.include_short}")
     print(f"balanced_train: {args.balanced_train}")
@@ -623,6 +628,7 @@ def train_main() -> None:
             loader=train_loader,
             optimizer=optimizer,
             device=device,
+            task=args.task,
             mode=args.mode,
             min_count=args.min_count,
             max_batches=args.max_train_batches,
@@ -640,6 +646,7 @@ def train_main() -> None:
                 loader=valid_loader,
                 optimizer=None,
                 device=device,
+                task=args.task,
                 mode=args.mode,
                 min_count=args.min_count,
                 max_batches=args.max_valid_batches,
@@ -766,6 +773,7 @@ def eval_main() -> None:
     parser.add_argument("--mode", default=None, choices=[None, "multimodal", "rna-only", "protein-shuffle"])
     parser.add_argument("--min-count", type=float, default=None)
     parser.add_argument("--mix-penalty", type=float, default=None)
+    parser.add_argument("--task", default=None, choices=[None, "multitask", "binary-only", "profile-only"])
     parser.add_argument("--lambda-profile", type=float, default=None)
     parser.add_argument("--lambda-binary", type=float, default=None)
     parser.add_argument("--binary-pos-weight", type=float, default=None)
@@ -793,6 +801,7 @@ def eval_main() -> None:
     seq_len = int(arg_or_checkpoint(args.seq_len, ckpt_args, "seq_len", 600))
     include_short = bool(arg_or_checkpoint(args.include_short, ckpt_args, "include_short", False))
     batch_size = int(arg_or_checkpoint(args.batch_size, ckpt_args, "batch_size", 32))
+    task = arg_or_checkpoint(args.task, ckpt_args, "task", "multitask")
     mode = arg_or_checkpoint(args.mode, ckpt_args, "mode", "multimodal")
     min_count = float(arg_or_checkpoint(args.min_count, ckpt_args, "min_count", 10.0))
     mix_penalty = float(arg_or_checkpoint(args.mix_penalty, ckpt_args, "mix_penalty", 0.0))
@@ -829,6 +838,7 @@ def eval_main() -> None:
     print(f"checkpoint:     {args.checkpoint}")
     print(f"device:         {device}")
     print(f"split:          {args.split}")
+    print(f"task:           {task}")
     print(f"mode:           {mode}")
     print(f"include_short:  {include_short}")
     print(f"tracks:         {'all matched tracks' if track_indices is None else track_indices}")
@@ -851,6 +861,7 @@ def eval_main() -> None:
             loader=loader,
             optimizer=None,
             device=device,
+            task=task,
             mode=mode,
             min_count=min_count,
             max_batches=args.max_batches,
@@ -875,6 +886,7 @@ def eval_main() -> None:
             "batch_size": batch_size,
             "max_batches": args.max_batches,
             "include_short": include_short,
+            "task": task,
             "mode": mode,
             "lambda_profile": lambda_profile,
             "lambda_binary": lambda_binary,

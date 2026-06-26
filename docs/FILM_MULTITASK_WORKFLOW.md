@@ -142,6 +142,7 @@ The same workflow can train single-task controls.
 Binary-only control:
 
 ```text
+task = binary-only
 lambda_profile = 0
 lambda_binary = 1
 balanced_pos_fraction = 0.5
@@ -151,6 +152,7 @@ steps_per_epoch = 1000
 Profile-only control:
 
 ```text
+task = profile-only
 lambda_profile = 1
 lambda_binary = 0
 balanced_pos_fraction = 1.0
