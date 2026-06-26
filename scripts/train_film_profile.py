@@ -280,6 +280,37 @@ def binary_average_precision(scores: torch.Tensor, labels: torch.Tensor) -> floa
     return float(ap.item())
 
 
+def save_training_checkpoint(
+    path: Path,
+    *,
+    head: ProteinCellFiLMProfileHead,
+    optimizer: torch.optim.Optimizer,
+    cell_to_index: dict[str, int],
+    protein_dim: int,
+    rna_channels: int,
+    args: argparse.Namespace,
+    epoch: int,
+    best_pearson: float,
+    metrics: dict,
+    valid_stats: dict | None = None,
+) -> None:
+    torch.save(
+        {
+            "model_state_dict": head.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "cell_to_index": cell_to_index,
+            "protein_dim": protein_dim,
+            "rna_channels": rna_channels,
+            "args": vars(args),
+            "epoch": epoch,
+            "best_pearson": best_pearson,
+            "metrics": metrics,
+            "valid": valid_stats,
+        },
+        path,
+    )
+
+
 def run_epoch(
     *,
     parnet,
@@ -448,6 +479,12 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--run-name", default=None)
+    parser.add_argument(
+        "--resume",
+        type=Path,
+        default=None,
+        help="Resume head/optimizer/metrics from a full checkpoint, usually mmpartnet_out/film_runs/<run>/last.pt.",
+    )
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -523,27 +560,50 @@ def main() -> None:
     ).to(device)
     optimizer = torch.optim.AdamW(head.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
-    run_name = args.run_name or f"film_{args.mode}_seed{args.seed}"
+    if args.resume is not None and args.run_name is None:
+        run_name = args.resume.parent.name
+    else:
+        run_name = args.run_name or f"film_{args.mode}_seed{args.seed}"
     out_dir = args.out_dir / run_name
     out_dir.mkdir(parents=True, exist_ok=True)
-    metrics = {
-        "config": {
-            **vars(args),
-            "hfds": str(args.hfds),
-            "track_map": str(args.track_map),
-            "protein_h5": str(args.protein_h5),
-            "out_dir": str(out_dir),
-            "device": device,
-            "cell_to_index": cell_to_index,
-            "train_samples": len(train_dataset),
-            "valid_samples": len(valid_dataset),
-        },
-        "epochs": [],
+    metrics_config = {
+        **vars(args),
+        "hfds": str(args.hfds),
+        "binding_dataset": str(args.binding_dataset),
+        "track_map": str(args.track_map),
+        "protein_h5": str(args.protein_h5),
+        "out_dir": str(out_dir),
+        "device": device,
+        "cell_to_index": cell_to_index,
+        "train_samples": len(train_dataset),
+        "valid_samples": len(valid_dataset),
     }
+    metrics = {"config": metrics_config, "epochs": []}
 
     best_pearson = float("-inf")
-    for epoch in range(1, args.epochs + 1):
-        print(f"\nepoch {epoch}/{args.epochs}", flush=True)
+    completed_epochs = 0
+    if args.resume is not None:
+        print(f"resuming from:  {args.resume}", flush=True)
+        checkpoint = torch.load(args.resume, map_location=device, weights_only=False)
+        head.load_state_dict(checkpoint["model_state_dict"])
+        if "optimizer_state_dict" in checkpoint:
+            optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        completed_epochs = int(checkpoint.get("epoch", 0))
+        best_pearson = float(checkpoint.get("best_pearson", float("-inf")))
+        metrics = checkpoint.get("metrics", metrics)
+        metrics.setdefault("resume_history", []).append(
+            {
+                "checkpoint": str(args.resume),
+                "completed_epochs": completed_epochs,
+                "new_args": metrics_config,
+            }
+        )
+        if hasattr(train_loader.sampler, "epoch"):
+            train_loader.sampler.epoch = completed_epochs
+
+    final_epoch = completed_epochs + args.epochs
+    for epoch in range(completed_epochs + 1, final_epoch + 1):
+        print(f"\nepoch {epoch}/{final_epoch}", flush=True)
         train_stats = run_epoch(
             parnet=parnet,
             head=head,
@@ -593,23 +653,38 @@ def main() -> None:
 
         if valid_stats["pearson"] > best_pearson:
             best_pearson = valid_stats["pearson"]
-            torch.save(
-                {
-                    "model_state_dict": head.state_dict(),
-                    "cell_to_index": cell_to_index,
-                    "protein_dim": int(probe["protein_embedding"].shape[1]),
-                    "rna_channels": int(probe_features.shape[1]),
-                    "args": vars(args),
-                    "epoch": epoch,
-                    "valid": valid_stats,
-                },
+            save_training_checkpoint(
                 out_dir / "best.pt",
+                head=head,
+                optimizer=optimizer,
+                cell_to_index=cell_to_index,
+                protein_dim=int(probe["protein_embedding"].shape[1]),
+                rna_channels=int(probe_features.shape[1]),
+                args=args,
+                epoch=epoch,
+                best_pearson=best_pearson,
+                metrics=metrics,
+                valid_stats=valid_stats,
             )
             print(f"  saved new best checkpoint: {out_dir / 'best.pt'}", flush=True)
+        save_training_checkpoint(
+            out_dir / "last.pt",
+            head=head,
+            optimizer=optimizer,
+            cell_to_index=cell_to_index,
+            protein_dim=int(probe["protein_embedding"].shape[1]),
+            rna_channels=int(probe_features.shape[1]),
+            args=args,
+            epoch=epoch,
+            best_pearson=best_pearson,
+            metrics=metrics,
+            valid_stats=valid_stats,
+        )
 
     torch.save(head.state_dict(), out_dir / "last.statedict.pt")
     print(f"\nwrote metrics: {out_dir / 'metrics.json'}")
-    print(f"wrote last:    {out_dir / 'last.statedict.pt'}")
+    print(f"wrote last:    {out_dir / 'last.pt'}")
+    print(f"wrote weights: {out_dir / 'last.statedict.pt'}")
 
 
 if __name__ == "__main__":
