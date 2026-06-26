@@ -291,6 +291,7 @@ def save_training_checkpoint(
     args: argparse.Namespace,
     epoch: int,
     best_pearson: float,
+    best_auprc: float,
     metrics: dict,
     valid_stats: dict | None = None,
 ) -> None:
@@ -304,6 +305,7 @@ def save_training_checkpoint(
             "args": vars(args),
             "epoch": epoch,
             "best_pearson": best_pearson,
+            "best_auprc": best_auprc,
             "metrics": metrics,
             "valid": valid_stats,
         },
@@ -581,6 +583,7 @@ def main() -> None:
     metrics = {"config": metrics_config, "epochs": []}
 
     best_pearson = float("-inf")
+    best_auprc = float("-inf")
     completed_epochs = 0
     if args.resume is not None:
         print(f"resuming from:  {args.resume}", flush=True)
@@ -590,7 +593,10 @@ def main() -> None:
             optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         completed_epochs = int(checkpoint.get("epoch", 0))
         best_pearson = float(checkpoint.get("best_pearson", float("-inf")))
+        best_auprc = float(checkpoint.get("best_auprc", float("-inf")))
         metrics = checkpoint.get("metrics", metrics)
+        if best_auprc == float("-inf") and metrics.get("epochs"):
+            best_auprc = max(row["valid"].get("binding_auprc", float("-inf")) for row in metrics["epochs"])
         metrics.setdefault("resume_history", []).append(
             {
                 "checkpoint": str(args.resume),
@@ -663,10 +669,43 @@ def main() -> None:
                 args=args,
                 epoch=epoch,
                 best_pearson=best_pearson,
+                best_auprc=best_auprc,
                 metrics=metrics,
                 valid_stats=valid_stats,
             )
             print(f"  saved new best checkpoint: {out_dir / 'best.pt'}", flush=True)
+            save_training_checkpoint(
+                out_dir / "best_pearson.pt",
+                head=head,
+                optimizer=optimizer,
+                cell_to_index=cell_to_index,
+                protein_dim=int(probe["protein_embedding"].shape[1]),
+                rna_channels=int(probe_features.shape[1]),
+                args=args,
+                epoch=epoch,
+                best_pearson=best_pearson,
+                best_auprc=best_auprc,
+                metrics=metrics,
+                valid_stats=valid_stats,
+            )
+            print(f"  saved new best Pearson checkpoint: {out_dir / 'best_pearson.pt'}", flush=True)
+        if valid_stats["binding_auprc"] > best_auprc:
+            best_auprc = valid_stats["binding_auprc"]
+            save_training_checkpoint(
+                out_dir / "best_auprc.pt",
+                head=head,
+                optimizer=optimizer,
+                cell_to_index=cell_to_index,
+                protein_dim=int(probe["protein_embedding"].shape[1]),
+                rna_channels=int(probe_features.shape[1]),
+                args=args,
+                epoch=epoch,
+                best_pearson=best_pearson,
+                best_auprc=best_auprc,
+                metrics=metrics,
+                valid_stats=valid_stats,
+            )
+            print(f"  saved new best AUPRC checkpoint: {out_dir / 'best_auprc.pt'}", flush=True)
         save_training_checkpoint(
             out_dir / "last.pt",
             head=head,
@@ -677,6 +716,7 @@ def main() -> None:
             args=args,
             epoch=epoch,
             best_pearson=best_pearson,
+            best_auprc=best_auprc,
             metrics=metrics,
             valid_stats=valid_stats,
         )
