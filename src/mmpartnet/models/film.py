@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class ProteinCellFiLMProfileHead(nn.Module):
@@ -52,6 +53,12 @@ class ProteinCellFiLMProfileHead(nn.Module):
             nn.ReLU(),
             nn.Linear(mix_hidden_dim, 1),
         )
+        self.binding = nn.Sequential(
+            nn.Linear(rna_channels, mix_hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(mix_hidden_dim, 1),
+        )
 
     def _condition(self, rna_features: torch.Tensor, protein_embedding: torch.Tensor, cell_index: torch.Tensor):
         cell = self.cell_embedding(cell_index)
@@ -78,13 +85,11 @@ class ProteinCellFiLMProfileHead(nn.Module):
 
         target_logprob = torch.log_softmax(target_logits, dim=-1)
         control_logprob = torch.log_softmax(control_logits, dim=-1)
-        if mask is None:
-            mix_input = fused.mean(dim=-1)
-        else:
-            mask_f = mask.to(dtype=fused.dtype).unsqueeze(1)
-            mix_input = (fused * mask_f).sum(dim=-1) / mask_f.sum(dim=-1).clamp_min(1.0)
+        pooled = self._masked_mean(fused, mask)
+        mix_input = pooled
         mix_coeff = torch.sigmoid(self.mix(mix_input)).squeeze(-1)
         mix = mix_coeff.unsqueeze(-1)
+        binding_logit = self.binding(pooled).squeeze(-1)
 
         max_logprob = torch.maximum(target_logprob, control_logprob)
         total_logprob = max_logprob + torch.log(
@@ -101,6 +106,63 @@ class ProteinCellFiLMProfileHead(nn.Module):
             "control": torch.exp(control_logprob),
             "total": torch.exp(total_logprob),
             "mix_coeff": mix_coeff,
+            "binding_logit": binding_logit,
+            "binding_prob": torch.sigmoid(binding_logit),
+        }
+
+    @staticmethod
+    def _masked_mean(features: torch.Tensor, mask: torch.Tensor | None) -> torch.Tensor:
+        if mask is None:
+            return features.mean(dim=-1)
+        mask_f = mask.to(dtype=features.dtype).unsqueeze(1)
+        return (features * mask_f).sum(dim=-1) / mask_f.sum(dim=-1).clamp_min(1.0)
+
+    def loss_components(
+        self,
+        rna_features: torch.Tensor,
+        protein_embedding: torch.Tensor,
+        cell_index: torch.Tensor,
+        eclip_counts: torch.Tensor,
+        control_counts: torch.Tensor,
+        binding_label: torch.Tensor | None = None,
+        mask: torch.Tensor | None = None,
+        *,
+        min_count: float = 10.0,
+        mix_penalty: float = 0.0,
+        lambda_binary: float = 1.0,
+        profile_mask: torch.Tensor | None = None,
+        binary_pos_weight: float | None = None,
+    ) -> dict[str, torch.Tensor]:
+        out = self.forward(rna_features, protein_embedding, cell_index, mask=mask)
+        eclip_depth = eclip_counts.sum(dim=-1)
+        control_depth = control_counts.sum(dim=-1)
+        if profile_mask is None:
+            profile_keep = eclip_depth >= min_count
+        else:
+            profile_keep = profile_mask.bool()
+
+        eclip_nll = -(eclip_counts * out["total_logprob"]).sum(dim=-1) / eclip_depth.clamp_min(1.0)
+        control_nll = -(control_counts * out["control_logprob"]).sum(dim=-1) / control_depth.clamp_min(1.0)
+        profile_loss = (eclip_nll * profile_keep).sum() / profile_keep.sum().clamp_min(1)
+        profile_loss = profile_loss + (control_nll * profile_keep).sum() / profile_keep.sum().clamp_min(1)
+        binary_loss = eclip_counts.new_tensor(0.0)
+        if binding_label is not None:
+            pos_weight = None
+            if binary_pos_weight is not None:
+                pos_weight = eclip_counts.new_tensor(binary_pos_weight)
+            binary_loss = F.binary_cross_entropy_with_logits(
+                out["binding_logit"],
+                binding_label.to(dtype=out["binding_logit"].dtype),
+                pos_weight=pos_weight,
+            )
+        loss = profile_loss + lambda_binary * binary_loss
+        if mix_penalty:
+            loss = loss + mix_penalty * out["mix_coeff"].mean()
+        return {
+            "loss": loss,
+            "profile_loss": profile_loss,
+            "binary_loss": binary_loss,
+            "profile_n": profile_keep.sum(),
         }
 
     def loss(
@@ -110,24 +172,29 @@ class ProteinCellFiLMProfileHead(nn.Module):
         cell_index: torch.Tensor,
         eclip_counts: torch.Tensor,
         control_counts: torch.Tensor,
+        binding_label: torch.Tensor | None = None,
         mask: torch.Tensor | None = None,
         *,
         min_count: float = 10.0,
         mix_penalty: float = 0.0,
+        lambda_binary: float = 1.0,
+        profile_mask: torch.Tensor | None = None,
+        binary_pos_weight: float | None = None,
     ) -> torch.Tensor:
-        out = self.forward(rna_features, protein_embedding, cell_index, mask=mask)
-        eclip_depth = eclip_counts.sum(dim=-1)
-        control_depth = control_counts.sum(dim=-1)
-        eclip_keep = eclip_depth >= min_count
-        control_keep = control_depth >= min_count
-
-        eclip_nll = -(eclip_counts * out["total_logprob"]).sum(dim=-1) / eclip_depth.clamp_min(1.0)
-        control_nll = -(control_counts * out["control_logprob"]).sum(dim=-1) / control_depth.clamp_min(1.0)
-        loss = (eclip_nll * eclip_keep).sum() / eclip_keep.sum().clamp_min(1)
-        loss = loss + (control_nll * control_keep).sum() / control_keep.sum().clamp_min(1)
-        if mix_penalty:
-            loss = loss + mix_penalty * out["mix_coeff"].mean()
-        return loss
+        return self.loss_components(
+            rna_features,
+            protein_embedding,
+            cell_index,
+            eclip_counts,
+            control_counts,
+            binding_label=binding_label,
+            mask=mask,
+            min_count=min_count,
+            mix_penalty=mix_penalty,
+            lambda_binary=lambda_binary,
+            profile_mask=profile_mask,
+            binary_pos_weight=binary_pos_weight,
+        )["loss"]
 
 
 __all__ = ["ProteinCellFiLMProfileHead"]

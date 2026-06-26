@@ -111,12 +111,14 @@ class ParnetMultimodalDataset(Dataset):
         hfds_split,
         track_map: Sequence[TrackProtein],
         *,
+        binding_split=None,
         track_indices: Sequence[int] | None = None,
         max_windows: int | None = None,
         exact_length: int | None = None,
         max_length: int | None = None,
     ):
         self.hfds_split = hfds_split
+        self.binding_split = binding_split
         self.track_map_by_index = {row.track_index: row for row in track_map}
         self.track_indices = list(track_indices) if track_indices is not None else [
             row.track_index for row in track_map
@@ -145,8 +147,12 @@ class ParnetMultimodalDataset(Dataset):
         track_index = self.track_indices[track_offset]
         sample = self.hfds_split[window_index]
         track = self.track_map_by_index[track_index]
+        binding_label = None
+        if self.binding_split is not None:
+            binding = self.binding_split[window_index]["outputs"]["binding"]
+            binding_label = float(binding[track_index])
 
-        return {
+        out = {
             "window_index": window_index,
             "window_name": sample.get("meta", {}).get("name", ""),
             "sequence": sample["inputs"]["sequence"],
@@ -161,6 +167,9 @@ class ParnetMultimodalDataset(Dataset):
             "eclip_sparse": sample["outputs"]["eCLIP"],
             "control_sparse": sample["outputs"]["control"],
         }
+        if binding_label is not None:
+            out["binding"] = binding_label
+        return out
 
 
 class MultimodalCollator:
@@ -189,6 +198,7 @@ class MultimodalCollator:
         eclip = []
         control = []
         proteins = []
+        binding = []
 
         for sample in samples:
             x, mask = pad_onehot(sample["sequence"], self.seq_len)
@@ -197,8 +207,10 @@ class MultimodalCollator:
             eclip.append(sparse_track_to_dense(sample["eclip_sparse"], sample["track_index"], self.seq_len))
             control.append(sparse_track_to_dense(sample["control_sparse"], sample["track_index"], self.seq_len))
             proteins.append(torch.from_numpy(self.h5[sample["protein_h5_key"]][()]).float())
+            if "binding" in sample:
+                binding.append(float(sample["binding"]))
 
-        return {
+        batch = {
             "onehot": torch.stack(onehots),
             "mask": torch.stack(masks),
             "protein_embedding": torch.stack(proteins),
@@ -213,3 +225,6 @@ class MultimodalCollator:
             "window_name": [s["window_name"] for s in samples],
             "protein_h5_key": [s["protein_h5_key"] for s in samples],
         }
+        if binding:
+            batch["binding"] = torch.tensor(binding, dtype=torch.float32)
+        return batch

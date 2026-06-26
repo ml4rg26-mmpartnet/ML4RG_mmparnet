@@ -33,6 +33,7 @@ def main() -> None:
     mask = torch.ones(args.batch_size, args.seq_len, dtype=torch.bool)
     eclip = torch.poisson(torch.full((args.batch_size, args.seq_len), 0.2))
     control = torch.poisson(torch.full((args.batch_size, args.seq_len), 0.2))
+    binding = (torch.arange(args.batch_size) % 2 == 0).float()
     eclip[:, args.seq_len // 2] += 20
     control[:, args.seq_len // 3] += 20
 
@@ -42,21 +43,34 @@ def main() -> None:
         cell_count=args.cell_count,
     )
     out = model(rna, protein, cell_index, mask=mask)
-    loss = model.loss(rna, protein, cell_index, eclip, control, mask=mask)
+    losses = model.loss_components(
+        rna,
+        protein,
+        cell_index,
+        eclip,
+        control,
+        binding_label=binding,
+        profile_mask=binding > 0.5,
+        mask=mask,
+    )
 
     print(f"target:        {tuple(out['target'].shape)} sum={out['target'].sum(dim=-1).tolist()}")
     print(f"control:       {tuple(out['control'].shape)} sum={out['control'].sum(dim=-1).tolist()}")
     print(f"total:         {tuple(out['total'].shape)} sum={out['total'].sum(dim=-1).tolist()}")
     print(f"mix_coeff:     {tuple(out['mix_coeff'].shape)} range=({out['mix_coeff'].min():.3f}, {out['mix_coeff'].max():.3f})")
-    print(f"loss:          {float(loss):.4f}")
+    print(f"binding_logit: {tuple(out['binding_logit'].shape)} prob_range=({out['binding_prob'].min():.3f}, {out['binding_prob'].max():.3f})")
+    print(f"loss:          {float(losses['loss'].detach()):.4f}")
+    print(f"profile_loss:  {float(losses['profile_loss'].detach()):.4f}")
+    print(f"binary_loss:   {float(losses['binary_loss'].detach()):.4f}")
 
     assert out["target"].shape == (args.batch_size, args.seq_len)
     assert out["control"].shape == (args.batch_size, args.seq_len)
     assert out["total"].shape == (args.batch_size, args.seq_len)
+    assert out["binding_logit"].shape == (args.batch_size,)
     assert torch.allclose(out["target"].sum(dim=-1), torch.ones(args.batch_size), atol=1e-5)
     assert torch.allclose(out["control"].sum(dim=-1), torch.ones(args.batch_size), atol=1e-5)
     assert torch.allclose(out["total"].sum(dim=-1), torch.ones(args.batch_size), atol=1e-5)
-    assert torch.isfinite(loss)
+    assert torch.isfinite(losses["loss"])
     print("\nPASS: protein+cell FiLM profile head forward/loss contract is valid.")
 
 

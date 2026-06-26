@@ -38,6 +38,11 @@ DEFAULT_PROTEIN_H5 = (
     MMPARNET
     / "manually_gathered/ProtT5_zenodo_datasets/reduced_embeddings_file.h5"
 )
+DEFAULT_BINDING = (
+    MMPARNET
+    / "manually_gathered/600nt_windows.no-one-hot.stripped.binding/"
+    / "600nt_windows.no-one-hot.stripped.binding.narrowpeak_intersect/dataset.pt"
+)
 
 
 def main() -> None:
@@ -49,6 +54,7 @@ def main() -> None:
     parser.add_argument("--hfds", type=Path, default=DEFAULT_HFDS)
     parser.add_argument("--track-map", type=Path, default=DEFAULT_TRACK_MAP)
     parser.add_argument("--protein-h5", type=Path, default=DEFAULT_PROTEIN_H5)
+    parser.add_argument("--binding-dataset", type=Path, default=DEFAULT_BINDING)
     parser.add_argument(
         "--tracks",
         default="9,138,195",
@@ -65,9 +71,11 @@ def main() -> None:
     track_map = load_track_protein_map(args.track_map)
     cell_to_index = build_cell_vocab(track_map)
     split = load_from_disk(str(args.hfds))[args.split]
+    binding_data = torch.load(args.binding_dataset, map_location="cpu", weights_only=False)
     dataset = ParnetMultimodalDataset(
         split,
         track_map,
+        binding_split=binding_data[args.split],
         track_indices=track_indices,
         max_windows=args.max_windows,
         exact_length=None if args.include_short else args.seq_len,
@@ -85,6 +93,7 @@ def main() -> None:
     print(f"protein:        {tuple(batch['protein_embedding'].shape)}")
     print(f"eclip:          {tuple(batch['eclip'].shape)} total_counts={batch['eclip'].sum(dim=1).tolist()}")
     print(f"control:        {tuple(batch['control'].shape)} total_counts={batch['control'].sum(dim=1).tolist()}")
+    print(f"binding:        {tuple(batch['binding'].shape)} labels={batch['binding'].tolist()}")
     print(f"track_index:    {batch['track_index'].tolist()}")
     print(f"cell_vocab:     {cell_to_index}")
     print(f"cell_index:     {batch['cell_index'].tolist()}")
@@ -99,6 +108,7 @@ def main() -> None:
     assert batch["cell_index"].shape == batch["track_index"].shape
     assert batch["eclip"].shape[1:] == (args.seq_len,)
     assert batch["control"].shape[1:] == (args.seq_len,)
+    assert batch["binding"].shape == batch["track_index"].shape
     assert torch.isfinite(batch["protein_embedding"]).all()
     print("\nPASS: multimodal batch assembled correctly.")
 
