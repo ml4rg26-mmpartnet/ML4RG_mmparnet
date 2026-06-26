@@ -261,6 +261,25 @@ def binary_stats(logit: torch.Tensor, label: torch.Tensor) -> dict:
     }
 
 
+def binary_average_precision(scores: torch.Tensor, labels: torch.Tensor) -> float:
+    """Average precision / AUPRC for binary labels.
+
+    Accuracy is misleading when positives are rare. Average precision asks:
+    among the samples the model ranks highly, how many are true positives?
+    """
+    labels = labels.float()
+    positives = labels.sum()
+    if int(positives.item()) == 0:
+        return 0.0
+    order = torch.argsort(scores, descending=True)
+    ranked_labels = labels[order]
+    true_positives = torch.cumsum(ranked_labels, dim=0)
+    ranks = torch.arange(1, ranked_labels.numel() + 1, dtype=torch.float32)
+    precision_at_k = true_positives / ranks
+    ap = (precision_at_k * ranked_labels).sum() / positives
+    return float(ap.item())
+
+
 def run_epoch(
     *,
     parnet,
@@ -289,6 +308,8 @@ def run_epoch(
     binding_n = 0
     binding_pos = 0
     binding_correct = 0
+    binary_scores = []
+    binary_labels = []
 
     for step, raw_batch in enumerate(loader, start=1):
         if max_batches is not None and step > max_batches:
@@ -345,6 +366,8 @@ def run_epoch(
                 binding_n += bs["n"]
                 binding_pos += bs["pos"]
                 binding_correct += bs["accuracy_sum"]
+                binary_scores.append(torch.sigmoid(out["binding_logit"].detach()).cpu())
+                binary_labels.append(binding.detach().cpu())
 
         if training and progress_every and step % progress_every == 0:
             pear = float((pear_sum / pear_n.clamp_min(1)).detach().cpu())
@@ -358,6 +381,10 @@ def run_epoch(
 
     mean_loss = loss_sum / max(loss_n, 1)
     mean_pearson = float((pear_sum / pear_n.clamp_min(1)).detach().cpu())
+    if binary_scores:
+        binding_auprc = binary_average_precision(torch.cat(binary_scores), torch.cat(binary_labels))
+    else:
+        binding_auprc = 0.0
     return {
         "loss": mean_loss,
         "profile_loss": profile_loss_sum / max(loss_n, 1),
@@ -369,6 +396,7 @@ def run_epoch(
         "binding_pos": binding_pos,
         "binding_pos_rate": binding_pos / max(binding_n, 1),
         "binding_accuracy": binding_correct / max(binding_n, 1),
+        "binding_auprc": binding_auprc,
     }
 
 
@@ -554,13 +582,13 @@ def main() -> None:
             f"  train loss={train_stats['loss']:.4f} profile={train_stats['profile_loss']:.4f} "
             f"binary={train_stats['binary_loss']:.4f} pearson={train_stats['pearson']:+.4f} "
             f"n={train_stats['n_profiles']} bind_pos={train_stats['binding_pos_rate']:.4f} "
-            f"bind_acc={train_stats['binding_accuracy']:.3f}"
+            f"bind_acc={train_stats['binding_accuracy']:.3f} bind_auprc={train_stats['binding_auprc']:.4f}"
         )
         print(
             f"  valid loss={valid_stats['loss']:.4f} profile={valid_stats['profile_loss']:.4f} "
             f"binary={valid_stats['binary_loss']:.4f} pearson={valid_stats['pearson']:+.4f} "
             f"n={valid_stats['n_profiles']} bind_pos={valid_stats['binding_pos_rate']:.4f} "
-            f"bind_acc={valid_stats['binding_accuracy']:.3f}"
+            f"bind_acc={valid_stats['binding_accuracy']:.3f} bind_auprc={valid_stats['binding_auprc']:.4f}"
         )
 
         if valid_stats["pearson"] > best_pearson:
