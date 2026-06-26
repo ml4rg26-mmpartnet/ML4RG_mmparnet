@@ -23,9 +23,10 @@ with a small learnable embedding.
 src/mmpartnet/data/multimodal.py       # window-track dataset and collator
 src/mmpartnet/models/film.py           # protein+cell FiLM multitask head
 src/mmpartnet/models/parnet.py         # frozen PARNET loader
+src/mmpartnet/experiments/film_multitask.py  # train/eval loops, metrics, checkpoints
 scripts/build_prott5_track_map.py      # build 223-track -> ProtT5 map
-scripts/train_film_profile.py          # train FiLM multitask baseline
-scripts/eval_film_multitask.py         # standalone valid/test evaluation
+scripts/train_film_profile.py          # thin training CLI wrapper
+scripts/eval_film_multitask.py         # thin standalone evaluation CLI wrapper
 mmpartnet_out/prott5_track_map.tsv     # matched 223-track protein map
 ```
 
@@ -132,4 +133,3 @@ last.pt:         Pearson 0.4705, AUPRC 0.2171
 For a single FiLM baseline checkpoint, use `best_pearson.pt` because profile
 prediction is the primary signal-profile objective and its AUPRC is similar to
 the other checkpoints.
-
