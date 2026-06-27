@@ -208,8 +208,6 @@ The single-task ablations are implemented with the `--task` argument:
   -> do not compute the binary binding head
 ```
 
-This avoids wasting compute on the unused output head.
-
 ## Data Flow
 
 ```text
@@ -246,12 +244,19 @@ contribute to pooling, profile softmax, or profile loss.
 
 ```text
 src/mmpartnet/data/multimodal.py
-  Builds the FiLM-specific flattened RNA-window/RBP-cell examples and batches
-  them for training.
+  Builds the FiLM-specific flattened RNA-window/RBP-cell dataset and collator.
+  It maps one PARNET window plus one RBP-cell track to one training example.
+
+src/mmpartnet/process/onehot.py
+  Converts RNA sequence strings into the one-hot tensors consumed by PARNET.
 
 src/mmpartnet/protein/providers/prott5_h5.py
   Registers pooled ProtT5 H5 embeddings under the repository's swappable
   mmpartnet.protein interface.
+
+src/mmpartnet/protein/providers/__init__.py
+  Imports protein providers so their registry decorators run. This is what
+  makes `prott5_h5` available through `mmpartnet.protein.get_protein`.
 
 src/mmpartnet/models/film.py
   Defines the protein+cell FiLM model and its multitask, binary-only, and
@@ -293,9 +298,7 @@ results directory above is the path other people should use.
 
 ## Current Results
 
-All results below use the validation split, not the test split. The test split
-has not been used yet and should only be used after the final model design,
-loss weights, and checkpoint selection rule are fixed.
+All results below use the validation split, not the test split. 
 
 `train-time best` means the best validation metric observed during training.
 `valid-2000` means the standalone evaluator was run on up to 2000 validation
