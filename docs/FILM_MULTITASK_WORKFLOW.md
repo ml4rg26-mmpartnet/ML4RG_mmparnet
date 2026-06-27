@@ -291,179 +291,59 @@ are finished and the recommended checkpoint is selected.
 ## Current Results
 
 All results below use the validation split, not the test split. The test split
-should only be used after the final model, loss weights, and checkpoint
-selection rule are fixed.
+has not been used yet and should only be used after the final model design,
+loss weights, and checkpoint selection rule are fixed.
 
-### Multitask Baseline, Lambda 20
+`train-time best` means the best validation metric observed during training.
+`valid-2000` means the standalone evaluator was run on up to 2000 validation
+batches using the selected checkpoint.
 
-Run:
+| model | epochs | selected checkpoint | train-time best Pearson | train-time best AUPRC | valid-2000 Pearson | valid-2000 AUPRC |
+|---|---:|---|---:|---:|---:|---:|
+| multitask, `lambda_binary=10` | 15 | `best_pearson.pt` | 0.4888 | 0.2259 | 0.4829 | 0.2131 |
+| multitask, `lambda_binary=20` | 15 | `best_pearson.pt` | 0.4812 | 0.2377 | 0.4753 | 0.2107 |
+| profile-only | 15 | `best_pearson.pt` | 0.4940 | N/A | 0.4875 | N/A |
+| binary-only | 15 | `best_auprc.pt` | N/A | 0.2303 | N/A | 0.2020 |
 
-```text
-formal_pureclip_l20_5x1000_seed0
-```
-
-This run was trained for 15k total steps. During training:
-
-```text
-best validation Pearson: epoch 13, 0.4812
-best validation AUPRC:   epoch 10, 0.2377
-```
-
-Using standalone valid-2000 evaluation:
+Current observation:
 
 ```text
-best_pearson.pt: Pearson 0.4753, AUPRC 0.2107
-best_auprc.pt:   Pearson 0.4703, AUPRC 0.2106
-last.pt:         Pearson 0.4705, AUPRC 0.2171
+profile-only gives the best profile Pearson.
+binary-only gives a similar or slightly lower binding AUPRC than multitask.
+multitask does not clearly beat the single-task baselines in this run.
+Among multitask runs, lambda_binary=10 is better than lambda_binary=20 for profile Pearson.
 ```
 
-For the first multitask baseline checkpoint, `best_pearson.pt` is the preferred
-choice because profile prediction is the primary signal-profile objective.
+One likely reason is that the profile task and binary task are not asking for
+exactly the same type of information. Profile prediction needs fine
+position-level signal: among the 600 RNA positions, where should the binding
+signal concentrate? Binary prediction is more global: does this RNA-window/RBP-
+cell pair have binding signal at all?
 
-### Single-Task Ablations
+When both losses update the same FiLM-conditioned RNA representation, the binary
+task can push the shared representation toward global binding/non-binding
+features. That can help classification, but it may make the representation less
+specialized for the detailed profile shape. This is consistent with the current
+results: profile-only has the best Pearson, while multitask does not improve the
+profile objective.
 
-Two single-task controls were trained to check whether multitask learning is
-actually helping.
+Increasing `lambda_binary` from 10 to 20 also did not help the profile metric.
+This suggests that putting too much weight on binary supervision may interfere
+with the position-level profile objective. A possible next experiment is to let
+binary loss update only the binary head, while profile loss updates the shared
+FiLM/profile pathway.
+
+## How To Run
+
+### Multitask
+
+This trains both heads:
 
 ```text
-binary-only:
-  task = binary-only
-  lambda_profile = 0
-  lambda_binary = 1
-  balanced_pos_fraction = 0.5
-  steps_per_epoch = 1000
-  epochs = 15
-
-profile-only:
-  task = profile-only
-  lambda_profile = 1
-  lambda_binary = 0
-  balanced_pos_fraction = 1.0
-  steps_per_epoch = 500
-  epochs = 15
+loss = profile_loss + lambda_binary * binary_loss
 ```
 
-The profile-only setup uses positive-only sampling because negative pairs do not
-contribute profile loss. With batch size 32, 500 steps gives about 16k positive
-profile examples per epoch, matching the multitask setup's 50/50 sampling with
-1000 steps per epoch.
-
-Standalone valid-2000 results:
-
-```text
-multitask best_pearson.pt:    Pearson 0.4753, AUPRC 0.2107
-binary-only best_auprc.pt:    AUPRC 0.2020
-profile-only best_pearson.pt: Pearson 0.4875
-```
-
-Interpretation:
-
-```text
-profile-only > multitask for profile Pearson
-multitask > binary-only for binding AUPRC
-```
-
-This suggests that the binary task can help binding classification, but with
-`lambda_binary = 20` it may slightly hurt the position-level profile objective.
-This is plausible because binary classification learns more global
-binding/non-binding features, while profile prediction needs fine position-level
-signal information.
-
-## Overall Validation Comparison
-
-The table below compares the main ablations and lambda sweep runs. `train-time`
-metrics are the best validation metrics observed during training. `valid-2000`
-metrics use the standalone evaluator with the same validation setting across
-runs.
-
-| model | epochs | train-time best Pearson | train-time best AUPRC | valid-2000 Pearson | valid-2000 AUPRC |
-|---|---:|---:|---:|---:|---:|
-| profile-only | 15 | 0.4940 | N/A | 0.4875 | N/A |
-| binary-only | 15 | N/A | 0.2303 | N/A | 0.2020 |
-| multitask lambda=10 | 15 | 0.4888 | 0.2259 | 0.4829 | 0.2131 |
-| multitask lambda=15 | 10 | 0.4819 | 0.2224 | 0.4742 | 0.2080 |
-| multitask lambda=20 | 15 | 0.4812 | 0.2377 | 0.4753 | 0.2107 |
-
-Summary:
-
-```text
-Profile-only gives the best profile Pearson overall.
-Among multitask models, lambda=10 gives the best profile Pearson.
-Binary-only does not outperform multitask on valid-2000 AUPRC.
-lambda=20 had the best training-time AUPRC, but lower profile Pearson.
-```
-
-This suggests that binary supervision can help the binding classifier, but too
-large a binary loss weight can interfere with the position-level profile task.
-For the current FiLM multitask profile baseline, `lambda_binary = 10` is the best
-validation-selected setting.
-
-## Lambda Sweep Results
-
-Because `lambda_binary = 20` may put too much weight on the binary task, two
-additional multitask runs were trained with smaller binary loss weights:
-
-```text
-lambda_binary = 10
-lambda_binary = 15
-```
-
-Both runs used:
-
-```text
-task = multitask
-lambda_profile = 1
-tracks = all
-binding dataset = pureCLIP
-balanced_pos_fraction = 0.5
-steps_per_epoch = 1000
-include_short = true
-```
-
-Training-time best validation metrics:
-
-```text
-lambda=10, 15 epochs:
-  best Pearson: epoch 13, 0.4888, AUPRC 0.2183
-  best AUPRC:   epoch 9,  0.2259, Pearson 0.4847
-
-lambda=15, 10 epochs:
-  best Pearson: epoch 9,  0.4819, AUPRC 0.2224
-  best AUPRC:   epoch 9,  0.2224, Pearson 0.4819
-
-lambda=20, 15 epochs:
-  best Pearson: epoch 13, 0.4812, AUPRC 0.2156
-  best AUPRC:   epoch 10, 0.2377, Pearson 0.4776
-```
-
-Standalone valid-2000 evaluation for the best Pearson checkpoint:
-
-```text
-lambda=10 best_pearson.pt: Pearson 0.4829, AUPRC 0.2131
-lambda=15 best_pearson.pt: Pearson 0.4742, AUPRC 0.2080
-lambda=20 best_pearson.pt: Pearson 0.4753, AUPRC 0.2107
-```
-
-Current interpretation:
-
-```text
-lambda=10 gives the best multitask profile Pearson.
-lambda=20 gives the best training-time AUPRC, but its profile Pearson is lower.
-lambda=15 does not improve over lambda=10 or lambda=20.
-```
-
-For the current FiLM multitask profile baseline, use:
-
-```text
-formal_pureclip_l10_10x1000_seed0/best_pearson.pt
-```
-
-This checkpoint came from the resumed 15-epoch `lambda_binary = 10` run. It is
-not a final test-set result; it was selected using validation metrics.
-
-## How To Train
-
-Example multitask training command:
+Use `lambda_binary=10` for the current best multitask profile setting:
 
 ```bash
 cd /home/dgu/workspace/ML4RG_mmparnet_film
@@ -479,7 +359,7 @@ PYTHONPATH=src \
   --max-train-windows 65536 \
   --max-valid-windows 16384 \
   --batch-size 32 \
-  --epochs 10 \
+  --epochs 15 \
   --balanced-train \
   --balanced-pos-fraction 0.5 \
   --steps-per-epoch 1000 \
@@ -492,13 +372,83 @@ PYTHONPATH=src \
   --run-name formal_pureclip_l10_10x1000_seed0
 ```
 
+To run the `lambda_binary=20` version, change:
+
+```text
+--lambda-binary 20
+--run-name formal_pureclip_l20_15x1000_seed0
+```
+
+### Binary-only
+
+This trains only the binding / not-binding head. The profile head is not
+forwarded.
+
+```bash
+cd /home/dgu/workspace/ML4RG_mmparnet_film
+
+ML4RG_REFS=/home/dgu/workspace/parnet_refs \
+ML4RG_PARNET_WEIGHTS=/home/dgu/storage_ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
+PYTHONPATH=src \
+/home/dgu/venvs/torch39/bin/python scripts/train_film_profile.py \
+  --task binary-only \
+  --mode multimodal \
+  --tracks all \
+  --binding-dataset /home/dgu/storage_ml4rg26-mmparnet/manually_gathered/600nt_windows.no-one-hot.stripped.binding/600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt \
+  --max-train-windows 65536 \
+  --max-valid-windows 16384 \
+  --batch-size 32 \
+  --epochs 15 \
+  --balanced-train \
+  --balanced-pos-fraction 0.5 \
+  --steps-per-epoch 1000 \
+  --max-valid-batches 1000 \
+  --device cuda \
+  --include-short \
+  --progress-every 250 \
+  --run-name formal_pureclip_binary_only_15x1000_seed0
+```
+
+### Profile-only
+
+This trains only the signal-profile head. The binary head is not forwarded.
+Positive-only sampling is used because negative examples do not contribute
+profile loss.
+
+```bash
+cd /home/dgu/workspace/ML4RG_mmparnet_film
+
+ML4RG_REFS=/home/dgu/workspace/parnet_refs \
+ML4RG_PARNET_WEIGHTS=/home/dgu/storage_ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
+PYTHONPATH=src \
+/home/dgu/venvs/torch39/bin/python scripts/train_film_profile.py \
+  --task profile-only \
+  --mode multimodal \
+  --tracks all \
+  --binding-dataset /home/dgu/storage_ml4rg26-mmparnet/manually_gathered/600nt_windows.no-one-hot.stripped.binding/600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt \
+  --max-train-windows 65536 \
+  --max-valid-windows 16384 \
+  --batch-size 32 \
+  --epochs 15 \
+  --balanced-train \
+  --balanced-pos-fraction 1.0 \
+  --steps-per-epoch 500 \
+  --max-valid-batches 1000 \
+  --device cuda \
+  --include-short \
+  --progress-every 250 \
+  --run-name formal_pureclip_profile_only_15x500_seed0
+```
+
+### Resume Training
+
 Resume from the latest full checkpoint by adding:
 
 ```bash
 --resume mmpartnet_out/film_runs/<run-name>/last.pt
 ```
 
-The training script writes:
+Each training run writes:
 
 ```text
 best.pt            # compatibility name, same as Pearson-best
@@ -508,26 +458,3 @@ last.pt            # latest full checkpoint, resumable
 last.statedict.pt  # latest model weights only
 metrics.json       # training/validation history
 ```
-
-## How To Evaluate
-
-Use validation for model selection:
-
-```bash
-cd /home/dgu/workspace/ML4RG_mmparnet_film
-
-ML4RG_REFS=/home/dgu/workspace/parnet_refs \
-ML4RG_PARNET_WEIGHTS=/home/dgu/storage_ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
-PYTHONPATH=src \
-/home/dgu/venvs/torch39/bin/python scripts/eval_film_multitask.py \
-  --checkpoint mmpartnet_out/film_runs/<run-name>/best_pearson.pt \
-  --split valid \
-  --max-batches 2000 \
-  --task multitask \
-  --device cuda \
-  --include-short \
-  --out mmpartnet_out/film_runs/<run-name>/eval_valid_2000_best_pearson.json
-```
-
-Do not use the test split until the model design, checkpoint choice, and
-hyperparameters are fixed.
