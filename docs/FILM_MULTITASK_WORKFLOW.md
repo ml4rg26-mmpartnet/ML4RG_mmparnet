@@ -284,9 +284,28 @@ mmpartnet_out/film_runs/<run-name>/
 ```
 
 Checkpoints and logs are experiment artifacts and are not committed to GitHub.
-They should stay in the shared VM/storage output directory for the run. The
-exact shared checkpoint location can be filled in once the current experiments
-are finished and the recommended checkpoint is selected.
+Following the VM storage guideline:
+
+```text
+$HOME/workspace/<repo>/
+  good for local development, testing, and personal in-progress runs
+
+/mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/
+  good for settled results that should be shared with the group
+```
+
+The current development runs were written under this checkout's
+`mmpartnet_out/film_runs/`. For shared/final reruns, set `--out-dir` to:
+
+```text
+/mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask
+```
+
+The commands below use the shared data and model-weight locations under
+`/mnt/storage1/ml4rg26-*`. They still point `ML4RG_REFS` to the current
+PARNET reference checkout at `/mnt/storage1/workspace/dgu/parnet_refs`. If the
+team wants a fully group-owned setup, copy or recreate those references under a
+shared project location and update `ML4RG_REFS` accordingly.
 
 ## Current Results
 
@@ -346,16 +365,22 @@ loss = profile_loss + lambda_binary * binary_loss
 Use `lambda_binary=10` for the current best multitask profile setting:
 
 ```bash
-cd /home/dgu/workspace/ML4RG_mmparnet_film
+cd $HOME/workspace/ML4RG_mmparnet
+# If your checkout has a different folder name, cd into that folder instead.
 
-ML4RG_REFS=/home/dgu/workspace/parnet_refs \
-ML4RG_PARNET_WEIGHTS=/home/dgu/storage_ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
+# Activate a Python environment with this repo's requirements installed first.
+# Example: source /path/to/your/env/bin/activate
+
+mkdir -p /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask
+
+ML4RG_REFS=/mnt/storage1/workspace/dgu/parnet_refs \
+ML4RG_PARNET_WEIGHTS=/mnt/storage1/ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
 PYTHONPATH=src \
-/home/dgu/venvs/torch39/bin/python scripts/train_film_profile.py \
+python scripts/train_film_profile.py \
   --task multitask \
   --mode multimodal \
   --tracks all \
-  --binding-dataset /home/dgu/storage_ml4rg26-mmparnet/manually_gathered/600nt_windows.no-one-hot.stripped.binding/600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt \
+  --binding-dataset /mnt/storage1/ml4rg26-mmparnet/manually_gathered/600nt_windows.no-one-hot.stripped.binding/600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt \
   --max-train-windows 65536 \
   --max-valid-windows 16384 \
   --batch-size 32 \
@@ -369,6 +394,7 @@ PYTHONPATH=src \
   --device cuda \
   --include-short \
   --progress-every 250 \
+  --out-dir /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask \
   --run-name formal_pureclip_l10_10x1000_seed0
 ```
 
@@ -385,16 +411,19 @@ This trains only the binding / not-binding head. The profile head is not
 forwarded.
 
 ```bash
-cd /home/dgu/workspace/ML4RG_mmparnet_film
+cd $HOME/workspace/ML4RG_mmparnet
+# If your checkout has a different folder name, cd into that folder instead.
 
-ML4RG_REFS=/home/dgu/workspace/parnet_refs \
-ML4RG_PARNET_WEIGHTS=/home/dgu/storage_ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
+mkdir -p /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask
+
+ML4RG_REFS=/mnt/storage1/workspace/dgu/parnet_refs \
+ML4RG_PARNET_WEIGHTS=/mnt/storage1/ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
 PYTHONPATH=src \
-/home/dgu/venvs/torch39/bin/python scripts/train_film_profile.py \
+python scripts/train_film_profile.py \
   --task binary-only \
   --mode multimodal \
   --tracks all \
-  --binding-dataset /home/dgu/storage_ml4rg26-mmparnet/manually_gathered/600nt_windows.no-one-hot.stripped.binding/600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt \
+  --binding-dataset /mnt/storage1/ml4rg26-mmparnet/manually_gathered/600nt_windows.no-one-hot.stripped.binding/600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt \
   --max-train-windows 65536 \
   --max-valid-windows 16384 \
   --batch-size 32 \
@@ -406,6 +435,7 @@ PYTHONPATH=src \
   --device cuda \
   --include-short \
   --progress-every 250 \
+  --out-dir /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask \
   --run-name formal_pureclip_binary_only_15x1000_seed0
 ```
 
@@ -416,16 +446,19 @@ Positive-only sampling is used because negative examples do not contribute
 profile loss.
 
 ```bash
-cd /home/dgu/workspace/ML4RG_mmparnet_film
+cd $HOME/workspace/ML4RG_mmparnet
+# If your checkout has a different folder name, cd into that folder instead.
 
-ML4RG_REFS=/home/dgu/workspace/parnet_refs \
-ML4RG_PARNET_WEIGHTS=/home/dgu/storage_ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
+mkdir -p /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask
+
+ML4RG_REFS=/mnt/storage1/workspace/dgu/parnet_refs \
+ML4RG_PARNET_WEIGHTS=/mnt/storage1/ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt \
 PYTHONPATH=src \
-/home/dgu/venvs/torch39/bin/python scripts/train_film_profile.py \
+python scripts/train_film_profile.py \
   --task profile-only \
   --mode multimodal \
   --tracks all \
-  --binding-dataset /home/dgu/storage_ml4rg26-mmparnet/manually_gathered/600nt_windows.no-one-hot.stripped.binding/600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt \
+  --binding-dataset /mnt/storage1/ml4rg26-mmparnet/manually_gathered/600nt_windows.no-one-hot.stripped.binding/600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt \
   --max-train-windows 65536 \
   --max-valid-windows 16384 \
   --batch-size 32 \
@@ -437,6 +470,7 @@ PYTHONPATH=src \
   --device cuda \
   --include-short \
   --progress-every 250 \
+  --out-dir /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask \
   --run-name formal_pureclip_profile_only_15x500_seed0
 ```
 
@@ -445,7 +479,7 @@ PYTHONPATH=src \
 Resume from the latest full checkpoint by adding:
 
 ```bash
---resume mmpartnet_out/film_runs/<run-name>/last.pt
+--resume /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/<run-name>/last.pt
 ```
 
 Each training run writes:
