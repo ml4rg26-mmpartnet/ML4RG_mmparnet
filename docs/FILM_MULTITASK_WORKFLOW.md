@@ -181,20 +181,22 @@ In `--task multitask` mode, both heads are active and the total loss is:
 loss = lambda_profile * profile_loss + lambda_binary * binary_loss
 ```
 
-Current multitask experiments keep the profile loss as the reference scale and
-mainly tune the binary loss weight:
+In all current multitask experiments, we fix `lambda_profile = 1` and tune only
+`lambda_binary` to control how strongly the binary task affects training:
 
 ```text
 lambda_profile = 1
 lambda_binary = 10, 15, or 20
-profile_mask_source = binding
 ```
 
-`lambda_profile` is still exposed in the code for flexibility, but all current
-experiments fix it to 1 and compare different `lambda_binary` values.
+In multitask mode, binary loss is computed for sampled positive and negative
+pairs. For profile loss, the current experiments use the true binding label as
+the mask: profile loss is computed only for positive binding examples, because
+profile shape is only meaningful when there is binding signal to explain. The
+training code exposes this as `--profile-mask-source binding`, but this is the
+default setting used in this branch.
 
-The single-task ablations are implemented with the `--task` argument, not only
-by setting one loss weight to zero:
+The single-task ablations are implemented with the `--task` argument:
 
 ```text
 --task binary-only
@@ -206,10 +208,7 @@ by setting one loss weight to zero:
   -> do not compute the binary binding head
 ```
 
-This avoids wasting compute on the unused output head. In multitask mode, binary
-loss is computed for sampled positive and negative pairs. Profile loss is
-computed only for true positive binding pairs, because profile shape is only
-meaningful when there is binding signal to explain.
+This avoids wasting compute on the unused output head.
 
 ## Data Flow
 
@@ -221,7 +220,7 @@ RNA sequence
 
 RBP-cell track name, for example QKI_HepG2
   -> protein name QKI
-  -> pooled ProtT5 protein embedding
+  -> pooled ProtT5 protein embedding through mmpartnet.protein
   -> cell line HepG2
   -> learnable cell embedding
 
@@ -236,7 +235,7 @@ conditioned RNA feature
 conditioned RNA feature
   -> profile head
   -> target profile + control profile + mix coefficient
-  -> total/eCLIP profile
+  -> predicted eCLIP profile
 ```
 
 Windows shorter than 600 nt are included when `--include-short` is used. They
@@ -247,7 +246,12 @@ contribute to pooling, profile softmax, or profile loss.
 
 ```text
 src/mmpartnet/data/multimodal.py
-  Builds RNA-window/RBP-cell examples and batches them for training.
+  Builds the FiLM-specific flattened RNA-window/RBP-cell examples and batches
+  them for training.
+
+src/mmpartnet/protein/providers/prott5_h5.py
+  Registers pooled ProtT5 H5 embeddings under the repository's swappable
+  mmpartnet.protein interface.
 
 src/mmpartnet/models/film.py
   Defines the protein+cell FiLM model and its multitask, binary-only, and
@@ -286,8 +290,9 @@ are finished and the recommended checkpoint is selected.
 
 ## Current Results
 
-All results below use the validation split, not the test split. Test should only
-be used after the final model and hyperparameters are fixed.
+All results below use the validation split, not the test split. The test split
+should only be used after the final model, loss weights, and checkpoint
+selection rule are fixed.
 
 ### Multitask Baseline, Lambda 20
 

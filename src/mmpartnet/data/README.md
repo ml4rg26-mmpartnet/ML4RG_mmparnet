@@ -22,6 +22,24 @@ for rec in iter_records(get_source(cfg.source, cfg)):
 | `loader.py` | `iter_records(source)`: applies preprocessing + the `>= min_sum` read filter, caps at `nwin`/RBP |
 | `sources/encode_bigwig.py` | POPULATED demo source (public ENCODE, read remotely) |
 | `sources/{encode_bam_counts,hfds,local_pt}.py` | STUBS with fill recipes |
+| `multimodal.py` | FiLM-specific flattened RNA-window/RBP-cell dataset and collator |
+
+## FiLM branch note
+
+Most files in this package follow the general `DataSource` registry sketch
+above. The FiLM multitask experiments need one extra view of the PARNET HFDS:
+the source dataset stores one RNA window with all 223 tracks, but a conditional
+protein model trains on one RNA window paired with one RBP-cell track at a time.
+
+`multimodal.py` provides that flattened view:
+
+```text
+PARNET window i + track j -> one training example
+```
+
+It also handles one-hot conversion, short-window padding/masks, sparse
+eCLIP/control extraction for the selected track, cell indices, and protein
+vectors from `mmpartnet.protein`.
 
 ## Add a source
 

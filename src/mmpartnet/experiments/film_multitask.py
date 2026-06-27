@@ -148,6 +148,8 @@ def make_loader(
     track_map,
     track_indices: list[int] | None,
     protein_h5: Path,
+    protein_rep: str,
+    track_map_path: Path,
     cell_to_index: dict[str, int],
     *,
     max_windows: int | None,
@@ -180,7 +182,13 @@ def make_loader(
             seed=seed,
         )
         shuffle = False
-    collator = MultimodalCollator(protein_h5, seq_len=seq_len, cell_to_index=cell_to_index)
+    collator = MultimodalCollator(
+        protein_h5,
+        seq_len=seq_len,
+        cell_to_index=cell_to_index,
+        protein_rep=protein_rep,
+        track_map=track_map_path,
+    )
     loader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -447,6 +455,11 @@ def train_main() -> None:
     parser.add_argument("--hfds", type=Path, default=DEFAULT_HFDS)
     parser.add_argument("--binding-dataset", type=Path, default=DEFAULT_BINDING)
     parser.add_argument("--track-map", type=Path, default=DEFAULT_TRACK_MAP)
+    parser.add_argument(
+        "--protein-rep",
+        default="prott5_h5",
+        help="Protein provider registry name from mmpartnet.protein. Default: prott5_h5.",
+    )
     parser.add_argument("--protein-h5", type=Path, default=DEFAULT_PROTEIN_H5)
     parser.add_argument("--tracks", default="9,138,195", help="Comma-separated track indices, or 'all'.")
     parser.add_argument("--train-split", default="train", choices=["train", "valid", "test"])
@@ -517,6 +530,8 @@ def train_main() -> None:
         track_map,
         track_indices,
         args.protein_h5,
+        args.protein_rep,
+        args.track_map,
         cell_to_index,
         max_windows=max_train_windows,
         seq_len=args.seq_len,
@@ -536,6 +551,8 @@ def train_main() -> None:
         track_map,
         track_indices,
         args.protein_h5,
+        args.protein_rep,
+        args.track_map,
         cell_to_index,
         max_windows=max_valid_windows,
         seq_len=args.seq_len,
@@ -558,6 +575,7 @@ def train_main() -> None:
         print(f"balanced_pos:   {args.balanced_pos_fraction}")
         print(f"steps/epoch:    {args.steps_per_epoch or 1000}")
     print(f"tracks:         {'all matched tracks' if track_indices is None else track_indices}")
+    print(f"protein_rep:    {args.protein_rep}")
     print(f"cell_vocab:     {cell_to_index}")
     print(f"train samples:  {len(train_dataset)}")
     print(f"valid samples:  {len(valid_dataset)}")
@@ -585,6 +603,7 @@ def train_main() -> None:
         "hfds": str(args.hfds),
         "binding_dataset": str(args.binding_dataset),
         "track_map": str(args.track_map),
+        "protein_rep": args.protein_rep,
         "protein_h5": str(args.protein_h5),
         "out_dir": str(out_dir),
         "device": device,
@@ -763,6 +782,7 @@ def eval_main() -> None:
     parser.add_argument("--hfds", type=Path, default=None)
     parser.add_argument("--binding-dataset", type=Path, default=None)
     parser.add_argument("--track-map", type=Path, default=None)
+    parser.add_argument("--protein-rep", default=None)
     parser.add_argument("--protein-h5", type=Path, default=None)
     parser.add_argument("--tracks", default=None, help="Comma-separated track indices, 'all', or checkpoint value.")
     parser.add_argument("--max-windows", type=int, default=None)
@@ -795,6 +815,7 @@ def eval_main() -> None:
     binding_path = Path(arg_or_checkpoint(args.binding_dataset, ckpt_args, "binding_dataset", DEFAULT_BINDING))
     track_map_path = Path(arg_or_checkpoint(args.track_map, ckpt_args, "track_map", DEFAULT_TRACK_MAP))
     protein_h5 = Path(arg_or_checkpoint(args.protein_h5, ckpt_args, "protein_h5", DEFAULT_PROTEIN_H5))
+    protein_rep = arg_or_checkpoint(args.protein_rep, ckpt_args, "protein_rep", "prott5_h5")
     tracks_value = arg_or_checkpoint(args.tracks, ckpt_args, "tracks", "all")
     max_windows_raw = arg_or_checkpoint(args.max_windows, ckpt_args, f"max_{args.split}_windows", 0)
     max_windows = None if int(max_windows_raw) == 0 else int(max_windows_raw)
@@ -822,6 +843,8 @@ def eval_main() -> None:
         track_map,
         track_indices,
         protein_h5,
+        str(protein_rep),
+        track_map_path,
         cell_to_index,
         max_windows=max_windows,
         seq_len=seq_len,
@@ -842,6 +865,7 @@ def eval_main() -> None:
     print(f"mode:           {mode}")
     print(f"include_short:  {include_short}")
     print(f"tracks:         {'all matched tracks' if track_indices is None else track_indices}")
+    print(f"protein_rep:    {protein_rep}")
     print(f"samples:        {len(dataset)}")
     print(f"max_batches:    {args.max_batches}")
     print("loading frozen PARNET...", flush=True)
@@ -880,6 +904,7 @@ def eval_main() -> None:
             "hfds": str(hfds_path),
             "binding_dataset": str(binding_path),
             "track_map": str(track_map_path),
+            "protein_rep": protein_rep,
             "protein_h5": str(protein_h5),
             "tracks": tracks_value,
             "max_windows": max_windows,

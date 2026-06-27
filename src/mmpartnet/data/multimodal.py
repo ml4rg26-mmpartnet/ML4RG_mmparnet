@@ -17,10 +17,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
-import h5py
 import torch
 from torch.utils.data import Dataset
 
+from mmpartnet.protein import ProteinConfig, ProteinSource, get_protein
 from mmpartnet.process.onehot import onehot
 
 
@@ -173,24 +173,50 @@ class ParnetMultimodalDataset(Dataset):
 
 
 class MultimodalCollator:
-    """Turn a list of multimodal samples into tensors for model input."""
+    """Turn a list of multimodal samples into tensors for model input.
 
-    def __init__(self, protein_h5: str | Path, seq_len: int = 600, cell_to_index: dict[str, int] | None = None):
-        self.protein_h5 = Path(protein_h5)
+    Protein vectors are resolved through ``mmpartnet.protein`` so the FiLM
+    workflow follows the repository's swappable protein-representation layer.
+    ``protein_h5`` is kept as a convenience/default for the current ProtT5 H5
+    provider.
+    """
+
+    def __init__(
+        self,
+        protein_h5: str | Path | None = None,
+        seq_len: int = 600,
+        cell_to_index: dict[str, int] | None = None,
+        protein_source: ProteinSource | None = None,
+        protein_rep: str = "prott5_h5",
+        track_map: str | Path | None = None,
+    ):
+        self.protein_h5 = None if protein_h5 is None else Path(protein_h5)
         self.seq_len = seq_len
         self.cell_to_index = cell_to_index or {"HepG2": 0, "K562": 1}
-        self._h5 = None
-
-    @property
-    def h5(self):
-        if self._h5 is None:
-            self._h5 = h5py.File(self.protein_h5, "r")
-        return self._h5
+        if protein_source is None:
+            extra = {}
+            if self.protein_h5 is not None:
+                extra["h5_path"] = self.protein_h5
+            if track_map is not None:
+                extra["track_map"] = track_map
+            protein_source = get_protein(protein_rep, ProteinConfig(mode=protein_rep, extra=extra))
+        self.protein_source = protein_source
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        state["_h5"] = None
         return state
+
+    def _protein_vector(self, sample: dict[str, Any]) -> torch.Tensor:
+        if hasattr(self.protein_source, "vector_by_key"):
+            vec = self.protein_source.vector_by_key(str(sample["protein_h5_key"]))
+        else:
+            vec = self.protein_source.vector(sample["rbp"])
+        if vec is None:
+            raise KeyError(
+                f"missing protein embedding for {sample['rbp']} "
+                f"(h5_key={sample['protein_h5_key']})"
+            )
+        return torch.from_numpy(vec).float()
 
     def __call__(self, samples: Sequence[dict[str, Any]]) -> dict[str, Any]:
         onehots = []
@@ -206,7 +232,7 @@ class MultimodalCollator:
             masks.append(mask)
             eclip.append(sparse_track_to_dense(sample["eclip_sparse"], sample["track_index"], self.seq_len))
             control.append(sparse_track_to_dense(sample["control_sparse"], sample["track_index"], self.seq_len))
-            proteins.append(torch.from_numpy(self.h5[sample["protein_h5_key"]][()]).float())
+            proteins.append(self._protein_vector(sample))
             if "binding" in sample:
                 binding.append(float(sample["binding"]))
 
