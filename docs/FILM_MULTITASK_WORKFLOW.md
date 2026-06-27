@@ -302,10 +302,12 @@ All results below use the validation split, not the test split.
 
 `train-time best` means the best validation metric observed during training.
 `valid-2000` means the standalone evaluator was run on up to 2000 validation
-batches using the selected checkpoint. `all-evaluable Pearson` is computed
-without filtering by the binding label; it includes every validation pair whose
-observed eCLIP profile has enough reads and enough variation for Pearson to be
-defined.
+batches using the selected checkpoint. `positive Pearson` is the profile
+Pearson computed only on true positive binding pairs, so it measures profile
+shape quality when there is binding signal to explain. `all-evaluable Pearson`
+is computed without filtering by the binding label. It includes every
+validation pair whose observed eCLIP profile has enough reads and enough
+variation for Pearson to be defined.
 
 | model | epochs | selected checkpoint | train-time best Pearson | train-time best AUPRC | valid-2000 positive Pearson | valid-2000 all-evaluable Pearson | valid-2000 AUPRC |
 |---|---:|---|---:|---:|---:|---:|---:|
