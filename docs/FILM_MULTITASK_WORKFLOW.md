@@ -302,14 +302,17 @@ All results below use the validation split, not the test split.
 
 `train-time best` means the best validation metric observed during training.
 `valid-2000` means the standalone evaluator was run on up to 2000 validation
-batches using the selected checkpoint.
+batches using the selected checkpoint. `all-evaluable Pearson` is computed
+without filtering by the binding label; it includes every validation pair whose
+observed eCLIP profile has enough reads and enough variation for Pearson to be
+defined.
 
-| model | epochs | selected checkpoint | train-time best Pearson | train-time best AUPRC | valid-2000 Pearson | valid-2000 AUPRC |
-|---|---:|---|---:|---:|---:|---:|
-| multitask, `lambda_binary=10` | 15 | `best_pearson.pt` | 0.4888 | 0.2259 | 0.4829 | 0.2131 |
-| multitask, `lambda_binary=20` | 15 | `best_pearson.pt` | 0.4812 | 0.2377 | 0.4753 | 0.2107 |
-| profile-only | 15 | `best_pearson.pt` | 0.4940 | N/A | 0.4875 | N/A |
-| binary-only | 15 | `best_auprc.pt` | N/A | 0.2303 | N/A | 0.2020 |
+| model | epochs | selected checkpoint | train-time best Pearson | train-time best AUPRC | valid-2000 positive Pearson | valid-2000 all-evaluable Pearson | valid-2000 AUPRC |
+|---|---:|---|---:|---:|---:|---:|---:|
+| multitask, `lambda_binary=10` | 15 | `best_pearson.pt` | 0.4888 | 0.2259 | 0.4829 | 0.2497 | 0.2131 |
+| multitask, `lambda_binary=20` | 15 | `best_pearson.pt` | 0.4812 | 0.2377 | 0.4753 | 0.2463 | 0.2107 |
+| profile-only | 15 | `best_pearson.pt` | 0.4940 | N/A | 0.4875 | 0.2545 | N/A |
+| binary-only | 15 | `best_auprc.pt` | N/A | 0.2303 | N/A | N/A | 0.2020 |
 
 Direct checkpoint paths:
 
@@ -327,10 +330,19 @@ binary-only:
   /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/formal_pureclip_binary_only_15x1000_seed0/best_auprc.pt
 ```
 
+The valid-2000 JSON files with `all_evaluable_pearson` are:
+
+```text
+/mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/formal_pureclip_l10_10x1000_seed0/eval_valid_2000_best_pearson_all_evaluable.json
+/mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/formal_pureclip_l20_5x1000_seed0/eval_valid_2000_best_pearson_all_evaluable.json
+/mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/formal_pureclip_profile_only_15x500_seed0/eval_valid_2000_best_pearson_all_evaluable.json
+```
+
 Current observation:
 
 ```text
 profile-only gives the best profile Pearson.
+profile-only also gives the best all-evaluable profile Pearson.
 binary-only gives a similar or slightly lower binding AUPRC than multitask.
 multitask does not clearly beat the single-task baselines in this run.
 Among multitask runs, lambda_binary=10 is better than lambda_binary=20 for profile Pearson.

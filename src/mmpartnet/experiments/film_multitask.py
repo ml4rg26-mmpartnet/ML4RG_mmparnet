@@ -349,6 +349,8 @@ def run_epoch(
     loss_n = 0
     pear_sum = torch.tensor(0.0, device=device)
     pear_n = torch.tensor(0, device=device)
+    all_pear_sum = torch.tensor(0.0, device=device)
+    all_pear_n = torch.tensor(0, device=device)
     profile_loss_sum = 0.0
     binary_loss_sum = 0.0
     profile_mask_n = 0
@@ -411,6 +413,9 @@ def run_epoch(
                 ps, pn = pearson_sum(pred, batch["eclip"], min_count, mask=batch["mask"], valid_mask=profile_mask)
                 pear_sum += ps
                 pear_n += pn
+                all_ps, all_pn = pearson_sum(pred, batch["eclip"], min_count, mask=batch["mask"])
+                all_pear_sum += all_ps
+                all_pear_n += all_pn
             if task in {"multitask", "binary-only"} and binding is not None:
                 bs = binary_stats(out["binding_logit"], binding)
                 binding_n += bs["n"]
@@ -431,6 +436,7 @@ def run_epoch(
 
     mean_loss = loss_sum / max(loss_n, 1)
     mean_pearson = float((pear_sum / pear_n.clamp_min(1)).detach().cpu())
+    mean_all_pearson = float((all_pear_sum / all_pear_n.clamp_min(1)).detach().cpu())
     if binary_scores:
         binding_auprc = binary_average_precision(torch.cat(binary_scores), torch.cat(binary_labels))
     else:
@@ -441,6 +447,8 @@ def run_epoch(
         "binary_loss": binary_loss_sum / max(loss_n, 1),
         "pearson": mean_pearson,
         "n_profiles": int(pear_n.detach().cpu()),
+        "all_evaluable_pearson": mean_all_pearson,
+        "all_evaluable_n_profiles": int(all_pear_n.detach().cpu()),
         "profile_mask_n": profile_mask_n,
         "binding_n": binding_n,
         "binding_pos": binding_pos,
@@ -682,13 +690,15 @@ def train_main() -> None:
         print(
             f"  train loss={train_stats['loss']:.4f} profile={train_stats['profile_loss']:.4f} "
             f"binary={train_stats['binary_loss']:.4f} pearson={train_stats['pearson']:+.4f} "
-            f"n={train_stats['n_profiles']} bind_pos={train_stats['binding_pos_rate']:.4f} "
+            f"n={train_stats['n_profiles']} all_pearson={train_stats['all_evaluable_pearson']:+.4f} "
+            f"all_n={train_stats['all_evaluable_n_profiles']} bind_pos={train_stats['binding_pos_rate']:.4f} "
             f"bind_acc={train_stats['binding_accuracy']:.3f} bind_auprc={train_stats['binding_auprc']:.4f}"
         )
         print(
             f"  valid loss={valid_stats['loss']:.4f} profile={valid_stats['profile_loss']:.4f} "
             f"binary={valid_stats['binary_loss']:.4f} pearson={valid_stats['pearson']:+.4f} "
-            f"n={valid_stats['n_profiles']} bind_pos={valid_stats['binding_pos_rate']:.4f} "
+            f"n={valid_stats['n_profiles']} all_pearson={valid_stats['all_evaluable_pearson']:+.4f} "
+            f"all_n={valid_stats['all_evaluable_n_profiles']} bind_pos={valid_stats['binding_pos_rate']:.4f} "
             f"bind_acc={valid_stats['binding_accuracy']:.3f} bind_auprc={valid_stats['binding_auprc']:.4f}"
         )
 
