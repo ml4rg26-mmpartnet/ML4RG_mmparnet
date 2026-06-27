@@ -364,6 +364,35 @@ This is plausible because binary classification learns more global
 binding/non-binding features, while profile prediction needs fine position-level
 signal information.
 
+## Overall Validation Comparison
+
+The table below compares the main ablations and lambda sweep runs. `train-time`
+metrics are the best validation metrics observed during training. `valid-2000`
+metrics use the standalone evaluator with the same validation setting across
+runs.
+
+| model | epochs | train-time best Pearson | train-time best AUPRC | valid-2000 Pearson | valid-2000 AUPRC |
+|---|---:|---:|---:|---:|---:|
+| profile-only | 15 | 0.4940 | N/A | 0.4875 | N/A |
+| binary-only | 15 | N/A | 0.2303 | N/A | 0.2020 |
+| multitask lambda=10 | 15 | 0.4888 | 0.2259 | 0.4829 | 0.2131 |
+| multitask lambda=15 | 10 | 0.4819 | 0.2224 | 0.4742 | 0.2080 |
+| multitask lambda=20 | 15 | 0.4812 | 0.2377 | 0.4753 | 0.2107 |
+
+Summary:
+
+```text
+Profile-only gives the best profile Pearson overall.
+Among multitask models, lambda=10 gives the best profile Pearson.
+Binary-only does not outperform multitask on valid-2000 AUPRC.
+lambda=20 had the best training-time AUPRC, but lower profile Pearson.
+```
+
+This suggests that binary supervision can help the binding classifier, but too
+large a binary loss weight can interfere with the position-level profile task.
+For the current FiLM multitask profile baseline, `lambda_binary = 10` is the best
+validation-selected setting.
+
 ## Lambda Sweep Results
 
 Because `lambda_binary = 20` may put too much weight on the binary task, two
