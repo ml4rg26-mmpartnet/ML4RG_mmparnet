@@ -277,35 +277,19 @@ mmpartnet_out/prott5_track_map.tsv
   Matched RBP-cell track to protein embedding map.
 ```
 
-Training outputs are written under:
-
-```text
-mmpartnet_out/film_runs/<run-name>/
-```
-
 Checkpoints and logs are experiment artifacts and are not committed to GitHub.
-Following the VM storage guideline:
-
-```text
-$HOME/workspace/<repo>/
-  good for local development, testing, and personal in-progress runs
-
-/mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/
-  good for settled results that should be shared with the group
-```
-
-The current development runs were written under this checkout's
-`mmpartnet_out/film_runs/`. For shared/final reruns, set `--out-dir` to:
+Following the VM storage guideline, the current reusable FiLM checkpoints and
+validation results are stored in the group results directory:
 
 ```text
 /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask
 ```
 
-The commands below use the shared data and model-weight locations under
-`/mnt/storage1/ml4rg26-*`. They still point `ML4RG_REFS` to the current
-PARNET reference checkout at `/mnt/storage1/workspace/dgu/parnet_refs`. If the
-team wants a fully group-owned setup, copy or recreate those references under a
-shared project location and update `ML4RG_REFS` accordingly.
+This directory contains the selected checkpoints, `metrics.json`, validation
+JSON files, and training logs for the formal runs listed below. The same files
+also remain in the original development checkout under
+`$HOME/workspace/ML4RG_mmparnet_film/mmpartnet_out/film_runs/`, but the group
+results directory above is the path other people should use.
 
 ## Current Results
 
@@ -323,6 +307,22 @@ batches using the selected checkpoint.
 | multitask, `lambda_binary=20` | 15 | `best_pearson.pt` | 0.4812 | 0.2377 | 0.4753 | 0.2107 |
 | profile-only | 15 | `best_pearson.pt` | 0.4940 | N/A | 0.4875 | N/A |
 | binary-only | 15 | `best_auprc.pt` | N/A | 0.2303 | N/A | 0.2020 |
+
+Direct checkpoint paths:
+
+```text
+multitask, lambda_binary=10:
+  /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/formal_pureclip_l10_10x1000_seed0/best_pearson.pt
+
+multitask, lambda_binary=20:
+  /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/formal_pureclip_l20_5x1000_seed0/best_pearson.pt
+
+profile-only:
+  /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/formal_pureclip_profile_only_15x500_seed0/best_pearson.pt
+
+binary-only:
+  /mnt/storage1/ml4rg26-mmparnet/ML4RG_mmparnet/results/film_multitask/formal_pureclip_binary_only_15x1000_seed0/best_auprc.pt
+```
 
 Current observation:
 
