@@ -306,8 +306,8 @@ batches using the selected checkpoint. `positive Pearson` is the profile
 Pearson computed only on true positive binding pairs, so it measures profile
 shape quality when there is binding signal to explain. `all-evaluable Pearson`
 is computed without filtering by the binding label. It includes every
-validation pair whose observed eCLIP profile has enough reads and enough
-variation for Pearson to be defined.
+validation pair whose total observed eCLIP count is at least `min_count` and
+whose observed profile is not constant, so Pearson is mathematically defined.
 
 | model | epochs | selected checkpoint | train-time best Pearson | train-time best AUPRC | valid-2000 positive Pearson | valid-2000 all-evaluable Pearson | valid-2000 AUPRC |
 |---|---:|---|---:|---:|---:|---:|---:|
