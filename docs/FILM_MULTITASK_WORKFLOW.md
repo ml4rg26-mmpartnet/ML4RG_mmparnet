@@ -343,11 +343,11 @@ The valid-2000 JSON files with `all_evaluable_pearson` are:
 Current observation:
 
 ```text
-profile-only gives the best profile Pearson.
+profile-only gives the best positive Pearson.
 profile-only also gives the best all-evaluable profile Pearson.
 binary-only gives a similar or slightly lower binding AUPRC than multitask.
 multitask does not clearly beat the single-task baselines in this run.
-Among multitask runs, lambda_binary=10 is better than lambda_binary=20 for profile Pearson.
+Among multitask runs, lambda_binary=10 is better than lambda_binary=20 for both positive and all-evaluable Pearson.
 ```
 
 One likely reason is that the profile task and binary task are not asking for
