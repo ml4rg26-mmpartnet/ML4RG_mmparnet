@@ -7,6 +7,7 @@ checkpoint is a one-line config change (CONTRACT.md swap-in #1).
 """
 from __future__ import annotations
 
+from .film import ProteinCellFiLMProfileHead
 from .parnet import ParnetModel, load_parnet
 
-__all__ = ["ParnetModel", "load_parnet"]
+__all__ = ["ParnetModel", "ProteinCellFiLMProfileHead", "load_parnet"]
