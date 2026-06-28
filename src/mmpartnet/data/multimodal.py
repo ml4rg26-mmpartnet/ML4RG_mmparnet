@@ -175,10 +175,20 @@ class ParnetMultimodalDataset(Dataset):
 class MultimodalCollator:
     """Turn a list of multimodal samples into tensors for model input."""
 
-    def __init__(self, protein_h5: str | Path, seq_len: int = 600, cell_to_index: dict[str, int] | None = None):
+    def __init__(
+        self,
+        protein_h5: str | Path,
+        seq_len: int = 600,
+        cell_to_index: dict[str, int] | None = None,
+        *,
+        return_residue_embeddings: bool = False,
+        max_protein_len: int | None = None,
+    ):
         self.protein_h5 = Path(protein_h5)
         self.seq_len = seq_len
         self.cell_to_index = cell_to_index or {"HepG2": 0, "K562": 1}
+        self.return_residue_embeddings = return_residue_embeddings
+        self.max_protein_len = max_protein_len
         self._h5 = None
 
     @property
@@ -198,6 +208,7 @@ class MultimodalCollator:
         eclip = []
         control = []
         proteins = []
+        residue_proteins = []
         binding = []
 
         for sample in samples:
@@ -206,7 +217,16 @@ class MultimodalCollator:
             masks.append(mask)
             eclip.append(sparse_track_to_dense(sample["eclip_sparse"], sample["track_index"], self.seq_len))
             control.append(sparse_track_to_dense(sample["control_sparse"], sample["track_index"], self.seq_len))
-            proteins.append(torch.from_numpy(self.h5[sample["protein_h5_key"]][()]).float())
+            protein = torch.from_numpy(self.h5[sample["protein_h5_key"]][()]).float()
+            if self.return_residue_embeddings:
+                if protein.ndim == 1:
+                    protein = protein.unsqueeze(0)
+                if self.max_protein_len is not None:
+                    protein = protein[: self.max_protein_len]
+                residue_proteins.append(protein)
+                proteins.append(protein.mean(dim=0))
+            else:
+                proteins.append(protein)
             if "binding" in sample:
                 binding.append(float(sample["binding"]))
 
@@ -227,4 +247,15 @@ class MultimodalCollator:
         }
         if binding:
             batch["binding"] = torch.tensor(binding, dtype=torch.float32)
+        if self.return_residue_embeddings:
+            max_protein_len = max(int(x.shape[0]) for x in residue_proteins)
+            protein_dim = int(residue_proteins[0].shape[1])
+            padded = torch.zeros(len(residue_proteins), max_protein_len, protein_dim, dtype=torch.float32)
+            protein_mask = torch.zeros(len(residue_proteins), max_protein_len, dtype=torch.bool)
+            for i, protein in enumerate(residue_proteins):
+                length = int(protein.shape[0])
+                padded[i, :length] = protein
+                protein_mask[i, :length] = True
+            batch["protein_residue_embedding"] = padded
+            batch["protein_mask"] = protein_mask
         return batch

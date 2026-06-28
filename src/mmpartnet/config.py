@@ -26,10 +26,18 @@ REALDATA = Path(os.environ.get("ML4RG_REALDATA", _REPO))            # parent of 
 RESULTS = Path(os.environ.get("ML4RG_RESULTS", _REPO / "mmpartnet_out"))  # precomputed JSONs (committed, small)
 
 # ── External reference assets (lab PARNET source pkg + weights) ───────────────
-REFS = Path(os.environ.get("ML4RG_REFS", DATA / "refs"))
+_VM_REFS = Path("/home/dgu/workspace/parnet_refs")
+_DEFAULT_REFS = _VM_REFS if _VM_REFS.exists() else DATA / "refs"
+REFS = Path(os.environ.get("ML4RG_REFS", _DEFAULT_REFS))
 PARNET_PKG = REFS / "parnet" / "parnet"                              # the parnet source package
+_VM_PARNET_WEIGHTS = Path("/mnt/storage1/ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt")
+_DEFAULT_PARNET_WEIGHTS = (
+    _VM_PARNET_WEIGHTS
+    if _VM_PARNET_WEIGHTS.exists()
+    else REFS / "parnet" / "models" / "NewRBPNet_7M_Penalty-0.0_20250107.pt"
+)
 PARNET_WEIGHTS = Path(os.environ.get(
-    "ML4RG_PARNET_WEIGHTS", REFS / "parnet" / "models" / "NewRBPNet_7M_Penalty-0.0_20250107.pt"))
+    "ML4RG_PARNET_WEIGHTS", _DEFAULT_PARNET_WEIGHTS))
 PARNET_IDX2SYM = PARNET_PKG / "assets" / "ENCODE.idx2symbol-cell.pt"
 LAB_UTILS_SRC = REFS / "parnet--demo--train-models" / "src"         # parnet_demo_utils (the contract)
 SCAFFOLD = REFS / "parnet--demo--train-models"
