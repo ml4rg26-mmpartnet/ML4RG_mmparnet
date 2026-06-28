@@ -73,6 +73,14 @@ binary head:
 `forward()` returns `binding_gate`, `binary_position_prob`, and `alpha_bind` for
 interpretability.
 
+Training and evaluation metrics include lightweight distribution summaries:
+
+- gate mean/std, plus positive/negative gate means
+- entropy, max probability, and top-10 probability mass for `target`,
+  `binary_position_prob`, and `alpha_bind`
+
+Use the export script below for full per-sample length-600 distributions.
+
 ## Smoke Test
 
 ```bash
@@ -124,6 +132,32 @@ select by validation Pearson or validation AUPRC.
   --max-windows 2000 \
   --batch-size 8
 ```
+
+## Export Interpretation Samples
+
+```bash
+.venv/bin/python scripts/export_cross_attention_interpretation.py \
+  --checkpoint mmpartnet_out/cross_attention_runs/formal_pureclip_cross_attention_l10_15x1000_seed0/best_pearson.pt \
+  --split valid \
+  --max-samples 256 \
+  --batch-size 8 \
+  --out mmpartnet_out/cross_attention_runs/formal_pureclip_cross_attention_l10_15x1000_seed0/interpretation_valid.pt
+```
+
+If a motif TSV is available, pass it to compute per-sample motif overlap metrics:
+
+```bash
+.venv/bin/python scripts/export_cross_attention_interpretation.py \
+  --checkpoint mmpartnet_out/cross_attention_runs/formal_pureclip_cross_attention_l10_15x1000_seed0/best_pearson.pt \
+  --split valid \
+  --max-samples 256 \
+  --motif-tsv path/to/rbp_motifs.tsv \
+  --out mmpartnet_out/cross_attention_runs/formal_pureclip_cross_attention_l10_15x1000_seed0/interpretation_valid.pt \
+  --motif-out mmpartnet_out/cross_attention_runs/formal_pureclip_cross_attention_l10_15x1000_seed0/motif_eval_valid.tsv
+```
+
+The motif TSV must contain `rbp` and `motif` columns. Motifs may use RNA or DNA
+letters; common IUPAC ambiguity codes are supported.
 
 ## Notes
 

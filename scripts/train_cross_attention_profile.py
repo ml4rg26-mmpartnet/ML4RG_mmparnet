@@ -155,6 +155,17 @@ def distribution_entropy(prob: torch.Tensor) -> torch.Tensor:
     return -(prob * prob.clamp_min(1e-12).log()).sum(dim=-1).mean()
 
 
+def distribution_max(prob: torch.Tensor) -> torch.Tensor:
+    """Mean max position probability of a batch of position distributions."""
+    return prob.max(dim=-1).values.mean()
+
+
+def distribution_topk_mass(prob: torch.Tensor, k: int = 10) -> torch.Tensor:
+    """Mean probability mass in the top-k positions."""
+    k = min(k, prob.shape[-1])
+    return prob.topk(k, dim=-1).values.sum(dim=-1).mean()
+
+
 def save_training_checkpoint(
     path: Path,
     *,
@@ -236,6 +247,12 @@ def run_epoch(
     target_entropy_sum = 0.0
     binary_entropy_sum = 0.0
     alpha_entropy_sum = 0.0
+    target_max_sum = 0.0
+    binary_max_sum = 0.0
+    alpha_max_sum = 0.0
+    target_top10_sum = 0.0
+    binary_top10_sum = 0.0
+    alpha_top10_sum = 0.0
     attention_summary_n = 0
 
     for step, raw_batch in enumerate(loader, start=1):
@@ -303,9 +320,18 @@ def run_epoch(
                         gate_neg_sum += float(gate[neg_mask].sum().cpu())
                         gate_neg_n += int(neg_mask.sum().cpu())
             if "target" in out and "binary_position_prob" in out and "alpha_bind" in out:
-                target_entropy_sum += float(distribution_entropy(out["target"].detach()).cpu())
-                binary_entropy_sum += float(distribution_entropy(out["binary_position_prob"].detach()).cpu())
-                alpha_entropy_sum += float(distribution_entropy(out["alpha_bind"].detach()).cpu())
+                target_prob = out["target"].detach()
+                binary_prob = out["binary_position_prob"].detach()
+                alpha_prob = out["alpha_bind"].detach()
+                target_entropy_sum += float(distribution_entropy(target_prob).cpu())
+                binary_entropy_sum += float(distribution_entropy(binary_prob).cpu())
+                alpha_entropy_sum += float(distribution_entropy(alpha_prob).cpu())
+                target_max_sum += float(distribution_max(target_prob).cpu())
+                binary_max_sum += float(distribution_max(binary_prob).cpu())
+                alpha_max_sum += float(distribution_max(alpha_prob).cpu())
+                target_top10_sum += float(distribution_topk_mass(target_prob, k=10).cpu())
+                binary_top10_sum += float(distribution_topk_mass(binary_prob, k=10).cpu())
+                alpha_top10_sum += float(distribution_topk_mass(alpha_prob, k=10).cpu())
                 attention_summary_n += 1
             if binding is not None:
                 bs = binary_stats(out["binding_logit"], binding)
@@ -350,6 +376,12 @@ def run_epoch(
         "target_entropy": target_entropy_sum / max(attention_summary_n, 1),
         "binary_position_entropy": binary_entropy_sum / max(attention_summary_n, 1),
         "alpha_bind_entropy": alpha_entropy_sum / max(attention_summary_n, 1),
+        "target_max_prob": target_max_sum / max(attention_summary_n, 1),
+        "binary_position_max_prob": binary_max_sum / max(attention_summary_n, 1),
+        "alpha_bind_max_prob": alpha_max_sum / max(attention_summary_n, 1),
+        "target_top10_mass": target_top10_sum / max(attention_summary_n, 1),
+        "binary_position_top10_mass": binary_top10_sum / max(attention_summary_n, 1),
+        "alpha_bind_top10_mass": alpha_top10_sum / max(attention_summary_n, 1),
     }
 
 

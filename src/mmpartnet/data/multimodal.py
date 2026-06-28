@@ -243,6 +243,7 @@ class MultimodalCollator:
             "cell": [s["cell"] for s in samples],
             "rbp_ct": [s["rbp_ct"] for s in samples],
             "window_name": [s["window_name"] for s in samples],
+            "sequence": [s["sequence"] for s in samples],
             "protein_h5_key": [s["protein_h5_key"] for s in samples],
         }
         if binding:
