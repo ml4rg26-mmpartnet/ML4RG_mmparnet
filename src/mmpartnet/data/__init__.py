@@ -14,6 +14,7 @@ from .base import DataConfig, DataSource, Window
 from .registry import get_source, list_sources, register
 from .loader import iter_records
 from . import preprocess
+from .rbp_binding import RBPBindingDataset, build_dataset
 
 __all__ = ["DataConfig", "DataSource", "Window", "get_source", "list_sources", "register",
-           "iter_records", "preprocess"]
+           "iter_records", "preprocess", "RBPBindingDataset", "build_dataset"]
