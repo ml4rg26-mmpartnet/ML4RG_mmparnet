@@ -164,16 +164,18 @@ ProtT5 residues: [B, Lp, 1024]
 ## Cell Representation
 
 The same RBP can behave differently in different cell lines, so cell context is
-part of the conditioning signal. The model uses a learned cell embedding:
+part of the conditioning signal. The model represents each cell line with a
+learnable embedding vector. In the current default configuration:
 
 ```text
 cell_index: [B]
--> Embedding
-cell vector: [B, cell_dim]
+-> Embedding(num_cell_lines, 32)
+cell embedding: [B, 32]
 ```
 
-The current cell vocabulary is built from the RBP-cell track names, such as
-`QKI_HepG2` and `QKI_K562`.
+The cell vocabulary is built from the cell-line field in the RBP-cell track
+map. For example, tracks such as `QKI_HepG2` and `QKI_K562` share the same RBP
+name but map to different cell indices, `HepG2` and `K562`.
 
 ## Fusion Block
 
@@ -182,7 +184,7 @@ Each fusion block combines the three modalities once:
 ```text
 RNA tokens: [B, 600, 512]
 protein tokens: [B, 256, 512]
-cell vector: [B, cell_dim]
+cell embedding: [B, 32]
 ```
 
 First, the cell vector conditions the RNA tokens with FiLM:
