@@ -168,8 +168,8 @@ part of the conditioning signal. The model represents each cell line with a
 learnable embedding vector. In the current default configuration:
 
 ```text
-cell_index: [B]
--> Embedding(num_cell_lines, 32)
+cell_index: [B]        # 0 = HepG2, 1 = K562 in the current data
+-> Embedding(2, 32)
 cell embedding: [B, 32]
 ```
 
