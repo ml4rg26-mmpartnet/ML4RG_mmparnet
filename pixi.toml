@@ -4,7 +4,7 @@
 name = "mmpartnet"
 version = "0.1.0"
 description = "MultiModal PARNET — protein-conditioned RBP-binding prediction (ML4RG SS26 Project 07)"
-channels = ["conda-forge", "pytorch", "nvidia"]
+channels = ["nvidia", "pytorch", "conda-forge"]
 platforms = ["linux-64"]
 
 [dependencies]
