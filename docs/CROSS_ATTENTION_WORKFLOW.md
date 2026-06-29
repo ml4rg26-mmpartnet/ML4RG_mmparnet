@@ -286,13 +286,6 @@ truly has no binding signal. In that case, the predicted profile is hard to
 interpret: the model must still distribute probability mass across positions,
 even though there may be no real binding event to localize.
 
-To address this, this branch adds a binary binding task in addition to the
-profile task. In the current default setup, profile loss is applied only to
-PureCLIP-positive binding samples, while binary loss is applied to all labeled
-samples. This keeps the profile objective focused on examples with binding
-signal, while giving the model an explicit way to learn binding versus
-non-binding examples.
-
 The binary head has the complementary problem. To turn RNA-position embeddings
 into one binding / not-binding prediction, it needs to pool over positions. A
 simple mean pooling would treat every RNA position equally, but binding is often
