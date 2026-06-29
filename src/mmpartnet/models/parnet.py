@@ -81,6 +81,9 @@ def _install_stubs():
                             "pytorch_lightning.callbacks": cb,
                             "pytorch_lightning.loggers": lg})
     import parnet.models  # noqa: F401 — registers the real classes for the unpickler
+    import parnet.layers as _pl
+    if not hasattr(_pl, "NewAdditiveMix"):
+        _pl.NewAdditiveMix = _pl.AdditiveMix  # checkpoint alias
     _LOADED = True
 
 
