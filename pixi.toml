@@ -5,7 +5,7 @@ name = "mmpartnet"
 version = "0.1.0"
 description = "MultiModal PARNET — protein-conditioned RBP-binding prediction (ML4RG SS26 Project 07)"
 channels = ["conda-forge", "pytorch"]
-platforms = ["linux-64", "win-64"]
+platforms = ["linux-64"]
 
 [dependencies]
 python = ">=3.10,<3.12"
@@ -14,13 +14,13 @@ pytorch = ">=2.1"
 datasets = ">=4.0"
 pyarrow = ">=15"
 h5py = ">=3.10"
-pyfaidx = ">=0.7"
 scikit-learn = ">=1.3"
 pytest = ">=7"
 ruff = ">=0.4"
 
 [pypi-dependencies]
 mmpartnet = { path = ".", editable = true }
+pyfaidx = ">=0.7"
 
 [feature.interp.dependencies]
 captum = ">=0.7"          # Integrated Gradients (optional)
