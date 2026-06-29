@@ -195,11 +195,11 @@ RNA_cell = (1 + tanh(gamma)) * RNA + beta
 ```
 
 This is applied to RNA rather than protein in the first version because the
-protein sequence is the same across cell lines, while cell line effects are
-more likely to change the RNA/eCLIP context, transcript environment, and
-observed binding signal. This is a design choice, not a claim that cell never
-affects protein behavior. Good future ablations include FiLM on protein as
-well, adding cell tokens to attention, or conditioning both modalities.
+final prediction heads operate on RNA-position representations, so cell
+conditioning is injected where the per-position signal is read out. This is a
+modeling choice, not a claim that this is the only correct way to use cell
+context; future ablations can test FiLM on protein, cell tokens in attention, or
+conditioning both modalities.
 
 After cell-FiLM, RNA and protein update each other with synchronous multi-head
 cross-attention:
