@@ -98,12 +98,12 @@ Track-weighted protein length statistics for the 223 matched PARNET tracks:
 | statistic | protein length |
 |---|---:|
 | min | 58 |
-| p10 | 130 |
-| p25 | 271 |
+| 10th percentile | 130 |
+| 25th percentile | 271 |
 | median | 465 |
-| p75 | 688 |
-| p90 | 1004 |
-| p95 | 1268 |
+| 75th percentile | 688 |
+| 90th percentile | 1004 |
+| 95th percentile | 1268 |
 | max | 3323 |
 | mean | 539.3 |
 
