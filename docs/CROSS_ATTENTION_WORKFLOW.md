@@ -27,19 +27,8 @@ git checkout dgu/cross-attention
 
 ## Data Inputs
 
-Use the residue-level ProtT5 H5 for cross-attention:
-
-```text
-/mnt/storage1/ml4rg26-mmparnet/manually_gathered/ProtT5_zenodo_datasets/embeddings_file.h5
-```
-
-Use the pooled ProtT5 H5 only for FiLM-style baselines:
-
-```text
-/mnt/storage1/ml4rg26-mmparnet/manually_gathered/ProtT5_zenodo_datasets/reduced_embeddings_file.h5
-```
-
-The cross-attention collator returns:
+The cross-attention model uses residue-level protein embeddings rather than one
+pooled protein vector. The collator returns:
 
 - `onehot`: RNA one-hot sequence, `[B, 4, 600]`
 - `mask`: valid RNA positions, `[B, 600]`
