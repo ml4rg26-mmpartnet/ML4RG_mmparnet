@@ -195,6 +195,9 @@ def save_training_checkpoint(
                 "num_blocks": args.num_blocks,
                 "cell_dim": args.cell_dim,
                 "dropout": args.dropout,
+                "protein_projection_hidden_dim": args.protein_projection_hidden_dim,
+                "protein_compression": args.protein_compression,
+                "protein_latent_len": args.protein_latent_len,
             },
             "args": vars(args),
             "epoch": epoch,
@@ -403,11 +406,19 @@ def main() -> None:
     parser.add_argument("--balanced-train", action="store_true")
     parser.add_argument("--balanced-pos-fraction", type=float, default=0.5)
     parser.add_argument("--steps-per-epoch", type=int, default=None)
-    parser.add_argument("--hidden-dim", type=int, default=256)
+    parser.add_argument("--hidden-dim", type=int, default=512)
     parser.add_argument("--num-heads", type=int, default=8)
     parser.add_argument("--num-blocks", type=int, default=1)
     parser.add_argument("--cell-dim", type=int, default=32)
     parser.add_argument("--max-protein-len", type=int, default=None)
+    parser.add_argument(
+        "--protein-projection-hidden-dim",
+        type=int,
+        default=768,
+        help="Middle dimension for protein projection MLP. Use 0 for the old single Linear projection.",
+    )
+    parser.add_argument("--protein-compression", default="latent", choices=["none", "latent"])
+    parser.add_argument("--protein-latent-len", type=int, default=256)
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=0.0)
@@ -488,6 +499,10 @@ def main() -> None:
     print(f"include_short:  {args.include_short}")
     print(f"balanced_train: {args.balanced_train}")
     print(f"max_protein_len:{args.max_protein_len}")
+    print(f"hidden_dim:     {args.hidden_dim}")
+    print(f"protein_proj_h: {args.protein_projection_hidden_dim}")
+    print(f"protein_comp:   {args.protein_compression}")
+    print(f"protein_latent: {args.protein_latent_len}")
     if args.balanced_train:
         print(f"balanced_pos:   {args.balanced_pos_fraction}")
         print(f"steps/epoch:    {args.steps_per_epoch or 1000}")
@@ -510,6 +525,9 @@ def main() -> None:
         num_heads=args.num_heads,
         num_blocks=args.num_blocks,
         dropout=args.dropout,
+        protein_projection_hidden_dim=args.protein_projection_hidden_dim,
+        protein_compression=args.protein_compression,
+        protein_latent_len=args.protein_latent_len,
     ).to(device)
     optimizer = torch.optim.AdamW(head.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 

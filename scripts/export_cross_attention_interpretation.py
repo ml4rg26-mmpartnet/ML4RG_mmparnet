@@ -209,6 +209,9 @@ def main() -> None:
         num_heads=int(config.get("num_heads", 8)),
         num_blocks=int(config.get("num_blocks", 1)),
         dropout=float(config.get("dropout", 0.1)),
+        protein_projection_hidden_dim=int(config.get("protein_projection_hidden_dim", 0)),
+        protein_compression=str(config.get("protein_compression", "none")),
+        protein_latent_len=int(config.get("protein_latent_len", 256)),
     ).to(device)
     head.load_state_dict(checkpoint["model_state_dict"])
     head.eval()

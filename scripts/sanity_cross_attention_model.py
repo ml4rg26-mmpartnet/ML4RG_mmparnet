@@ -31,10 +31,13 @@ def main() -> None:
     parser.add_argument("--protein-len", type=int, default=350)
     parser.add_argument("--rna-channels", type=int, default=512)
     parser.add_argument("--protein-dim", type=int, default=1024)
-    parser.add_argument("--hidden-dim", type=int, default=256)
+    parser.add_argument("--hidden-dim", type=int, default=512)
     parser.add_argument("--num-heads", type=int, default=8)
     parser.add_argument("--num-blocks", type=int, default=1)
     parser.add_argument("--cell-count", type=int, default=2)
+    parser.add_argument("--protein-projection-hidden-dim", type=int, default=768)
+    parser.add_argument("--protein-compression", default="latent", choices=["none", "latent"])
+    parser.add_argument("--protein-latent-len", type=int, default=256)
     args = parser.parse_args()
 
     torch.manual_seed(0)
@@ -58,6 +61,9 @@ def main() -> None:
         num_heads=args.num_heads,
         num_blocks=args.num_blocks,
         cell_count=args.cell_count,
+        protein_projection_hidden_dim=args.protein_projection_hidden_dim,
+        protein_compression=args.protein_compression,
+        protein_latent_len=args.protein_latent_len,
     )
     out = model(rna, protein, cell_index, mask=mask, protein_mask=protein_mask)
     losses = model.loss_components(
