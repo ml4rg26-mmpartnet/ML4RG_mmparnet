@@ -45,7 +45,7 @@ By default, the model keeps residue-level inputs but compresses long proteins
 inside the model with learned latent queries:
 
 - protein projection: `1024 -> 768 -> 512`
-- latent protein length: at most 256 tokens
+- latent protein length: fixed 256 tokens
 - padding residues are masked and cannot be attended to
 
 For ablations, pass `--protein-compression none` to use the full padded protein
@@ -58,7 +58,7 @@ Among the 223 matched PARNET tracks, the longest mapped protein is currently
 ```text
 RNA one-hot -> frozen PARNET body -> RNA tokens [B, 600, 512]
 ProtT5 residues -> protein MLP -> protein tokens [B, Lp, 512]
-protein tokens -> latent-query compression -> protein tokens [B, <=256, 512]
+protein tokens -> latent-query compression -> protein tokens [B, 256, 512]
 cell id -> cell embedding
 
 for each block:
@@ -178,7 +178,7 @@ The main architectural path is:
 ```text
 RNA one-hot -> frozen PARNET body -> [B, C, 600]
 ProtT5 residues -> [B, Lp, 1024]
-Protein MLP + latent-query compression -> [B, <=256, 512]
+Protein MLP + latent-query compression -> [B, 256, 512]
 RNA positions query compressed protein tokens with cell-conditioned cross-attention
 fused RNA tokens -> profile head + binary binding head
 ```

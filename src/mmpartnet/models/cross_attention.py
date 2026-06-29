@@ -144,9 +144,6 @@ class _LatentProteinCompressor(nn.Module):
         protein: torch.Tensor,
         protein_mask: torch.Tensor | None,
     ) -> tuple[torch.Tensor, torch.Tensor | None]:
-        if protein.shape[1] <= self.latent_len:
-            return protein, protein_mask
-
         batch_size = protein.shape[0]
         queries = self.latent_queries.unsqueeze(0).expand(batch_size, -1, -1)
         key_padding_mask = None if protein_mask is None else ~protein_mask.bool()
