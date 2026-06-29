@@ -221,9 +221,11 @@ def run_epoch(
     min_count: float,
     max_batches: int | None,
     mix_penalty: float,
+    lambda_profile: float,
     lambda_binary: float,
     binary_pos_weight: float | None,
     profile_mask_source: str,
+    task: str,
     progress_every: int,
 ) -> dict:
     training = optimizer is not None
@@ -288,9 +290,11 @@ def run_epoch(
             protein_mask=protein_mask,
             min_count=min_count,
             mix_penalty=mix_penalty,
+            lambda_profile=lambda_profile,
             lambda_binary=lambda_binary,
             profile_mask=profile_mask,
             binary_pos_weight=binary_pos_weight,
+            task=task,
         )
         loss = losses["loss"]
         if training:
@@ -304,10 +308,11 @@ def run_epoch(
         profile_mask_n += int(losses["profile_n"].detach().cpu())
         loss_n += 1
         with torch.no_grad():
-            out = head(rna_features, protein, cell_index, mask=batch["mask"], protein_mask=protein_mask)
-            ps, pn = pearson_sum(out["total"], batch["eclip"], min_count, mask=batch["mask"], valid_mask=profile_mask)
-            pear_sum += ps
-            pear_n += pn
+            out = head(rna_features, protein, cell_index, mask=batch["mask"], protein_mask=protein_mask, task=task)
+            if "total" in out:
+                ps, pn = pearson_sum(out["total"], batch["eclip"], min_count, mask=batch["mask"], valid_mask=profile_mask)
+                pear_sum += ps
+                pear_n += pn
             if "binding_gate" in out:
                 gate = out["binding_gate"].detach()
                 gate_sum += float(gate.sum().cpu())
@@ -322,21 +327,24 @@ def run_epoch(
                     if bool(neg_mask.any()):
                         gate_neg_sum += float(gate[neg_mask].sum().cpu())
                         gate_neg_n += int(neg_mask.sum().cpu())
-            if "target" in out and "binary_position_prob" in out and "alpha_bind" in out:
+            if "target" in out:
                 target_prob = out["target"].detach()
-                binary_prob = out["binary_position_prob"].detach()
-                alpha_prob = out["alpha_bind"].detach()
                 target_entropy_sum += float(distribution_entropy(target_prob).cpu())
-                binary_entropy_sum += float(distribution_entropy(binary_prob).cpu())
-                alpha_entropy_sum += float(distribution_entropy(alpha_prob).cpu())
                 target_max_sum += float(distribution_max(target_prob).cpu())
-                binary_max_sum += float(distribution_max(binary_prob).cpu())
-                alpha_max_sum += float(distribution_max(alpha_prob).cpu())
                 target_top10_sum += float(distribution_topk_mass(target_prob, k=10).cpu())
+            if "binary_position_prob" in out:
+                binary_prob = out["binary_position_prob"].detach()
+                binary_entropy_sum += float(distribution_entropy(binary_prob).cpu())
+                binary_max_sum += float(distribution_max(binary_prob).cpu())
                 binary_top10_sum += float(distribution_topk_mass(binary_prob, k=10).cpu())
+            if "alpha_bind" in out:
+                alpha_prob = out["alpha_bind"].detach()
+                alpha_entropy_sum += float(distribution_entropy(alpha_prob).cpu())
+                alpha_max_sum += float(distribution_max(alpha_prob).cpu())
                 alpha_top10_sum += float(distribution_topk_mass(alpha_prob, k=10).cpu())
+            if "target" in out or "binary_position_prob" in out or "alpha_bind" in out:
                 attention_summary_n += 1
-            if binding is not None:
+            if "binding_logit" in out and binding is not None:
                 bs = binary_stats(out["binding_logit"], binding)
                 binding_n += bs["n"]
                 binding_pos += bs["pos"]
@@ -424,6 +432,7 @@ def main() -> None:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--min-count", type=float, default=10.0)
     parser.add_argument("--mix-penalty", type=float, default=0.0)
+    parser.add_argument("--lambda-profile", type=float, default=1.0)
     parser.add_argument("--lambda-binary", type=float, default=20.0)
     parser.add_argument("--binary-pos-weight", type=float, default=None)
     parser.add_argument(
@@ -431,6 +440,7 @@ def main() -> None:
         default="binding",
         choices=["binding", "count", "binding-and-count"],
     )
+    parser.add_argument("--task", default="multitask", choices=["multitask", "profile-only", "binary-only"])
     parser.add_argument("--mode", default="multimodal", choices=["multimodal", "rna-only", "protein-shuffle", "no-cell"])
     parser.add_argument("--device", default=None, choices=[None, "cpu", "cuda"])
     parser.add_argument("--num-workers", type=int, default=0)
@@ -495,6 +505,7 @@ def main() -> None:
     )
 
     print(f"device:         {device}")
+    print(f"task:           {args.task}")
     print(f"mode:           {args.mode}")
     print(f"include_short:  {args.include_short}")
     print(f"balanced_train: {args.balanced_train}")
@@ -589,9 +600,11 @@ def main() -> None:
             min_count=args.min_count,
             max_batches=args.max_train_batches,
             mix_penalty=args.mix_penalty,
+            lambda_profile=args.lambda_profile,
             lambda_binary=args.lambda_binary,
             binary_pos_weight=args.binary_pos_weight,
             profile_mask_source=args.profile_mask_source,
+            task=args.task,
             progress_every=args.progress_every,
         )
         with torch.no_grad():
@@ -605,9 +618,11 @@ def main() -> None:
                 min_count=args.min_count,
                 max_batches=args.max_valid_batches,
                 mix_penalty=args.mix_penalty,
+                lambda_profile=args.lambda_profile,
                 lambda_binary=args.lambda_binary,
                 binary_pos_weight=args.binary_pos_weight,
                 profile_mask_source=args.profile_mask_source,
+                task=args.task,
                 progress_every=0,
             )
         row = {"epoch": epoch, "train": train_stats, "valid": valid_stats}

@@ -308,23 +308,34 @@ profile loss. Conceptually, `target_prob` is the model's estimate of the
 protein-specific signal distribution, after separating it from the control
 profile/background component.
 
-The current binary head therefore uses `target_prob` as one candidate position
-distribution. To avoid making the binary classifier depend entirely on the
-profile head, it also learns its own binary-specific distribution,
-`binary_prob`, and a gate that mixes the two:
+In multitask mode, the binary head therefore uses `target_prob` as one
+candidate position distribution. To avoid making the binary classifier depend
+entirely on the profile head, it also learns its own binary-specific
+distribution, `binary_prob`, and a gate that mixes the two:
 
 ```text
 alpha_bind = gate * target_prob + (1 - gate) * binary_prob
 ```
 
-In the current implementation, all samples go through the profile head and
-produce `target_prob`, but only positive binding samples contribute to
-`profile_loss`. All labeled samples contribute to `binary_loss`. Since
-`target_prob` is passed into the binary head without detaching it, binary loss
-can send gradients through `target_prob` into the target-profile branch. This
-means negative samples still influence the target-profile branch indirectly
-through the binary objective, without pretending that zero-read negative samples
-provide direct profile supervision.
+In `--task multitask`, all samples go through both heads and produce
+`target_prob`, but only profile-kept samples contribute to `profile_loss`. All
+labeled samples contribute to `binary_loss`. Since `target_prob` is passed into
+the binary head without detaching it, binary loss can send gradients through
+`target_prob` into the target-profile branch. This means negative samples can
+influence the target-profile branch indirectly through the binary objective,
+without pretending that zero-read negative samples provide direct profile
+supervision.
+
+For clean ablations, `--task profile-only` skips the binary head entirely, and
+`--task binary-only` skips the profile heads entirely. In `binary-only`, the
+binding classifier pools with the binary head's own learned position
+distribution:
+
+```text
+alpha_bind = binary_prob
+```
+
+so it does not borrow `target_prob` or any profile-head parameters.
 
 This coupling is also useful for interpretation. After training, we can compare
 `target_prob`, `binary_prob`, `alpha_bind`, and `gate` against known motifs to
@@ -385,8 +396,8 @@ binary_score = Linear(Z)              -> [B, 600]
 binary_prob  = softmax(binary_score)  -> [B, 600]
 ```
 
-The binary head then mixes its own distribution with the profile head's
-predicted target distribution:
+In `--task multitask`, the binary head then mixes its own distribution with the
+profile head's predicted target distribution:
 
 ```text
 gate = sigmoid(MLP(masked_mean(Z))) -> [B]
@@ -404,20 +415,21 @@ binding_prob = sigmoid(binding_logit)
 
 This design keeps the biological intuition that profile peaks should help
 binding classification, while still allowing the binary head to learn its own
-position weighting when the predicted profile is not reliable.
+position weighting when the predicted profile is not reliable. In
+`--task binary-only`, this coupling is removed and `alpha_bind = binary_prob`.
 
 ### Total Loss
 
 The total training loss is:
 
 ```text
-total_loss = profile_loss + lambda_binary * binary_loss
+total_loss = lambda_profile * profile_loss + lambda_binary * binary_loss
 ```
 
 with optional `mix_penalty`:
 
 ```text
-total_loss = profile_loss + lambda_binary * binary_loss
+total_loss = lambda_profile * profile_loss + lambda_binary * binary_loss
            + mix_penalty * mean(mix_coeff)
 ```
 
@@ -430,23 +442,32 @@ binary_loss = BCEWithLogitsLoss(binding_logit, binding_label)
 Important detail:
 
 ```text
-All samples go through the profile head and produce target_prob.
-Only profile_keep samples contribute profile_loss.
-All labeled samples contribute binary_loss.
+--task multitask:
+  profile head and binary head both run
+  binary pooling uses gated target_prob/binary_prob mixture
+
+--task profile-only:
+  only target/control/mix profile heads run
+  binary_loss = 0
+
+--task binary-only:
+  only binary position pooling and binary classifier run
+  alpha_bind = binary_position_prob
+  profile_loss = 0
 ```
 
-Because `target_prob` is used inside the binary head, binary loss can still send
-gradient through the target-profile branch even for negative samples.
+Only `multitask` uses `target_prob` inside the binary head. Therefore only
+`multitask` sends binary gradients through the target-profile branch.
 
 ## Interpretability Outputs
 
 The forward pass returns:
 
-- `target`: predicted target profile distribution, `[B, 600]`
-- `binary_position_prob`: binary head's own position distribution, `[B, 600]`
-- `alpha_bind`: final mixed pooling distribution, `[B, 600]`
-- `binding_gate`: how much the binary head relies on `target_prob` vs `binary_prob`, `[B]`
-- `binding_prob`: final binding probability, `[B]`
+- `target`: predicted target profile distribution, `[B, 600]`; present in `multitask` and `profile-only`
+- `binary_position_prob`: binary head's own position distribution, `[B, 600]`; present in `multitask` and `binary-only`
+- `alpha_bind`: final pooling distribution, `[B, 600]`; gated mixture in `multitask`, equal to `binary_position_prob` in `binary-only`
+- `binding_gate`: how much the binary head relies on `target_prob` vs `binary_prob`, `[B]`; present in `multitask`
+- `binding_prob`: final binding probability, `[B]`; present in `multitask` and `binary-only`
 
 These are the main tensors to compare against known motifs. The export script
 saves full per-sample distributions and optional motif overlap metrics.
@@ -554,10 +575,98 @@ letters; common IUPAC ambiguity codes are supported.
 
 ## Ablations To Discuss
 
+- `--task multitask`: coupled profile and binary heads. Binary pooling uses a
+  gated mixture of `target_prob` and `binary_position_prob`.
+- `--task profile-only`: skips the binary head entirely. Use this to test
+  whether binary supervision improves profile localization.
+- `--task binary-only`: skips target/control/mix profile heads entirely. The
+  binary classifier pools with only its own learned `binary_position_prob`. Use
+  this to test whether profile-guided pooling improves binding classification.
 - `--protein-compression none`: full residue tokens instead of latent-query compression.
 - `--protein-latent-len`: compare 128, 256, and 512 latent protein tokens.
 - `--num-blocks`: compare 1, 2, and 3 fusion blocks.
 - Cell conditioning variants: RNA-only FiLM, RNA+protein FiLM, or cell tokens in attention.
+
+Suggested first task ablation set:
+
+The repository includes a helper script that launches the three core task
+ablations with consistent names and output paths:
+
+```bash
+bash scripts/run_cross_attention_task_ablation.sh pilot tmux
+```
+
+The pilot suite uses tracks `9,138,195`, two epochs, and 100 steps per epoch.
+Once the pilot looks healthy, launch the formal suite:
+
+```bash
+bash scripts/run_cross_attention_task_ablation.sh formal tmux
+```
+
+By default the script writes to `/home/dgu/cross_attention_runs` and uses
+`/home/dgu/venvs/torch39/bin/python`. Override these with `OUT_DIR=...` and
+`PYTHON=...` if needed. Use `print` instead of `tmux` to inspect the commands
+without launching jobs:
+
+```bash
+bash scripts/run_cross_attention_task_ablation.sh formal print
+```
+
+The generated formal commands are:
+
+```bash
+.venv/bin/python scripts/train_cross_attention_profile.py \
+  --task multitask \
+  --tracks all \
+  --max-train-windows 0 \
+  --max-valid-windows 0 \
+  --batch-size 8 \
+  --epochs 15 \
+  --balanced-train \
+  --steps-per-epoch 1000 \
+  --balanced-pos-fraction 0.5 \
+  --lambda-profile 1 \
+  --lambda-binary 10 \
+  --profile-mask-source binding \
+  --num-blocks 1 \
+  --run-name formal_cross_attention_multitask_l10_15x1000_seed0
+```
+
+```bash
+.venv/bin/python scripts/train_cross_attention_profile.py \
+  --task profile-only \
+  --tracks all \
+  --max-train-windows 0 \
+  --max-valid-windows 0 \
+  --batch-size 8 \
+  --epochs 15 \
+  --balanced-train \
+  --steps-per-epoch 1000 \
+  --balanced-pos-fraction 1.0 \
+  --lambda-profile 1 \
+  --lambda-binary 0 \
+  --profile-mask-source binding \
+  --num-blocks 1 \
+  --run-name formal_cross_attention_profile_only_15x1000_seed0
+```
+
+```bash
+.venv/bin/python scripts/train_cross_attention_profile.py \
+  --task binary-only \
+  --tracks all \
+  --max-train-windows 0 \
+  --max-valid-windows 0 \
+  --batch-size 8 \
+  --epochs 15 \
+  --balanced-train \
+  --steps-per-epoch 1000 \
+  --balanced-pos-fraction 0.5 \
+  --lambda-profile 0 \
+  --lambda-binary 10 \
+  --profile-mask-source binding \
+  --num-blocks 1 \
+  --run-name formal_cross_attention_binary_only_l10_15x1000_seed0
+```
 - Binary pooling variants: use only `target_prob`, only `binary_prob`, or the current gated mixture.
 - Profile supervision variants: PureCLIP positives only, count threshold only, or binding-and-count.
 

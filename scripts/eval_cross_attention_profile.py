@@ -60,6 +60,7 @@ def main() -> None:
     parser.add_argument("--mode", default=None, choices=[None, "multimodal", "rna-only", "protein-shuffle", "no-cell"])
     parser.add_argument("--min-count", type=float, default=None)
     parser.add_argument("--mix-penalty", type=float, default=None)
+    parser.add_argument("--lambda-profile", type=float, default=None)
     parser.add_argument("--lambda-binary", type=float, default=None)
     parser.add_argument("--binary-pos-weight", type=float, default=None)
     parser.add_argument(
@@ -67,6 +68,7 @@ def main() -> None:
         default=None,
         choices=[None, "binding", "count", "binding-and-count"],
     )
+    parser.add_argument("--task", default=None, choices=[None, "multitask", "profile-only", "binary-only"])
     parser.add_argument("--device", default=None, choices=[None, "cpu", "cuda"])
     parser.add_argument("--num-workers", type=int, default=0)
     parser.add_argument("--out", type=Path, default=None, help="Optional JSON path for evaluation metrics.")
@@ -92,9 +94,11 @@ def main() -> None:
     mode = arg_or_checkpoint(args.mode, ckpt_args, "mode", "multimodal")
     min_count = float(arg_or_checkpoint(args.min_count, ckpt_args, "min_count", 10.0))
     mix_penalty = float(arg_or_checkpoint(args.mix_penalty, ckpt_args, "mix_penalty", 0.0))
+    lambda_profile = float(arg_or_checkpoint(args.lambda_profile, ckpt_args, "lambda_profile", 1.0))
     lambda_binary = float(arg_or_checkpoint(args.lambda_binary, ckpt_args, "lambda_binary", 1.0))
     binary_pos_weight = arg_or_checkpoint(args.binary_pos_weight, ckpt_args, "binary_pos_weight", None)
     profile_mask_source = arg_or_checkpoint(args.profile_mask_source, ckpt_args, "profile_mask_source", "binding")
+    task = arg_or_checkpoint(args.task, ckpt_args, "task", "multitask")
 
     track_indices = parse_tracks(str(tracks_value))
     track_map = load_track_protein_map(track_map_path)
@@ -125,6 +129,7 @@ def main() -> None:
     print(f"checkpoint:     {args.checkpoint}")
     print(f"device:         {device}")
     print(f"split:          {args.split}")
+    print(f"task:           {task}")
     print(f"mode:           {mode}")
     print(f"max_protein_len:{max_protein_len}")
     print(f"tracks:         {'all matched tracks' if track_indices is None else track_indices}")
@@ -159,9 +164,11 @@ def main() -> None:
             min_count=min_count,
             max_batches=args.max_batches,
             mix_penalty=mix_penalty,
+            lambda_profile=lambda_profile,
             lambda_binary=lambda_binary,
             binary_pos_weight=binary_pos_weight,
             profile_mask_source=profile_mask_source,
+            task=task,
             progress_every=0,
         )
 
@@ -178,7 +185,9 @@ def main() -> None:
             "batch_size": batch_size,
             "max_batches": args.max_batches,
             "max_protein_len": max_protein_len,
+            "task": task,
             "mode": mode,
+            "lambda_profile": lambda_profile,
             "lambda_binary": lambda_binary,
             "profile_mask_source": profile_mask_source,
         },

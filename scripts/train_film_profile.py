@@ -78,8 +78,8 @@ class BindingBalancedSampler(Sampler[int]):
     ):
         if dataset.binding_split is None:
             raise ValueError("balanced sampling requires binding labels")
-        if not 0.0 < positive_fraction < 1.0:
-            raise ValueError("positive_fraction must be between 0 and 1")
+        if not 0.0 < positive_fraction <= 1.0:
+            raise ValueError("positive_fraction must be in (0, 1]")
         self.dataset = dataset
         self.positive_fraction = positive_fraction
         self.num_samples = int(num_samples)
