@@ -255,6 +255,46 @@ protein-aware and cell-aware context.
 
 The model has two output heads: a profile head and a binary binding head.
 
+### Why Couple The Two Heads?
+
+A profile-only objective has an important limitation: samples with no usable
+profile signal should not meaningfully contribute profile loss. For example, if
+all observed eCLIP counts are zero, the multinomial-style profile loss has no
+position-level information to learn from. Including many such samples in the
+profile loss would not teach the model where signal should be; it would mostly
+dilute the supervised profile objective.
+
+A binary-only head has a different issue. To make a binding decision from
+RNA-position features, it still needs a position weighting mechanism: the model
+must decide which RNA positions are most relevant for the final classification.
+This looks very similar to profile prediction, because the target profile head
+also produces a probability distribution over RNA positions.
+
+The current design therefore couples the two heads:
+
+```text
+profile head predicts target_prob: [B, 600]
+binary head can use target_prob as one candidate position distribution
+```
+
+Here `target_prob` means the model-predicted target profile distribution, not
+the observed eCLIP counts. The observed counts are only used in the profile
+loss.
+
+To avoid forcing the binary classifier to rely only on the profile distribution,
+the binary head also learns its own distribution, `binary_prob`, and then learns
+a gate that mixes the two. This keeps the profile-guided intuition while still
+allowing the binary head to choose a different position weighting when
+`target_prob` is not reliable.
+
+In the current implementation, all samples go through the profile head and
+produce `target_prob`, but only selected samples contribute to `profile_loss`.
+All labeled samples contribute to `binary_loss`. Since `target_prob` is used
+inside the binary head without detaching it, binary loss can send gradients into
+the target-profile branch even for negative samples. This gives the profile
+branch some information from negative samples through the binary objective,
+without pretending that zero-read negatives provide direct profile supervision.
+
 ### Profile Head
 
 The profile head predicts target and control position distributions:
@@ -309,11 +349,8 @@ binary_score = Linear(Z)              -> [B, 600]
 binary_prob  = softmax(binary_score)  -> [B, 600]
 ```
 
-The profile head already predicts `target_prob`, which can be interpreted as
-where the model thinks the protein-specific signal lies on the RNA. This is
-useful for binary classification, but using it alone is risky because a softmax
-distribution always sums to 1, even for negative samples. Therefore the binary
-head uses a gate to mix profile-based pooling and binary-specific pooling:
+The binary head then mixes its own distribution with the profile head's
+predicted target distribution:
 
 ```text
 gate = sigmoid(MLP(masked_mean(Z))) -> [B]
