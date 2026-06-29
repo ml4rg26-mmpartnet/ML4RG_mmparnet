@@ -257,19 +257,41 @@ The model has two output heads: a profile head and a binary binding head.
 
 ### Why Couple The Two Heads?
 
-The design starts from a limitation of the original profile-style objective. In
-RBPNet/PARNET-style training, samples below a read-count threshold can still go
-through the forward pass, but they do not provide useful profile loss. If a
-sample has no observed eCLIP reads, forcing the model to learn a detailed
-position profile from that sample is not meaningful: there is no positional
-signal telling the model where binding occurred. For true non-binding samples,
-it is also biologically awkward to force the model to predict a sharp binding
-profile. Therefore, in this branch, profile loss is only applied to positive
-binding samples.
+The motivation starts from a limitation of the original profile-style objective.
+RBPNet/PARNET is mainly a profile prediction model: for each RNA window and
+track, it predicts a normalized profile across the 600 nt window. During profile
+training, however, not every window-track pair contributes to the loss. The
+training code first sums the observed eCLIP reads across the whole window for
+that track. If the total read count is below a threshold, such as
+`min_count = 10`, the model can still run the forward pass and produce a
+predicted profile, but that pair is filtered out of the profile loss:
 
-However, this creates a gap: if the profile head is trained only through
-positive profile loss, negative samples do not directly teach the profile head
-what non-binding examples look like.
+```text
+predicted profile is computed
+true eCLIP reads across the whole window < min_count
+  -> profile loss is not computed for this pair
+  -> this pair does not contribute to backpropagation through profile loss
+  -> this pair does not update the model parameters through profile loss
+```
+
+This is reasonable for profile prediction, because a very low-read window may
+not have a reliable profile shape. However, it also means the profile objective
+mostly learns from window-track pairs with enough reads. In other words, the
+profile objective teaches the model what signal-containing examples look like,
+but gives much weaker supervision about no-signal or non-binding examples.
+
+This also matters at inference time. The profile head always outputs a
+normalized probability distribution, even for an RNA-protein-cell pair that
+truly has no binding signal. In that case, the predicted profile is hard to
+interpret: the model must still distribute probability mass across positions,
+even though there may be no real binding event to localize.
+
+To address this, this branch adds a binary binding task in addition to the
+profile task. In the current default setup, profile loss is applied only to
+PureCLIP-positive binding samples, while binary loss is applied to all labeled
+samples. This keeps the profile objective focused on examples with binding
+signal, while giving the model an explicit way to learn binding versus
+non-binding examples.
 
 The binary head has the complementary problem. To turn RNA-position embeddings
 into one binding / not-binding prediction, it needs to pool over positions. A
