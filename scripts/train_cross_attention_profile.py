@@ -139,9 +139,9 @@ def apply_mode(batch: dict, mode: str) -> tuple[torch.Tensor, torch.Tensor, torc
     if mode == "multimodal":
         return protein, protein_mask, cell_index
     if mode == "rna-only":
-        return torch.zeros_like(protein), protein_mask, torch.zeros_like(cell_index)
+        return torch.zeros_like(protein), protein_mask, torch.full_like(cell_index, -1)
     if mode == "no-cell":
-        return protein, protein_mask, torch.zeros_like(cell_index)
+        return protein, protein_mask, torch.full_like(cell_index, -1)
     if mode == "protein-shuffle":
         if protein.shape[0] <= 1:
             return protein, protein_mask, cell_index

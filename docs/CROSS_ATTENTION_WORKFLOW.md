@@ -564,6 +564,6 @@ letters; common IUPAC ambiguity codes are supported.
 ## Modes
 
 - `multimodal`: RNA + residue-level protein + cell.
-- `rna-only`: zeros protein tokens and cell ids.
-- `no-cell`: uses protein tokens but zeros cell ids.
+- `rna-only`: zeros protein residue embeddings and uses zero cell embedding.
+- `no-cell`: uses protein tokens but uses zero cell embedding.
 - `protein-shuffle`: shuffles protein tokens across the batch.

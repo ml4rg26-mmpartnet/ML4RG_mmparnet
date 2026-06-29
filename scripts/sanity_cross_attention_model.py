@@ -66,6 +66,7 @@ def main() -> None:
         protein_latent_len=args.protein_latent_len,
     )
     out = model(rna, protein, cell_index, mask=mask, protein_mask=protein_mask)
+    no_cell_out = model(rna, protein, torch.full_like(cell_index, -1), mask=mask, protein_mask=protein_mask)
     losses = model.loss_components(
         rna,
         protein,
@@ -97,6 +98,7 @@ def main() -> None:
     assert out["binding_gate"].shape == (args.batch_size,)
     assert out["binary_position_prob"].shape == (args.batch_size, args.seq_len)
     assert out["alpha_bind"].shape == (args.batch_size, args.seq_len)
+    assert no_cell_out["target"].shape == (args.batch_size, args.seq_len)
     assert torch.allclose(out["target"].sum(dim=-1), torch.ones(args.batch_size), atol=1e-5)
     assert torch.allclose(out["control"].sum(dim=-1), torch.ones(args.batch_size), atol=1e-5)
     assert torch.allclose(out["total"].sum(dim=-1), torch.ones(args.batch_size), atol=1e-5)

@@ -273,7 +273,9 @@ class ProteinCellCrossAttentionProfileHead(nn.Module):
         protein_mask: torch.Tensor | None,
     ) -> torch.Tensor:
         rna_tokens = rna_features.transpose(1, 2)
-        cell = self.cell_embedding(cell_index)
+        valid_cell = cell_index >= 0
+        cell = self.cell_embedding(cell_index.clamp_min(0))
+        cell = cell * valid_cell.to(dtype=cell.dtype).unsqueeze(-1)
         rna = self.rna_norm(self.rna_projection(rna_tokens))
         protein = self.protein_norm(self.protein_projection(protein_residue_embedding))
         if self.protein_compressor is not None:
