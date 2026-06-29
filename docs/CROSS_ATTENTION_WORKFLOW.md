@@ -257,43 +257,64 @@ The model has two output heads: a profile head and a binary binding head.
 
 ### Why Couple The Two Heads?
 
-A profile-only objective has an important limitation: samples with no usable
-profile signal should not meaningfully contribute profile loss. For example, if
-all observed eCLIP counts are zero, the multinomial-style profile loss has no
-position-level information to learn from. Including many such samples in the
-profile loss would not teach the model where signal should be; it would mostly
-dilute the supervised profile objective.
+The design starts from a limitation of the original profile-style objective. In
+RBPNet/PARNET-style training, samples below a read-count threshold can still go
+through the forward pass, but they do not provide useful profile loss. If a
+sample has no observed eCLIP reads, forcing the model to learn a detailed
+position profile from that sample is not meaningful: there is no positional
+signal telling the model where binding occurred. For true non-binding samples,
+it is also biologically awkward to force the model to predict a sharp binding
+profile. Therefore, in this branch, profile loss is only applied to positive
+binding samples.
 
-A binary-only head has a different issue. To make a binding decision from
-RNA-position features, it still needs a position weighting mechanism: the model
-must decide which RNA positions are most relevant for the final classification.
-This looks very similar to profile prediction, because the target profile head
-also produces a probability distribution over RNA positions.
+However, this creates a gap: if the profile head is trained only through
+positive profile loss, negative samples do not directly teach the profile head
+what non-binding examples look like.
 
-The current design therefore couples the two heads:
+The binary head has the complementary problem. To turn RNA-position embeddings
+into one binding / not-binding prediction, it needs to pool over positions. A
+simple mean pooling would treat every RNA position equally, but binding is often
+driven by a small motif-like region. Therefore the binary head should learn a
+position probability distribution telling it which positions to focus on:
 
 ```text
-profile head predicts target_prob: [B, 600]
-binary head can use target_prob as one candidate position distribution
+binary_prob: [B, 600]
 ```
 
-Here `target_prob` means the model-predicted target profile distribution, not
-the observed eCLIP counts. The observed counts are only used in the profile
-loss.
+This is very close in spirit to what the profile head already predicts:
 
-To avoid forcing the binary classifier to rely only on the profile distribution,
-the binary head also learns its own distribution, `binary_prob`, and then learns
-a gate that mixes the two. This keeps the profile-guided intuition while still
-allowing the binary head to choose a different position weighting when
-`target_prob` is not reliable.
+```text
+target_prob: [B, 600]
+```
+
+Here `target_prob` is the model-predicted target profile distribution, not the
+observed eCLIP count distribution. The observed eCLIP counts are used only for
+profile loss. Conceptually, `target_prob` is the model's estimate of the
+protein-specific signal distribution, after separating it from the control
+profile/background component.
+
+The current binary head therefore uses `target_prob` as one candidate position
+distribution. To avoid making the binary classifier depend entirely on the
+profile head, it also learns its own binary-specific distribution,
+`binary_prob`, and a gate that mixes the two:
+
+```text
+alpha_bind = gate * target_prob + (1 - gate) * binary_prob
+```
 
 In the current implementation, all samples go through the profile head and
-produce `target_prob`, but only selected samples contribute to `profile_loss`.
-All labeled samples contribute to `binary_loss`. Since `target_prob` is used
-inside the binary head without detaching it, binary loss can send gradients into
-the target-profile branch even for negative samples. This gives the profile
-branch some information from negative samples through the binary objective,
-without pretending that zero-read negatives provide direct profile supervision.
+produce `target_prob`, but only positive binding samples contribute to
+`profile_loss`. All labeled samples contribute to `binary_loss`. Since
+`target_prob` is passed into the binary head without detaching it, binary loss
+can send gradients through `target_prob` into the target-profile branch. This
+means negative samples still influence the target-profile branch indirectly
+through the binary objective, without pretending that zero-read negative samples
+provide direct profile supervision.
+
+This coupling is also useful for interpretation. After training, we can compare
+`target_prob`, `binary_prob`, `alpha_bind`, and `gate` against known motifs to
+ask which distribution actually focuses on motif positions, and whether mixing
+the profile-guided and binary-specific distributions helps.
 
 ### Profile Head
 
