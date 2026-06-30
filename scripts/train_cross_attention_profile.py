@@ -24,7 +24,7 @@ if str(REPO) not in sys.path:
 
 import torch
 from datasets import load_from_disk
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Sampler
 
 from mmpartnet.data.multimodal import (
     MultimodalCollator,
@@ -55,6 +55,24 @@ DEFAULT_BINDING = (
 DEFAULT_OUT = REPO / "mmpartnet_out/cross_attention_runs"
 
 
+class FixedSubsetSampler(Sampler[int]):
+    """Iterate a fixed, deterministic subset of flattened dataset indices."""
+
+    def __init__(self, dataset_size: int, *, num_samples: int, seed: int):
+        if num_samples <= 0:
+            raise ValueError("num_samples must be positive")
+        generator = torch.Generator()
+        generator.manual_seed(int(seed))
+        keep = min(int(num_samples), int(dataset_size))
+        self.indices = torch.randperm(int(dataset_size), generator=generator)[:keep].tolist()
+
+    def __iter__(self):
+        return iter(self.indices)
+
+    def __len__(self) -> int:
+        return len(self.indices)
+
+
 def make_loader(
     hfds,
     binding_data,
@@ -75,6 +93,8 @@ def make_loader(
     seed: int,
     num_workers: int,
     max_protein_len: int | None,
+    sample_size: int | None = None,
+    sample_seed: int = 0,
 ):
     dataset = ParnetMultimodalDataset(
         hfds[split],
@@ -94,6 +114,9 @@ def make_loader(
             num_samples=sampler_steps * batch_size,
             seed=seed,
         )
+        shuffle = False
+    elif sample_size is not None:
+        sampler = FixedSubsetSampler(len(dataset), num_samples=sample_size, seed=sample_seed)
         shuffle = False
     collator = MultimodalCollator(
         protein_h5,
@@ -446,6 +469,12 @@ def main() -> None:
     parser.add_argument("--num-workers", type=int, default=0)
     parser.add_argument("--max-train-batches", type=int, default=None)
     parser.add_argument("--max-valid-batches", type=int, default=None)
+    parser.add_argument(
+        "--valid-sample-size",
+        type=int,
+        default=None,
+        help="Use a fixed random subset of this many flattened validation samples.",
+    )
     parser.add_argument("--progress-every", type=int, default=25)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
@@ -502,6 +531,8 @@ def main() -> None:
         seed=args.seed,
         num_workers=args.num_workers,
         max_protein_len=args.max_protein_len,
+        sample_size=args.valid_sample_size,
+        sample_seed=args.seed,
     )
 
     print(f"device:         {device}")
@@ -521,6 +552,8 @@ def main() -> None:
     print(f"cell_vocab:     {cell_to_index}")
     print(f"train samples:  {len(train_dataset)}")
     print(f"valid samples:  {len(valid_dataset)}")
+    if args.valid_sample_size is not None:
+        print(f"valid sample:   {min(args.valid_sample_size, len(valid_dataset))} fixed random flattened samples")
     print("loading frozen PARNET...", flush=True)
     parnet = load_parnet(device=device)
 

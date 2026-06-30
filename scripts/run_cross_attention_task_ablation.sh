@@ -16,6 +16,10 @@ Environment overrides:
   STEPS_PER_EPOCH=1000
   PROFILE_STEPS_PER_EPOCH=500
   BATCH_SIZE=32
+  MAX_TRAIN_WINDOWS=0
+  MAX_VALID_WINDOWS=0
+  VALID_SAMPLE_SIZE=32000
+  INCLUDE_SHORT=1
   ML4RG_REFS=/path/to/parnet_refs
   ML4RG_PARNET_WEIGHTS=/path/to/parnet.7m-0.0.pt
 
@@ -61,15 +65,19 @@ if [[ "${SUITE}" == "pilot" ]]; then
   STEPS_PER_EPOCH="${STEPS_PER_EPOCH:-100}"
   PROFILE_STEPS_PER_EPOCH="${PROFILE_STEPS_PER_EPOCH:-50}"
   BATCH_SIZE="${BATCH_SIZE:-32}"
+  VALID_SAMPLE_SIZE="${VALID_SAMPLE_SIZE:-}"
+  INCLUDE_SHORT="${INCLUDE_SHORT:-0}"
   PREFIX="pilot_cross_attention"
 else
   TRACKS="all"
-  MAX_TRAIN_WINDOWS="0"
-  MAX_VALID_WINDOWS="0"
+  MAX_TRAIN_WINDOWS="${MAX_TRAIN_WINDOWS:-0}"
+  MAX_VALID_WINDOWS="${MAX_VALID_WINDOWS:-0}"
   EPOCHS="${EPOCHS:-15}"
   STEPS_PER_EPOCH="${STEPS_PER_EPOCH:-1000}"
   PROFILE_STEPS_PER_EPOCH="${PROFILE_STEPS_PER_EPOCH:-500}"
   BATCH_SIZE="${BATCH_SIZE:-32}"
+  VALID_SAMPLE_SIZE="${VALID_SAMPLE_SIZE:-32000}"
+  INCLUDE_SHORT="${INCLUDE_SHORT:-1}"
   PREFIX="formal_cross_attention"
 fi
 
@@ -86,6 +94,12 @@ common_args=(
   --seed "${SEED}"
   --out-dir "${OUT_DIR}"
 )
+if [[ -n "${VALID_SAMPLE_SIZE}" ]]; then
+  common_args+=(--valid-sample-size "${VALID_SAMPLE_SIZE}")
+fi
+if [[ "${INCLUDE_SHORT}" == "1" || "${INCLUDE_SHORT}" == "true" || "${INCLUDE_SHORT}" == "yes" ]]; then
+  common_args+=(--include-short)
+fi
 
 run_specs=(
   "multitask_l10|multitask|0.5|1|10|${STEPS_PER_EPOCH}|${PREFIX}_multitask_l10_${EPOCHS}x${STEPS_PER_EPOCH}_seed${SEED}"
@@ -181,6 +195,7 @@ echo "suite=${SUITE} launch=${LAUNCH} device=${DEVICE} seed=${SEED}"
 echo "python=${PYTHON}"
 echo "out_dir=${OUT_DIR}"
 echo "epochs=${EPOCHS} batch_size=${BATCH_SIZE} steps=${STEPS_PER_EPOCH} profile_steps=${PROFILE_STEPS_PER_EPOCH}"
+echo "max_train_windows=${MAX_TRAIN_WINDOWS} max_valid_windows=${MAX_VALID_WINDOWS} valid_sample_size=${VALID_SAMPLE_SIZE:-none} include_short=${INCLUDE_SHORT}"
 if [[ "${LAUNCH}" == "queue" ]]; then
   launch_queue
   exit 0

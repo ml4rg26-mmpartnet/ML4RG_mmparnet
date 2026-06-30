@@ -653,8 +653,10 @@ EPOCHS=5 bash scripts/run_cross_attention_task_ablation.sh formal queue
 By default the script writes to `/home/dgu/cross_attention_runs` and uses
 `/home/dgu/venvs/torch39/bin/python`. Override these with `OUT_DIR=...`,
 `PYTHON=...`, `EPOCHS=...`, `STEPS_PER_EPOCH=...`,
-`PROFILE_STEPS_PER_EPOCH=...`, and `BATCH_SIZE=...` if needed. Use `print`
-instead of `queue` to inspect the commands without launching jobs:
+`PROFILE_STEPS_PER_EPOCH=...`, `BATCH_SIZE=...`, `MAX_TRAIN_WINDOWS=...`,
+`MAX_VALID_WINDOWS=...`, `VALID_SAMPLE_SIZE=...`, and `INCLUDE_SHORT=...` if
+needed. Use `print` instead of `queue` to inspect the commands without
+launching jobs:
 
 ```bash
 bash scripts/run_cross_attention_task_ablation.sh formal print
@@ -670,9 +672,11 @@ The generated formal commands are:
   --max-valid-windows 0 \
   --batch-size 32 \
   --epochs 15 \
+  --include-short \
   --balanced-train \
   --steps-per-epoch 1000 \
   --balanced-pos-fraction 0.5 \
+  --valid-sample-size 32000 \
   --lambda-profile 1 \
   --lambda-binary 10 \
   --profile-mask-source binding \
@@ -688,9 +692,11 @@ The generated formal commands are:
   --max-valid-windows 0 \
   --batch-size 32 \
   --epochs 15 \
+  --include-short \
   --balanced-train \
   --steps-per-epoch 500 \
   --balanced-pos-fraction 1.0 \
+  --valid-sample-size 32000 \
   --lambda-profile 1 \
   --lambda-binary 0 \
   --profile-mask-source binding \
@@ -706,9 +712,11 @@ The generated formal commands are:
   --max-valid-windows 0 \
   --batch-size 32 \
   --epochs 15 \
+  --include-short \
   --balanced-train \
   --steps-per-epoch 1000 \
   --balanced-pos-fraction 0.5 \
+  --valid-sample-size 32000 \
   --lambda-profile 0 \
   --lambda-binary 10 \
   --profile-mask-source binding \
