@@ -596,8 +596,11 @@ ablations with consistent names and output paths:
 bash scripts/run_cross_attention_task_ablation.sh pilot tmux
 ```
 
-The pilot suite uses tracks `9,138,195`, two epochs, and 100 steps per epoch.
-Once the pilot looks healthy, launch the formal suite:
+The pilot suite uses tracks `9,138,195`, two epochs, and 100 steps per epoch
+for multitask/binary-only. Profile-only uses 50 all-positive steps per epoch so
+the number of profile-supervised positive examples roughly matches the
+multitask run with `--balanced-pos-fraction 0.5`. Once the pilot looks healthy,
+launch the formal suite:
 
 ```bash
 bash scripts/run_cross_attention_task_ablation.sh formal tmux
@@ -641,13 +644,13 @@ The generated formal commands are:
   --batch-size 8 \
   --epochs 15 \
   --balanced-train \
-  --steps-per-epoch 1000 \
+  --steps-per-epoch 500 \
   --balanced-pos-fraction 1.0 \
   --lambda-profile 1 \
   --lambda-binary 0 \
   --profile-mask-source binding \
   --num-blocks 1 \
-  --run-name formal_cross_attention_profile_only_15x1000_seed0
+  --run-name formal_cross_attention_profile_only_15x500_seed0
 ```
 
 ```bash

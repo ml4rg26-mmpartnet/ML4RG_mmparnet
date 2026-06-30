@@ -17,7 +17,7 @@ Environment overrides:
 
 Runs:
   multitask_l10:    profile_loss + 10 * binary_loss, gated target/binary pooling
-  profile_only:     profile_loss only, all-positive balanced sampler
+  profile_only:     profile_loss only, all-positive sampler with half as many steps
   binary_only_l10:  10 * binary_loss, binary head's own position pooling only
 USAGE
 }
@@ -55,6 +55,7 @@ if [[ "${SUITE}" == "pilot" ]]; then
   MAX_VALID_WINDOWS="512"
   EPOCHS="2"
   STEPS_PER_EPOCH="100"
+  PROFILE_STEPS_PER_EPOCH="50"
   BATCH_SIZE="8"
   PREFIX="pilot_cross_attention"
 else
@@ -63,6 +64,7 @@ else
   MAX_VALID_WINDOWS="0"
   EPOCHS="15"
   STEPS_PER_EPOCH="1000"
+  PROFILE_STEPS_PER_EPOCH="500"
   BATCH_SIZE="8"
   PREFIX="formal_cross_attention"
 fi
@@ -74,7 +76,6 @@ common_args=(
   --batch-size "${BATCH_SIZE}"
   --epochs "${EPOCHS}"
   --balanced-train
-  --steps-per-epoch "${STEPS_PER_EPOCH}"
   --profile-mask-source binding
   --num-blocks 1
   --device "${DEVICE}"
@@ -83,9 +84,9 @@ common_args=(
 )
 
 run_specs=(
-  "multitask_l10|multitask|0.5|1|10|${PREFIX}_multitask_l10_${EPOCHS}x${STEPS_PER_EPOCH}_seed${SEED}"
-  "profile_only|profile-only|1.0|1|0|${PREFIX}_profile_only_${EPOCHS}x${STEPS_PER_EPOCH}_seed${SEED}"
-  "binary_only_l10|binary-only|0.5|0|10|${PREFIX}_binary_only_l10_${EPOCHS}x${STEPS_PER_EPOCH}_seed${SEED}"
+  "multitask_l10|multitask|0.5|1|10|${STEPS_PER_EPOCH}|${PREFIX}_multitask_l10_${EPOCHS}x${STEPS_PER_EPOCH}_seed${SEED}"
+  "profile_only|profile-only|1.0|1|0|${PROFILE_STEPS_PER_EPOCH}|${PREFIX}_profile_only_${EPOCHS}x${PROFILE_STEPS_PER_EPOCH}_seed${SEED}"
+  "binary_only_l10|binary-only|0.5|0|10|${STEPS_PER_EPOCH}|${PREFIX}_binary_only_l10_${EPOCHS}x${STEPS_PER_EPOCH}_seed${SEED}"
 )
 
 quote_cmd() {
@@ -98,7 +99,8 @@ launch_one() {
   local pos_fraction="$3"
   local lambda_profile="$4"
   local lambda_binary="$5"
-  local run_name="$6"
+  local steps_per_epoch="$6"
+  local run_name="$7"
   local run_dir="${OUT_DIR}/${run_name}"
   local log_path="${run_dir}/train.log"
   local session="xattn_${SUITE}_${label}_s${SEED}"
@@ -106,6 +108,7 @@ launch_one() {
     "${PYTHON}" scripts/train_cross_attention_profile.py
     "${common_args[@]}"
     --task "${task}"
+    --steps-per-epoch "${steps_per_epoch}"
     --balanced-pos-fraction "${pos_fraction}"
     --lambda-profile "${lambda_profile}"
     --lambda-binary "${lambda_binary}"
@@ -143,6 +146,6 @@ echo "suite=${SUITE} launch=${LAUNCH} device=${DEVICE} seed=${SEED}"
 echo "python=${PYTHON}"
 echo "out_dir=${OUT_DIR}"
 for spec in "${run_specs[@]}"; do
-  IFS='|' read -r label task pos_fraction lambda_profile lambda_binary run_name <<<"${spec}"
-  launch_one "${label}" "${task}" "${pos_fraction}" "${lambda_profile}" "${lambda_binary}" "${run_name}"
+  IFS='|' read -r label task pos_fraction lambda_profile lambda_binary steps_per_epoch run_name <<<"${spec}"
+  launch_one "${label}" "${task}" "${pos_fraction}" "${lambda_profile}" "${lambda_binary}" "${steps_per_epoch}" "${run_name}"
 done
