@@ -596,15 +596,18 @@ ablations with consistent names and output paths:
 bash scripts/run_cross_attention_task_ablation.sh pilot tmux
 ```
 
-The pilot suite uses tracks `9,138,195`, two epochs, and 100 steps per epoch
+The pilot suite uses tracks `9,138,195`, batch size 32, two epochs, and 100 steps per epoch
 for multitask/binary-only. Profile-only uses 50 all-positive steps per epoch so
 the number of profile-supervised positive examples roughly matches the
 multitask run with `--balanced-pos-fraction 0.5`. Once the pilot looks healthy,
 launch the formal suite:
 
 ```bash
-bash scripts/run_cross_attention_task_ablation.sh formal tmux
+bash scripts/run_cross_attention_task_ablation.sh formal print
 ```
+
+The formal commands use batch size 32 to match the FiLM formal runs. Run them
+serially, or at most two at a time, on a single 16GB A4000.
 
 By default the script writes to `/home/dgu/cross_attention_runs` and uses
 `/home/dgu/venvs/torch39/bin/python`. Override these with `OUT_DIR=...` and
@@ -623,7 +626,7 @@ The generated formal commands are:
   --tracks all \
   --max-train-windows 0 \
   --max-valid-windows 0 \
-  --batch-size 8 \
+  --batch-size 32 \
   --epochs 15 \
   --balanced-train \
   --steps-per-epoch 1000 \
@@ -641,7 +644,7 @@ The generated formal commands are:
   --tracks all \
   --max-train-windows 0 \
   --max-valid-windows 0 \
-  --batch-size 8 \
+  --batch-size 32 \
   --epochs 15 \
   --balanced-train \
   --steps-per-epoch 500 \
@@ -659,7 +662,7 @@ The generated formal commands are:
   --tracks all \
   --max-train-windows 0 \
   --max-valid-windows 0 \
-  --batch-size 8 \
+  --batch-size 32 \
   --epochs 15 \
   --balanced-train \
   --steps-per-epoch 1000 \

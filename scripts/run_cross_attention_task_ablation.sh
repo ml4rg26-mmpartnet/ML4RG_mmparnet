@@ -56,7 +56,7 @@ if [[ "${SUITE}" == "pilot" ]]; then
   EPOCHS="2"
   STEPS_PER_EPOCH="100"
   PROFILE_STEPS_PER_EPOCH="50"
-  BATCH_SIZE="8"
+  BATCH_SIZE="32"
   PREFIX="pilot_cross_attention"
 else
   TRACKS="all"
@@ -65,7 +65,7 @@ else
   EPOCHS="15"
   STEPS_PER_EPOCH="1000"
   PROFILE_STEPS_PER_EPOCH="500"
-  BATCH_SIZE="8"
+  BATCH_SIZE="32"
   PREFIX="formal_cross_attention"
 fi
 
