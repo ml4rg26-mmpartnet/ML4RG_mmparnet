@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Export per-sample cross-attention interpretation tensors.
 
-This script saves a small validation/test subset with full length-600
+This script saves a small validation/test subset with available length-600
 distributions: target profile, binary-position distribution, final alpha_bind,
 predicted profiles, true eCLIP/control counts, and optional motif-overlap
 metrics.
@@ -121,6 +121,36 @@ def topk_overlap(prob: torch.Tensor, mask: torch.Tensor, k: int) -> float:
     return float(mask[top_idx].to(dtype=torch.float32).mean().cpu())
 
 
+def optional_batch_tensor(out: dict[str, torch.Tensor], key: str, index: int) -> torch.Tensor | None:
+    value = out.get(key)
+    if value is None:
+        return None
+    return value[index].cpu()
+
+
+def optional_batch_float(out: dict[str, torch.Tensor], key: str, index: int) -> float | None:
+    value = out.get(key)
+    if value is None:
+        return None
+    return float(value[index].cpu())
+
+
+def add_optional_motif_metric(
+    row: dict[str, object],
+    prob_key: str,
+    topk_key: str,
+    prob: torch.Tensor | None,
+    motif_mask: torch.Tensor,
+    topk: int,
+) -> None:
+    if prob is None:
+        row[prob_key] = None
+        row[topk_key] = None
+        return
+    row[prob_key] = prob_on_mask(prob, motif_mask)
+    row[topk_key] = topk_overlap(prob, motif_mask, topk)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
@@ -134,6 +164,7 @@ def main() -> None:
     parser.add_argument("--seq-len", type=int, default=None)
     parser.add_argument("--include-short", action="store_true", default=None)
     parser.add_argument("--batch-size", type=int, default=None)
+    parser.add_argument("--task", default=None, choices=[None, "multitask", "profile-only", "binary-only"])
     parser.add_argument("--max-samples", type=int, default=128)
     parser.add_argument("--max-batches", type=int, default=None)
     parser.add_argument("--max-protein-len", type=int, default=None)
@@ -160,6 +191,7 @@ def main() -> None:
     seq_len = int(arg_or_checkpoint(args.seq_len, ckpt_args, "seq_len", 600))
     include_short = bool(arg_or_checkpoint(args.include_short, ckpt_args, "include_short", False))
     batch_size = int(arg_or_checkpoint(args.batch_size, ckpt_args, "batch_size", 8))
+    task = arg_or_checkpoint(args.task, ckpt_args, "task", "multitask")
     max_protein_len = arg_or_checkpoint(args.max_protein_len, ckpt_args, "max_protein_len", None)
     if max_protein_len is not None:
         max_protein_len = int(max_protein_len)
@@ -194,6 +226,7 @@ def main() -> None:
     print(f"checkpoint:     {args.checkpoint}")
     print(f"device:         {device}")
     print(f"split:          {args.split}")
+    print(f"task:           {task}")
     print(f"mode:           {mode}")
     print(f"max_samples:    {args.max_samples}")
     print("loading frozen PARNET...", flush=True)
@@ -226,7 +259,14 @@ def main() -> None:
             batch = move_batch(raw_batch, device)
             protein, protein_mask, cell_index = apply_mode(batch, mode)
             rna_features = parnet.body_feats(batch["onehot"]).detach()
-            out = head(rna_features, protein, cell_index, mask=batch["mask"], protein_mask=protein_mask)
+            out = head(
+                rna_features,
+                protein,
+                cell_index,
+                mask=batch["mask"],
+                protein_mask=protein_mask,
+                task=task,
+            )
             batch_size_actual = int(batch["onehot"].shape[0])
             for i in range(batch_size_actual):
                 if len(records) >= args.max_samples:
@@ -240,14 +280,15 @@ def main() -> None:
                     "cell": raw_batch["cell"][i],
                     "rbp_ct": raw_batch["rbp_ct"][i],
                     "binding_label": float(raw_batch["binding"][i]) if "binding" in raw_batch else None,
-                    "binding_prob": float(out["binding_prob"][i].cpu()),
-                    "binding_gate": float(out["binding_gate"][i].cpu()),
-                    "target_prob": out["target"][i].cpu(),
-                    "binary_position_prob": out["binary_position_prob"][i].cpu(),
-                    "alpha_bind": out["alpha_bind"][i].cpu(),
-                    "pred_control": out["control"][i].cpu(),
-                    "pred_total": out["total"][i].cpu(),
-                    "mix_coeff": float(out["mix_coeff"][i].cpu()),
+                    "binding_logit": optional_batch_float(out, "binding_logit", i),
+                    "binding_prob": optional_batch_float(out, "binding_prob", i),
+                    "binding_gate": optional_batch_float(out, "binding_gate", i),
+                    "target_prob": optional_batch_tensor(out, "target", i),
+                    "binary_position_prob": optional_batch_tensor(out, "binary_position_prob", i),
+                    "alpha_bind": optional_batch_tensor(out, "alpha_bind", i),
+                    "pred_control": optional_batch_tensor(out, "control", i),
+                    "pred_total": optional_batch_tensor(out, "total", i),
+                    "mix_coeff": optional_batch_float(out, "mix_coeff", i),
                     "eclip_counts": raw_batch["eclip"][i].cpu(),
                     "control_counts": raw_batch["control"][i].cpu(),
                     "mask": raw_batch["mask"][i].cpu(),
@@ -261,16 +302,35 @@ def main() -> None:
                         "window_index": record["window_index"],
                         "track_index": record["track_index"],
                         "binding_label": record["binding_label"],
+                        "binding_logit": record["binding_logit"],
                         "binding_prob": record["binding_prob"],
                         "binding_gate": record["binding_gate"],
                         "has_motif": int(bool(motif_mask.any())),
-                        "target_prob_on_motif": prob_on_mask(record["target_prob"], motif_mask),
-                        "binary_prob_on_motif": prob_on_mask(record["binary_position_prob"], motif_mask),
-                        "alpha_bind_on_motif": prob_on_mask(record["alpha_bind"], motif_mask),
-                        "topk_target_overlap_motif": topk_overlap(record["target_prob"], motif_mask, args.topk),
-                        "topk_binary_overlap_motif": topk_overlap(record["binary_position_prob"], motif_mask, args.topk),
-                        "topk_alpha_overlap_motif": topk_overlap(record["alpha_bind"], motif_mask, args.topk),
                     }
+                    add_optional_motif_metric(
+                        row,
+                        "target_prob_on_motif",
+                        "topk_target_overlap_motif",
+                        record["target_prob"],
+                        motif_mask,
+                        args.topk,
+                    )
+                    add_optional_motif_metric(
+                        row,
+                        "binary_prob_on_motif",
+                        "topk_binary_overlap_motif",
+                        record["binary_position_prob"],
+                        motif_mask,
+                        args.topk,
+                    )
+                    add_optional_motif_metric(
+                        row,
+                        "alpha_bind_on_motif",
+                        "topk_alpha_overlap_motif",
+                        record["alpha_bind"],
+                        motif_mask,
+                        args.topk,
+                    )
                     motif_rows.append(row)
                 records.append(record)
             if len(records) >= args.max_samples:
@@ -279,6 +339,8 @@ def main() -> None:
     payload = {
         "checkpoint": str(args.checkpoint),
         "split": args.split,
+        "task": task,
+        "mode": mode,
         "seq_len": seq_len,
         "motif_tsv": None if args.motif_tsv is None else str(args.motif_tsv),
         "records": records,

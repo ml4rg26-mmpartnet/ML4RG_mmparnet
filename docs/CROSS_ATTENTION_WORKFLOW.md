@@ -467,6 +467,7 @@ The forward pass returns:
 - `binary_position_prob`: binary head's own position distribution, `[B, 600]`; present in `multitask` and `binary-only`
 - `alpha_bind`: final pooling distribution, `[B, 600]`; gated mixture in `multitask`, equal to `binary_position_prob` in `binary-only`
 - `binding_gate`: how much the binary head relies on `target_prob` vs `binary_prob`, `[B]`; present in `multitask`
+- `binding_logit`: final binding logit, `[B]`; present in `multitask` and `binary-only`
 - `binding_prob`: final binding probability, `[B]`; present in `multitask` and `binary-only`
 
 These are the main tensors to compare against known motifs. The export script
@@ -572,6 +573,27 @@ If a motif TSV is available, pass it to compute per-sample motif overlap metrics
 
 The motif TSV must contain `rbp` and `motif` columns. Motifs may use RNA or DNA
 letters; common IUPAC ambiguity codes are supported.
+
+For the TRANSFAC-style motif tarballs under
+`/home/dgu/workspace/rbp_binding_motifs_tarballs`, prefer post hoc scoring from
+the exported `.pt`. This avoids re-running the model when changing motif
+databases or thresholds:
+
+```bash
+.venv/bin/python scripts/score_cross_attention_motifs.py \
+  --interpretation mmpartnet_out/cross_attention_runs/formal_pureclip_cross_attention_l10_15x1000_seed0/interpretation_valid.pt \
+  --motif-input /home/dgu/workspace/rbp_binding_motifs_tarballs/ATtRACT.tar.gz \
+  --motif-input /home/dgu/workspace/rbp_binding_motifs_tarballs/RBPDB.tar.gz \
+  --motif-input /home/dgu/workspace/rbp_binding_motifs_tarballs/oRNAment.tar.gz \
+  --motif-input /home/dgu/workspace/rbp_binding_motifs_tarballs/RBPmap_1.2.tar.gz \
+  --motif-input /home/dgu/workspace/rbp_binding_motifs_tarballs/mCrossBase.tar.gz \
+  --score-fraction 0.8 \
+  --out mmpartnet_out/cross_attention_runs/formal_pureclip_cross_attention_l10_15x1000_seed0/motif_valid_transfac.tsv
+```
+
+The post hoc scorer uses PPM matrices by default and reports motif mass/top-k
+overlap for whichever distributions exist in the exported task:
+`target_prob`, `binary_position_prob`, and `alpha_bind`.
 
 ## Ablations To Discuss
 
