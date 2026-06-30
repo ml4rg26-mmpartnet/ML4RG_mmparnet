@@ -629,12 +629,32 @@ bash scripts/run_cross_attention_task_ablation.sh formal print
 ```
 
 The formal commands use batch size 32 to match the FiLM formal runs. Run them
-serially, or at most two at a time, on a single 16GB A4000.
+serially on a single 16GB A4000:
+
+```bash
+bash scripts/run_cross_attention_task_ablation.sh formal queue
+```
+
+This starts one tmux session and runs multitask, then profile-only, then
+binary-only. The job keeps running after disconnecting from the VM. Reattach
+with:
+
+```bash
+tmux attach -t xattn_formal_queue_s0
+```
+
+For a shorter formal-settings check before the full 15-epoch suite, run five
+epochs with the same data and step budget:
+
+```bash
+EPOCHS=5 bash scripts/run_cross_attention_task_ablation.sh formal queue
+```
 
 By default the script writes to `/home/dgu/cross_attention_runs` and uses
-`/home/dgu/venvs/torch39/bin/python`. Override these with `OUT_DIR=...` and
-`PYTHON=...` if needed. Use `print` instead of `tmux` to inspect the commands
-without launching jobs:
+`/home/dgu/venvs/torch39/bin/python`. Override these with `OUT_DIR=...`,
+`PYTHON=...`, `EPOCHS=...`, `STEPS_PER_EPOCH=...`,
+`PROFILE_STEPS_PER_EPOCH=...`, and `BATCH_SIZE=...` if needed. Use `print`
+instead of `queue` to inspect the commands without launching jobs:
 
 ```bash
 bash scripts/run_cross_attention_task_ablation.sh formal print
