@@ -111,21 +111,39 @@ diagnostic.
 
 The current interpretation is:
 
-- The cross-attention profile path is functional, but it has not yet clearly
-  beaten the profile-only or FiLM-style baselines.
+- The cross-attention profile path is functional.
 - The original `binary-only` failure does not appear to be caused by completely
   broken labels, data wiring, or binary-head implementation.
 - The original `binary-only` failure is more likely related to full-data
   optimization or training setup, especially the learning rate.
-- The current evidence is not sufficient to claim that the multitask
-  cross-attention design is better.
+- Lowering the learning rate to `3e-4` substantially improved the `multitask`
+  run. The new 5-epoch `multitask` diagnostic now beats both the previous
+  `multitask` result and the previous `profile-only` Pearson result.
 
-## Next Planned Experiment
+## Multitask Lower-LR Diagnostic
 
-The next planned experiment is to rerun the actual `multitask` model with the
-lower learning rate that made `binary-only` start learning.
+The next diagnostic reran the actual `multitask` model with the lower learning
+rate that made `binary-only` start learning.
 
-Planned configuration:
+Run name:
+
+```text
+multitask_l10_lr3e4_latent256_5x1000_seed0
+```
+
+Shared output path:
+
+```text
+/home/dgu/workspace/cross_attention_runs/multitask_l10_lr3e4_latent256_5x1000_seed0
+```
+
+Resolved storage path:
+
+```text
+/mnt/storage1/workspace/dgu/cross_attention_runs/multitask_l10_lr3e4_latent256_5x1000_seed0
+```
+
+Configuration:
 
 ```text
 task = multitask
@@ -145,18 +163,62 @@ profile_mask_source = binding
 num_blocks = 1
 ```
 
-The outputs will be written to the shared directory:
+Results:
 
 ```text
-/home/dgu/workspace/cross_attention_runs
+best valid Pearson  = 0.4131, epoch 5
+best valid AUPRC    = 0.1855, epoch 5
+final valid Pearson = 0.4131
+final valid AUPRC   = 0.1855
+final train Pearson = 0.3942
+final train AUPRC   = 0.8384
 ```
 
-The main questions for this run are:
+This run improved on the previous 5-epoch diagnostics:
 
-1. Does lowering the learning rate improve multitask validation AUPRC beyond
-   the previous `0.1089`?
-2. Does lowering the learning rate improve multitask validation Pearson beyond
-   the previous `0.3641`?
-3. Can multitask exceed the `profile-only` Pearson result of `0.3700`?
-4. Once `binary-only` is trained under a healthier optimization setting, does
-   multitask still provide an advantage over `binary-only` on binary AUPRC?
+```text
+previous multitask best valid Pearson = 0.3641
+new multitask best valid Pearson      = 0.4131
+
+previous multitask best valid AUPRC   = 0.1089
+new multitask best valid AUPRC        = 0.1855
+
+previous profile-only best Pearson    = 0.3700
+new multitask best valid Pearson      = 0.4131
+```
+
+This result suggests that the earlier weak `multitask` performance was at least
+partly an optimization issue. With `lr = 3e-4`, the multitask model improves
+both the profile and binary validation metrics.
+
+## Current Run
+
+The current run is continuing the improved multitask diagnostic from the
+5-epoch checkpoint to 15 total epochs.
+
+Resume checkpoint:
+
+```text
+/home/dgu/workspace/cross_attention_runs/multitask_l10_lr3e4_latent256_5x1000_seed0/last.pt
+```
+
+Resume log:
+
+```text
+/home/dgu/workspace/cross_attention_runs/multitask_l10_lr3e4_latent256_5x1000_seed0.resume_to15.log
+```
+
+Resume command shape:
+
+```text
+same configuration as the 5-epoch run
+--epochs 10
+--resume /home/dgu/workspace/cross_attention_runs/multitask_l10_lr3e4_latent256_5x1000_seed0/last.pt
+```
+
+The goal is to determine whether the validation Pearson and AUPRC continue to
+improve beyond the 5-epoch values, plateau, or begin to overfit.
+
+If the 15-epoch continuation remains strong, the next likely comparisons are
+`lambda_binary = 5` versus `lambda_binary = 10`, followed by interpretation and
+motif-overlap export from the best checkpoint.
