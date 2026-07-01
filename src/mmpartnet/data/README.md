@@ -22,6 +22,27 @@ for rec in iter_records(get_source(cfg.source, cfg)):
 | `loader.py` | `iter_records(source)`: applies preprocessing + the `>= min_sum` read filter, caps at `nwin`/RBP |
 | `sources/encode_bigwig.py` | POPULATED demo source (public ENCODE, read remotely) |
 | `sources/{encode_bam_counts,hfds,local_pt}.py` | STUBS with fill recipes |
+| `multimodal.py` | flattened RNA-window/RBP-cell dataset and collator for FiLM and cross-attention experiments |
+
+## Multimodal branch note
+
+The PARNET HFDS stores one RNA window with labels for all RBP-cell tracks. The
+conditional multimodal experiments train on a flattened view:
+
+```text
+PARNET window i + RBP-cell track j -> one training example
+```
+
+`multimodal.py` provides this view through `ParnetMultimodalDataset` and
+`MultimodalCollator`. It handles:
+
+- RNA sequence one-hot encoding and valid-position masks
+- extraction of one eCLIP/control track from sparse PARNET labels
+- PureCLIP/narrowPeak binary labels when supplied
+- RBP/cell metadata and stable cell indices
+- ProtT5 H5 lookup through the track-to-protein map
+- pooled protein vectors for FiLM-style heads
+- padded residue-level protein tensors and protein masks for cross-attention
 
 ## Add a source
 

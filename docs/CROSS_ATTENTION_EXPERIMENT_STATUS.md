@@ -117,7 +117,7 @@ The current interpretation is:
 - The original `binary-only` failure is more likely related to full-data
   optimization or training setup, especially the learning rate.
 - Lowering the learning rate to `3e-4` substantially improved the `multitask`
-  run. The new 5-epoch `multitask` diagnostic now beats both the previous
+  run. The 15-epoch `multitask` diagnostic now beats both the previous
   `multitask` result and the previous `profile-only` Pearson result.
 
 ## Multitask Lower-LR Diagnostic
@@ -143,7 +143,7 @@ Resolved storage path:
 /mnt/storage1/workspace/dgu/cross_attention_runs/multitask_l10_lr3e4_latent256_5x1000_seed0
 ```
 
-Configuration:
+Initial 5-epoch configuration:
 
 ```text
 task = multitask
@@ -191,10 +191,10 @@ This result suggests that the earlier weak `multitask` performance was at least
 partly an optimization issue. With `lr = 3e-4`, the multitask model improves
 both the profile and binary validation metrics.
 
-## Current Run
+## Completed 15-Epoch Resume
 
-The current run is continuing the improved multitask diagnostic from the
-5-epoch checkpoint to 15 total epochs.
+The improved multitask diagnostic was resumed from the 5-epoch checkpoint to 15
+total epochs.
 
 Resume checkpoint:
 
@@ -216,5 +216,69 @@ same configuration as the 5-epoch run
 --resume /home/dgu/workspace/cross_attention_runs/multitask_l10_lr3e4_latent256_5x1000_seed0/last.pt
 ```
 
-The goal is to determine whether the validation Pearson and AUPRC continue to
-improve beyond the 5-epoch values, plateau, or begin to overfit.
+15-epoch results:
+
+```text
+best valid Pearson  = 0.43395, epoch 15
+best valid AUPRC    = 0.23989, epoch 15
+final valid Pearson = 0.43395
+final valid AUPRC   = 0.23989
+final train Pearson = 0.43361
+final train AUPRC   = 0.87573
+```
+
+Validation trajectory:
+
+```text
+epoch  1: valid Pearson = 0.3624, valid AUPRC = 0.0933
+epoch  5: valid Pearson = 0.4131, valid AUPRC = 0.1855
+epoch 10: valid Pearson = 0.4296, valid AUPRC = 0.2119
+epoch 11: valid Pearson = 0.4336, valid AUPRC = 0.2311
+epoch 15: valid Pearson = 0.4339, valid AUPRC = 0.2399
+```
+
+Comparison with earlier diagnostics:
+
+```text
+old multitask_l10 best valid Pearson = 0.3641
+old multitask_l10 best valid AUPRC   = 0.1089
+
+5-epoch lower-LR multitask Pearson   = 0.4131
+5-epoch lower-LR multitask AUPRC     = 0.1855
+
+15-epoch lower-LR multitask Pearson  = 0.43395
+15-epoch lower-LR multitask AUPRC    = 0.23989
+
+old profile-only best Pearson        = 0.3700
+```
+
+This run shows that `lr = 3e-4` plus 15 epochs substantially improves the
+cross-attention multitask model. Epoch 15 is the best epoch for both validation
+Pearson and validation AUPRC, so the lower-LR run had not clearly saturated by
+the 5-epoch checkpoint.
+
+The late-epoch `binding_gate_mean` is around 0.55-0.62, indicating that the
+multitask binary head increasingly uses the profile head's `target_prob` branch
+in its gated positional pooling. This is a useful signal for the hypothesis
+that the profile head can help the binary head, but it still needs fair
+single-task lower-LR comparisons.
+
+## Next Fair Comparisons
+
+The previous `profile-only` and `binary-only` ablations were run under older
+settings, so they are no longer fully comparable with the improved lower-LR
+multitask run. The next fair single-task comparisons should use the same
+full-data-style setup:
+
+```text
+task = profile-only, lr = 3e-4, protein_latent_len = 256, 15 epochs
+task = binary-only,  lr = 3e-4, protein_latent_len = 256, 15 epochs
+```
+
+These runs are needed to distinguish:
+
+```text
+better optimization of the shared cross-attention backbone
+vs.
+actual benefit from coupling the profile and binary heads
+```
