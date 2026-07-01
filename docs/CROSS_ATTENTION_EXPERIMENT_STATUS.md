@@ -218,7 +218,3 @@ same configuration as the 5-epoch run
 
 The goal is to determine whether the validation Pearson and AUPRC continue to
 improve beyond the 5-epoch values, plateau, or begin to overfit.
-
-If the 15-epoch continuation remains strong, the next likely comparisons are
-`lambda_binary = 5` versus `lambda_binary = 10`, followed by interpretation and
-motif-overlap export from the best checkpoint.
