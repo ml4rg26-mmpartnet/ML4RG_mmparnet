@@ -1,0 +1,80 @@
+{
+  "description": "Small GPU sanity experiments for protein+cell FiLM profile head on frozen full PARNET RNA features. These are smoke-test scale runs, not final benchmark results.",
+  "parnet_weights": "/home/dgu/storage_ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt",
+  "protein_embedding": "/home/dgu/storage_ml4rg26-mmparnet/manually_gathered/ProtT5_zenodo_datasets/reduced_embeddings_file.h5",
+  "metric": "valid Pearson between predicted total profile and normalized eCLIP profile, using samples with eCLIP count >= 10",
+  "experiments": [
+    {
+      "run_name": "film_multimodal_3tracks_seed0",
+      "tracks": "9,138,195",
+      "track_names": ["AQR_HepG2", "QKI_HepG2", "U2AF2_HepG2"],
+      "mode": "multimodal",
+      "max_train_windows": 256,
+      "max_valid_windows": 128,
+      "epochs": 3,
+      "best_epoch": 3,
+      "best_valid_pearson": 0.2655,
+      "valid_profiles": 150
+    },
+    {
+      "run_name": "film_rna_only_3tracks_seed0",
+      "tracks": "9,138,195",
+      "track_names": ["AQR_HepG2", "QKI_HepG2", "U2AF2_HepG2"],
+      "mode": "rna-only",
+      "max_train_windows": 256,
+      "max_valid_windows": 128,
+      "epochs": 3,
+      "best_epoch": 3,
+      "best_valid_pearson": 0.2443,
+      "valid_profiles": 150
+    },
+    {
+      "run_name": "film_protein_shuffle_3tracks_seed0",
+      "tracks": "9,138,195",
+      "track_names": ["AQR_HepG2", "QKI_HepG2", "U2AF2_HepG2"],
+      "mode": "protein-shuffle",
+      "max_train_windows": 256,
+      "max_valid_windows": 128,
+      "epochs": 3,
+      "best_epoch": 2,
+      "best_valid_pearson": 0.2405,
+      "valid_profiles": 150
+    },
+    {
+      "run_name": "film_multimodal_6paired_tracks_seed0",
+      "tracks": "9,10,138,139,195,196",
+      "track_names": ["AQR_HepG2", "AQR_K562", "QKI_HepG2", "QKI_K562", "U2AF2_HepG2", "U2AF2_K562"],
+      "mode": "multimodal",
+      "max_train_windows": 256,
+      "max_valid_windows": 128,
+      "epochs": 3,
+      "best_epoch": 2,
+      "best_valid_pearson": 0.2764,
+      "valid_profiles": 222
+    },
+    {
+      "run_name": "film_rna_only_6paired_tracks_seed0",
+      "tracks": "9,10,138,139,195,196",
+      "track_names": ["AQR_HepG2", "AQR_K562", "QKI_HepG2", "QKI_K562", "U2AF2_HepG2", "U2AF2_K562"],
+      "mode": "rna-only",
+      "max_train_windows": 256,
+      "max_valid_windows": 128,
+      "epochs": 3,
+      "best_epoch": 1,
+      "best_valid_pearson": 0.2426,
+      "valid_profiles": 222
+    },
+    {
+      "run_name": "film_protein_shuffle_6paired_tracks_seed0",
+      "tracks": "9,10,138,139,195,196",
+      "track_names": ["AQR_HepG2", "AQR_K562", "QKI_HepG2", "QKI_K562", "U2AF2_HepG2", "U2AF2_K562"],
+      "mode": "protein-shuffle",
+      "max_train_windows": 256,
+      "max_valid_windows": 128,
+      "epochs": 3,
+      "best_epoch": 2,
+      "best_valid_pearson": 0.2425,
+      "valid_profiles": 222
+    }
+  ]
+}
