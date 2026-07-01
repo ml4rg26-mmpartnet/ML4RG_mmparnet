@@ -145,7 +145,7 @@ profile_mask_source = binding
 num_blocks = 1
 ```
 
-The outputs should be written to the shared directory:
+The outputs will be written to the shared directory:
 
 ```text
 /home/dgu/workspace/cross_attention_runs
