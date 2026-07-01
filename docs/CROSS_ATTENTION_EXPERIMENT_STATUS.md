@@ -1,9 +1,5 @@
 # Cross-Attention Experiment Status
 
-This document summarizes the current validation-stage progress for the
-cross-attention branch. These results are diagnostic and should not be treated
-as final model-selection results.
-
 ## Goal
 
 The immediate goal was to check whether the multitask cross-attention head is
@@ -164,6 +160,3 @@ The main questions for this run are:
 3. Can multitask exceed the `profile-only` Pearson result of `0.3700`?
 4. Once `binary-only` is trained under a healthier optimization setting, does
    multitask still provide an advantage over `binary-only` on binary AUPRC?
-
-All of these experiments are validation-stage diagnostics. The test split
-should not be used for model selection or hyperparameter decisions.

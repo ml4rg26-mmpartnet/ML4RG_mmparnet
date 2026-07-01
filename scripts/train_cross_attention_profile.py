@@ -221,6 +221,7 @@ def save_training_checkpoint(
                 "protein_projection_hidden_dim": args.protein_projection_hidden_dim,
                 "protein_compression": args.protein_compression,
                 "protein_latent_len": args.protein_latent_len,
+                "binary_pooling": args.binary_pooling,
             },
             "args": vars(args),
             "epoch": epoch,
@@ -450,6 +451,12 @@ def main() -> None:
     )
     parser.add_argument("--protein-compression", default="latent", choices=["none", "latent"])
     parser.add_argument("--protein-latent-len", type=int, default=256)
+    parser.add_argument(
+        "--binary-pooling",
+        default="position",
+        choices=["position", "mean"],
+        help="Pooling used by the binary-only binding head. Multitask keeps gated target/position pooling.",
+    )
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=0.0)
@@ -545,6 +552,7 @@ def main() -> None:
     print(f"protein_proj_h: {args.protein_projection_hidden_dim}")
     print(f"protein_comp:   {args.protein_compression}")
     print(f"protein_latent: {args.protein_latent_len}")
+    print(f"binary_pooling: {args.binary_pooling}")
     if args.balanced_train:
         print(f"balanced_pos:   {args.balanced_pos_fraction}")
         print(f"steps/epoch:    {args.steps_per_epoch or 1000}")
@@ -572,6 +580,7 @@ def main() -> None:
         protein_projection_hidden_dim=args.protein_projection_hidden_dim,
         protein_compression=args.protein_compression,
         protein_latent_len=args.protein_latent_len,
+        binary_pooling=args.binary_pooling,
     ).to(device)
     optimizer = torch.optim.AdamW(head.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 

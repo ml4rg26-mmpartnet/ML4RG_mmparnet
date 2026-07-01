@@ -22,6 +22,7 @@ Environment overrides:
   INCLUDE_SHORT=1
   ML4RG_REFS=/path/to/parnet_refs
   ML4RG_PARNET_WEIGHTS=/path/to/parnet.7m-0.0.pt
+  BINARY_POOLING=position|mean
 
 Runs:
   multitask_l10:    profile_loss + 10 * binary_loss, gated target/binary pooling
@@ -80,6 +81,11 @@ else
   INCLUDE_SHORT="${INCLUDE_SHORT:-1}"
   PREFIX="formal_cross_attention"
 fi
+BINARY_POOLING="${BINARY_POOLING:-position}"
+POOL_SUFFIX=""
+if [[ "${BINARY_POOLING}" != "position" ]]; then
+  POOL_SUFFIX="_${BINARY_POOLING}pool"
+fi
 
 common_args=(
   --tracks "${TRACKS}"
@@ -90,6 +96,7 @@ common_args=(
   --balanced-train
   --profile-mask-source binding
   --num-blocks 1
+  --binary-pooling "${BINARY_POOLING}"
   --device "${DEVICE}"
   --seed "${SEED}"
   --out-dir "${OUT_DIR}"
@@ -102,9 +109,9 @@ if [[ "${INCLUDE_SHORT}" == "1" || "${INCLUDE_SHORT}" == "true" || "${INCLUDE_SH
 fi
 
 run_specs=(
-  "multitask_l10|multitask|0.5|1|10|${STEPS_PER_EPOCH}|${PREFIX}_multitask_l10_${EPOCHS}x${STEPS_PER_EPOCH}_seed${SEED}"
-  "profile_only|profile-only|1.0|1|0|${PROFILE_STEPS_PER_EPOCH}|${PREFIX}_profile_only_${EPOCHS}x${PROFILE_STEPS_PER_EPOCH}_seed${SEED}"
-  "binary_only_l10|binary-only|0.5|0|10|${STEPS_PER_EPOCH}|${PREFIX}_binary_only_l10_${EPOCHS}x${STEPS_PER_EPOCH}_seed${SEED}"
+  "multitask_l10|multitask|0.5|1|10|${STEPS_PER_EPOCH}|${PREFIX}_multitask_l10_${EPOCHS}x${STEPS_PER_EPOCH}${POOL_SUFFIX}_seed${SEED}"
+  "profile_only|profile-only|1.0|1|0|${PROFILE_STEPS_PER_EPOCH}|${PREFIX}_profile_only_${EPOCHS}x${PROFILE_STEPS_PER_EPOCH}${POOL_SUFFIX}_seed${SEED}"
+  "binary_only_l10|binary-only|0.5|0|10|${STEPS_PER_EPOCH}|${PREFIX}_binary_only_l10_${EPOCHS}x${STEPS_PER_EPOCH}${POOL_SUFFIX}_seed${SEED}"
 )
 
 quote_cmd() {
@@ -196,6 +203,7 @@ echo "python=${PYTHON}"
 echo "out_dir=${OUT_DIR}"
 echo "epochs=${EPOCHS} batch_size=${BATCH_SIZE} steps=${STEPS_PER_EPOCH} profile_steps=${PROFILE_STEPS_PER_EPOCH}"
 echo "max_train_windows=${MAX_TRAIN_WINDOWS} max_valid_windows=${MAX_VALID_WINDOWS} valid_sample_size=${VALID_SAMPLE_SIZE:-none} include_short=${INCLUDE_SHORT}"
+echo "binary_pooling=${BINARY_POOLING}"
 if [[ "${LAUNCH}" == "queue" ]]; then
   launch_queue
   exit 0

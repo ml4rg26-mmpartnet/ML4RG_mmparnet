@@ -150,6 +150,7 @@ def main() -> None:
         protein_projection_hidden_dim=int(config.get("protein_projection_hidden_dim", 0)),
         protein_compression=str(config.get("protein_compression", "none")),
         protein_latent_len=int(config.get("protein_latent_len", 256)),
+        binary_pooling=str(config.get("binary_pooling", "position")),
     ).to(device)
     head.load_state_dict(checkpoint["model_state_dict"])
 

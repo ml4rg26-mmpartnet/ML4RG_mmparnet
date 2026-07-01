@@ -38,6 +38,7 @@ def main() -> None:
     parser.add_argument("--protein-projection-hidden-dim", type=int, default=768)
     parser.add_argument("--protein-compression", default="latent", choices=["none", "latent"])
     parser.add_argument("--protein-latent-len", type=int, default=256)
+    parser.add_argument("--binary-pooling", default="position", choices=["position", "mean"])
     parser.add_argument("--task", default="multitask", choices=["multitask", "profile-only", "binary-only"])
     args = parser.parse_args()
 
@@ -65,6 +66,7 @@ def main() -> None:
         protein_projection_hidden_dim=args.protein_projection_hidden_dim,
         protein_compression=args.protein_compression,
         protein_latent_len=args.protein_latent_len,
+        binary_pooling=args.binary_pooling,
     )
     out = model(rna, protein, cell_index, mask=mask, protein_mask=protein_mask, task=args.task)
     no_cell_out = model(

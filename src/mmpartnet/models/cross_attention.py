@@ -191,17 +191,21 @@ class ProteinCellCrossAttentionProfileHead(nn.Module):
         protein_projection_hidden_dim: int | None = 768,
         protein_compression: str = "latent",
         protein_latent_len: int = 256,
+        binary_pooling: str = "position",
     ):
         super().__init__()
         if hidden_dim % num_heads != 0:
             raise ValueError("hidden_dim must be divisible by num_heads")
         if protein_compression not in {"none", "latent"}:
             raise ValueError("protein_compression must be 'none' or 'latent'")
+        if binary_pooling not in {"position", "mean"}:
+            raise ValueError("binary_pooling must be 'position' or 'mean'")
         self.rna_channels = rna_channels
         self.hidden_dim = hidden_dim
         self.num_blocks = num_blocks
         self.protein_compression = protein_compression
         self.protein_latent_len = protein_latent_len
+        self.binary_pooling = binary_pooling
         self.cell_embedding = nn.Embedding(cell_count, cell_dim)
         if rna_channels == hidden_dim:
             self.rna_projection = nn.Identity()
@@ -358,7 +362,10 @@ class ProteinCellCrossAttentionProfileHead(nn.Module):
                 out["binding_gate"] = binding_gate
             else:
                 alpha_bind = binary_position_prob
-            binding_input = (fused * alpha_bind.unsqueeze(-1)).sum(dim=1)
+            if self.binary_pooling == "mean" and task == "binary-only":
+                binding_input = pooled
+            else:
+                binding_input = (fused * alpha_bind.unsqueeze(-1)).sum(dim=1)
             binding_logit = self.binding(binding_input).squeeze(-1)
             out.update(
                 {
