@@ -6,6 +6,29 @@ model: each block conditions RNA tokens on cell line, updates RNA and protein
 tokens with synchronous multi-head cross-attention, then a final RNA-to-protein
 attention pass produces the RNA-centric representation used by the output heads.
 
+## Model Variants
+
+Two cross-attention heads live side by side and share the same data loader,
+sampler, loss, and metrics, so they can be benchmarked directly. Select with
+`--model` in the training/eval scripts (default `original`):
+
+- `original` — `ProteinCellCrossAttentionProfileHead`
+  (`src/mmpartnet/models/cross_attention.py`): the cell-FiLM bidirectional head
+  with the `alpha_bind` gated binary output.
+- `tfbind` — `TFBindCrossAttentionProfileHead`
+  (`src/mmpartnet/models/cross_attention_tfbind.py`): a TFBindFormer-style
+  rebuild. Key differences to the original:
+  1. **ProteinCompressor** — compresses variable-length ProtT5 residues to a
+     fixed `target_prot_len` via learned queries (no per-batch protein padding
+     downstream).
+  2. **Asymmetric bidirectionality** — only the first `num_bidir_blocks` blocks
+     update both streams; later blocks let RNA query protein only.
+  3. **PositionWeightedPool** — a single learned attention pooling over RNA
+     positions feeds the binary head, replacing the `alpha_bind` / `binding_gate`
+     construction.
+
+The `tfbind` head is frozen-PARNET + ~1.2M trainable parameters.
+
 ## Branch
 
 ```bash
@@ -158,6 +181,46 @@ If a motif TSV is available, pass it to compute per-sample motif overlap metrics
 
 The motif TSV must contain `rbp` and `motif` columns. Motifs may use RNA or DNA
 letters; common IUPAC ambiguity codes are supported.
+
+## Benchmark: original vs tfbind
+
+`scripts/compare_cross_attention_models.py` trains both heads over several seeds
+(as subprocesses of the trainer, so data/sampler/metrics are byte-identical),
+reads each run's `metrics.json`, and prints a mean ± std table of the
+best-over-epochs validation values.
+
+```bash
+.venv/bin/python scripts/compare_cross_attention_models.py \
+  --seeds 0 1 2 \
+  --max-train-windows 2000 --max-valid-windows 1000 \
+  --tracks 9,138,195 --epochs 5 --batch-size 8 \
+  --steps-per-epoch 400 --balanced-train
+```
+
+### Result (seeds 0/1/2, tracks 9,138,195, 2000 train windows, 5 epochs)
+
+Validation, best-over-epochs, mean ± std:
+
+| Metric                  | original         | tfbind           |
+| ----------------------- | ---------------- | ---------------- |
+| profile Pearson (up)    | 0.360 ± 0.007    | **0.398 ± 0.015** |
+| binding AUPRC (up)      | 0.140 ± 0.012    | 0.154 ± 0.010    |
+| valid loss (down)       | 13.89 ± 1.01     | 13.27 ± 0.77     |
+
+Reading:
+
+- **Profile Pearson**: `tfbind` wins cleanly. The ± bands do not overlap, and
+  every `tfbind` seed (0.389 / 0.385 / 0.420) beats every `original` seed
+  (0.351 / 0.369 / 0.361) — the worst `tfbind` run still beats the best
+  `original` run. This is the Milestone-2 target metric.
+- **Binding AUPRC**: roughly tied (bands overlap). The binary-head overfitting
+  seen in the earlier 256-window smoke test disappeared with more data.
+- **Caveats**: only 3 tracks, one data slice, n=3 seeds, and this is
+  **same-RBP** validation — it does not yet test generalization to unseen RBPs
+  (the leave-one-RBP-out setting, pending leave-out PARNET weights).
+
+The scaled-up run (all matched tracks, more windows) is the next step to confirm
+the profile-Pearson advantage holds across all 223 RBPs.
 
 ## Notes
 
