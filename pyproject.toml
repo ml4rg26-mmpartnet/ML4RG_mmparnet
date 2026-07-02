@@ -13,6 +13,9 @@ authors = [{ name = "ML4RG SS26 Project 07 — MultiModal PARNET team" }]
 dependencies = [
   "numpy>=1.24",
   "torch>=2.1",
+  "datasets>=4.0",
+  "pyarrow>=15",
+  "h5py>=3.10",
   "pyfaidx>=0.7",
   "scikit-learn>=1.3",
 ]

@@ -34,6 +34,7 @@ __pycache__/
 *.log
 # scoped real-run outputs
 runs/
+mmpartnet_out/film_runs/
 # local machine asset paths (per-clone)
 scripts/env.local.sh
 

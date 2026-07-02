@@ -9,6 +9,7 @@ The 7M weights are a full pickled v0.3.0 NewRBPNet object, but the local source 
 Head = NewAdditiveMix -> {target, control, total (T,L), mix_coeff (T), penalty_loss}.
 """
 from __future__ import annotations
+import importlib.machinery
 import sys
 import types
 import torch
@@ -22,17 +23,57 @@ def _install_stubs():
     global _LOADED
     if _LOADED:
         return
+
+    def _module(name):
+        mod = types.ModuleType(name)
+        mod.__spec__ = importlib.machinery.ModuleSpec(name, loader=None)
+        return mod
+
     pkgdir = str(config.PARNET_PKG)
+    if "gin" not in sys.modules:
+        gin = _module("gin")
+
+        def configurable(*args, **_kwargs):
+            if args and callable(args[0]):
+                return args[0]
+
+            def deco(fn):
+                return fn
+
+            return deco
+
+        gin.configurable = configurable
+        sys.modules["gin"] = gin
+    if "tensorflow" not in sys.modules:
+        tf = _module("tensorflow")
+        tf.nest = types.SimpleNamespace(map_structure=lambda fn, x: x)
+        sys.modules["tensorflow"] = tf
+    if "transformers" not in sys.modules:
+        tr = _module("transformers")
+        tr.EsmConfig = type("EsmConfig", (), {"from_pretrained": classmethod(lambda cls, *_a, **_k: cls())})
+        tr.EsmModel = type("EsmModel", (), {})
+        sys.modules["transformers"] = tr
+    if "sequence_models" not in sys.modules:
+        sm = _module("sequence_models")
+        conv = _module("sequence_models.convolutional")
+        layers = _module("sequence_models.layers")
+        conv.ByteNet = type("ByteNet", (), {})
+        layers.PositionFeedForward = type("PositionFeedForward", (), {})
+        sys.modules.update({
+            "sequence_models": sm,
+            "sequence_models.convolutional": conv,
+            "sequence_models.layers": layers,
+        })
     if "parnet" not in sys.modules:
-        pkg = types.ModuleType("parnet")
+        pkg = _module("parnet")
         pkg.__path__ = [pkgdir]
         sys.modules["parnet"] = pkg
     if "pytorch_lightning" not in sys.modules:
         def _mk(n):
             return type(n, (), {"__init__": lambda self, *a, **k: None})
-        pl = types.ModuleType("pytorch_lightning")
-        cb = types.ModuleType("pytorch_lightning.callbacks")
-        lg = types.ModuleType("pytorch_lightning.loggers")
+        pl = _module("pytorch_lightning")
+        cb = _module("pytorch_lightning.callbacks")
+        lg = _module("pytorch_lightning.loggers")
         cb.EarlyStopping = _mk("EarlyStopping"); cb.LearningRateMonitor = _mk("LearningRateMonitor")
         lg.TensorBoardLogger = _mk("TensorBoardLogger"); lg.WandbLogger = _mk("WandbLogger")
         pl.callbacks = cb; pl.loggers = lg
