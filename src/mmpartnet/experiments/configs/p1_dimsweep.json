@@ -1,0 +1,13 @@
+{
+  "tag": "p1_dimsweep",
+  "scheme": "pureclip",
+  "seeds": 5,
+  "controls": ["random_body"],
+  "methods": [
+    {"name": "perres32_ref",   "arch": "perres", "rep": "perres32"},
+    {"name": "perres_full_32",  "arch": "perres", "rep": "perres_full", "proj": 32},
+    {"name": "perres_full_128", "arch": "perres", "rep": "perres_full", "proj": 128},
+    {"name": "perres_full_256", "arch": "perres", "rep": "perres_full", "proj": 256},
+    {"name": "perres_full_640", "arch": "perres", "rep": "perres_full"}
+  ]
+}

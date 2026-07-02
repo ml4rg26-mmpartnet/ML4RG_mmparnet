@@ -1,0 +1,275 @@
+{
+ "cell": "HepG2",
+ "K": 34,
+ "n_windows": 6000,
+ "split": "rbp-kfold-2of5",
+ "n_pairs_train": 54365,
+ "n_pairs_test": 9276,
+ "held_chrom": [
+  "chr16",
+  "chr2",
+  "chr9"
+ ],
+ "archs": {
+  "perres": {
+   "real": 0.13358042612024607,
+   "shuf": 0.11335431496590824,
+   "fam": 0.133093256668665,
+   "gap_der": 0.020226111154337794,
+   "gap_fam": 0.00048716945158103306,
+   "rows": [
+    {
+     "rbp": "AKAP1",
+     "family": "KH",
+     "n": 1213,
+     "pearson_real": 0.1528523998238167,
+     "pearson_shuf": 0.07060685195863747,
+     "pearson_fam": 0.13607852922269323
+    },
+    {
+     "rbp": "FXR2",
+     "family": "KH",
+     "n": 785,
+     "pearson_real": 0.07866131440223514,
+     "pearson_shuf": 0.11022179674816535,
+     "pearson_fam": 0.0480382714750524
+    },
+    {
+     "rbp": "HNRNPK",
+     "family": "KH",
+     "n": 1352,
+     "pearson_real": 0.1116891999140131,
+     "pearson_shuf": 0.16340510021935983,
+     "pearson_fam": 0.1851421906655436
+    },
+    {
+     "rbp": "IGF2BP1",
+     "family": "KH;RRM",
+     "n": 997,
+     "pearson_real": 0.21500361630341147,
+     "pearson_shuf": 0.10770366760653863,
+     "pearson_fam": 0.24323342318937416
+    },
+    {
+     "rbp": "PABPN1",
+     "family": "RRM",
+     "n": 1513,
+     "pearson_real": 0.14522634813467702,
+     "pearson_shuf": 0.052294146464412335,
+     "pearson_fam": 0.09756228313971985
+    },
+    {
+     "rbp": "RBFOX2",
+     "family": "RRM",
+     "n": 1330,
+     "pearson_real": 0.10982158550049688,
+     "pearson_shuf": 0.1323361622027979,
+     "pearson_fam": 0.09978958022519986
+    },
+    {
+     "rbp": "SSB",
+     "family": "LA;RRM",
+     "n": 2086,
+     "pearson_real": 0.12180851876307201,
+     "pearson_shuf": 0.15691247956144627,
+     "pearson_fam": 0.12180851876307201
+    }
+   ]
+  },
+  "biopwm": {
+   "real": 0.011811414836757985,
+   "shuf": 0.010834550058038656,
+   "fam": 0.04121408082900172,
+   "gap_der": 0.000976864778719329,
+   "gap_fam": -0.029402665992243737,
+   "rows": [
+    {
+     "rbp": "AKAP1",
+     "family": "KH",
+     "n": 1213,
+     "pearson_real": -0.005846010272140639,
+     "pearson_shuf": -0.008851433457182865,
+     "pearson_fam": 0.07419585171151073
+    },
+    {
+     "rbp": "FXR2",
+     "family": "KH",
+     "n": 785,
+     "pearson_real": 0.004096126790445967,
+     "pearson_shuf": -0.0008529959016605235,
+     "pearson_fam": 0.05274157461162121
+    },
+    {
+     "rbp": "HNRNPK",
+     "family": "KH",
+     "n": 1352,
+     "pearson_real": -0.0020009104153819787,
+     "pearson_shuf": 0.0005812445002426404,
+     "pearson_fam": 0.08184280446370712
+    },
+    {
+     "rbp": "IGF2BP1",
+     "family": "KH;RRM",
+     "n": 997,
+     "pearson_real": 0.018143942740531886,
+     "pearson_shuf": 0.016037399626666622,
+     "pearson_fam": 0.016656671995601433
+    },
+    {
+     "rbp": "PABPN1",
+     "family": "RRM",
+     "n": 1513,
+     "pearson_real": 0.0015347849396478116,
+     "pearson_shuf": 0.04607205923193021,
+     "pearson_fam": -0.008126121932276614
+    },
+    {
+     "rbp": "RBFOX2",
+     "family": "RRM",
+     "n": 1330,
+     "pearson_real": 0.03485180067387924,
+     "pearson_shuf": 0.019286960870351692,
+     "pearson_fam": 0.03928761555252457
+    },
+    {
+     "rbp": "SSB",
+     "family": "LA;RRM",
+     "n": 2086,
+     "pearson_real": 0.0319001694003236,
+     "pearson_shuf": 0.0035686155359228033,
+     "pearson_fam": 0.0319001694003236
+    }
+   ]
+  },
+  "envpwm": {
+   "real": 0.06322398206355252,
+   "shuf": 0.06150610560643367,
+   "fam": 0.08007848693508142,
+   "gap_der": 0.001717876457118832,
+   "gap_fam": -0.016854504871528894,
+   "rows": [
+    {
+     "rbp": "AKAP1",
+     "family": "KH",
+     "n": 1213,
+     "pearson_real": 0.004812987930417936,
+     "pearson_shuf": 0.03315629856490835,
+     "pearson_fam": 0.10406033084542596
+    },
+    {
+     "rbp": "FXR2",
+     "family": "KH",
+     "n": 785,
+     "pearson_real": 0.0404288484179007,
+     "pearson_shuf": 0.0351456712667337,
+     "pearson_fam": 0.05705916808231212
+    },
+    {
+     "rbp": "HNRNPK",
+     "family": "KH",
+     "n": 1352,
+     "pearson_real": 0.10996838440047677,
+     "pearson_shuf": 0.07535946318491299,
+     "pearson_fam": 0.13865370206940766
+    },
+    {
+     "rbp": "IGF2BP1",
+     "family": "KH;RRM",
+     "n": 997,
+     "pearson_real": 0.10847929774205212,
+     "pearson_shuf": 0.07270139333878846,
+     "pearson_fam": 0.09978569633896883
+    },
+    {
+     "rbp": "PABPN1",
+     "family": "RRM",
+     "n": 1513,
+     "pearson_real": 0.022556602131756767,
+     "pearson_shuf": 0.0680515798380523,
+     "pearson_fam": 0.03115719529946098
+    },
+    {
+     "rbp": "RBFOX2",
+     "family": "RRM",
+     "n": 1330,
+     "pearson_real": 0.09366476781217357,
+     "pearson_shuf": 0.12347118819984336,
+     "pearson_fam": 0.06717632989990457
+    },
+    {
+     "rbp": "SSB",
+     "family": "LA;RRM",
+     "n": 2086,
+     "pearson_real": 0.06265698601008973,
+     "pearson_shuf": 0.022657144851796613,
+     "pearson_fam": 0.06265698601008973
+    }
+   ]
+  },
+  "envpwm_z": {
+   "real": 0.06242983411155272,
+   "shuf": 0.060417574301559016,
+   "fam": 0.07876421504213957,
+   "gap_der": 0.0020122598099937086,
+   "gap_fam": -0.016334380930586846,
+   "rows": [
+    {
+     "rbp": "AKAP1",
+     "family": "KH",
+     "n": 1213,
+     "pearson_real": 0.005242964765825052,
+     "pearson_shuf": 0.03175117739309168,
+     "pearson_fam": 0.10367603779621364
+    },
+    {
+     "rbp": "FXR2",
+     "family": "KH",
+     "n": 785,
+     "pearson_real": 0.040136024583176305,
+     "pearson_shuf": 0.03470794353135461,
+     "pearson_fam": 0.05606785470312632
+    },
+    {
+     "rbp": "HNRNPK",
+     "family": "KH",
+     "n": 1352,
+     "pearson_real": 0.10574811085337134,
+     "pearson_shuf": 0.07281416284236514,
+     "pearson_fam": 0.1351343257018059
+    },
+    {
+     "rbp": "IGF2BP1",
+     "family": "KH;RRM",
+     "n": 997,
+     "pearson_real": 0.1075762446232577,
+     "pearson_shuf": 0.07122130956204155,
+     "pearson_fam": 0.09861383378415096
+    },
+    {
+     "rbp": "PABPN1",
+     "family": "RRM",
+     "n": 1513,
+     "pearson_real": 0.02250043093209057,
+     "pearson_shuf": 0.06614039902871229,
+     "pearson_fam": 0.03031334643555478
+    },
+    {
+     "rbp": "RBFOX2",
+     "family": "RRM",
+     "n": 1330,
+     "pearson_real": 0.09386445033908014,
+     "pearson_shuf": 0.12392417921844316,
+     "pearson_fam": 0.06560349419005741
+    },
+    {
+     "rbp": "SSB",
+     "family": "LA;RRM",
+     "n": 2086,
+     "pearson_real": 0.06194061268406795,
+     "pearson_shuf": 0.022363848534904668,
+     "pearson_fam": 0.06194061268406795
+    }
+   ]
+  }
+ }
+}

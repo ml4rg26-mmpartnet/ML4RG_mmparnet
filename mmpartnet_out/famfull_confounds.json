@@ -1,0 +1,83 @@
+{
+ "provenance": {
+  "computed_on": "TUM cluster (CPU); CORAL fork data",
+  "task": "famfull 5-fold held-out-family, balanced random-repair negatives",
+  "note": "RNA-only baseline ignores the protein entirely; compares to CORAL famfull MCC"
+ },
+ "per_fold": [
+  {
+   "fold": 0,
+   "n_test_fams": 60,
+   "n_train_fams": 346,
+   "rna_overlap_held_in_train": 1.0,
+   "pos_rna_overlap": 0.45069681830134106,
+   "protein_overlap": 0.0021231422505307855,
+   "rna_only_baseline_bestMCC": 0.15986667592574813,
+   "rna_only_baseline_MCC@0.5": 0.06737123346461897,
+   "rna_only_baseline_Acc@0.5": 0.5049158837666594,
+   "coral_famfull_bestMCC": 0.1343090330286747,
+   "coral_famfull_lastMCC": 0.1343090330286747
+  },
+  {
+   "fold": 1,
+   "n_test_fams": 60,
+   "n_train_fams": 346,
+   "rna_overlap_held_in_train": 1.0,
+   "pos_rna_overlap": 0.7013698630136986,
+   "protein_overlap": 0.0,
+   "rna_only_baseline_bestMCC": 0.18272584354494179,
+   "rna_only_baseline_MCC@0.5": 0.08842502202221617,
+   "rna_only_baseline_Acc@0.5": 0.5087568188343382,
+   "coral_famfull_bestMCC": 0.5887322936163165,
+   "coral_famfull_lastMCC": 0.3852057900869003
+  },
+  {
+   "fold": 2,
+   "n_test_fams": 60,
+   "n_train_fams": 346,
+   "rna_overlap_held_in_train": 1.0,
+   "pos_rna_overlap": 0.8479228486646885,
+   "protein_overlap": 0.002277904328018223,
+   "rna_only_baseline_bestMCC": 0.3944752005724818,
+   "rna_only_baseline_MCC@0.5": 0.11304614994599173,
+   "rna_only_baseline_Acc@0.5": 0.5146212847555129,
+   "coral_famfull_bestMCC": 0.48141729929309696,
+   "coral_famfull_lastMCC": 0.47912736047638094
+  },
+  {
+   "fold": 3,
+   "n_test_fams": 60,
+   "n_train_fams": 346,
+   "rna_overlap_held_in_train": 1.0,
+   "pos_rna_overlap": 0.5810847642409376,
+   "protein_overlap": 0.0,
+   "rna_only_baseline_bestMCC": 0.14424192594007215,
+   "rna_only_baseline_MCC@0.5": 0.07666486781334558,
+   "rna_only_baseline_Acc@0.5": 0.5066376745250629,
+   "coral_famfull_bestMCC": 0.3755153461198056,
+   "coral_famfull_lastMCC": 0.20062015062848618
+  },
+  {
+   "fold": 4,
+   "n_test_fams": 60,
+   "n_train_fams": 346,
+   "rna_overlap_held_in_train": 0.9998984049578381,
+   "pos_rna_overlap": 0.8082308018667798,
+   "protein_overlap": 0.0,
+   "rna_only_baseline_bestMCC": 0.29060827849645476,
+   "rna_only_baseline_MCC@0.5": 0.10318977033428446,
+   "rna_only_baseline_Acc@0.5": 0.5113273308161487,
+   "coral_famfull_bestMCC": 0.2556250794511404,
+   "coral_famfull_lastMCC": 0.2556250794511404
+  }
+ ],
+ "summary": {
+  "rna_overlap_mean": 0.9999796809915675,
+  "pos_rna_overlap_mean": 0.6778610192174891,
+  "protein_overlap_mean": 0.0008802093157098017,
+  "rna_only_baseline_bestMCC_mean": 0.23438358489593974,
+  "coral_famfull_bestMCC_mean": 0.36711981030180685,
+  "coral_famfull_lastMCC_mean": 0.2909774827343165
+ },
+ "verdict": "CONFOUNDED: RNAs are shared train<->held and an RNA-only baseline approaches the CORAL number -> the family-diversity result is (at least partly) RNA-bindability memorization, not protein-family transfer. A clean test must hold out RNAs too (RNA+family disjoint) and/or a protein-shuffle control on the held set."
+}

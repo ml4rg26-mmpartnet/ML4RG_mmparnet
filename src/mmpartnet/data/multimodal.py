@@ -19,8 +19,9 @@ from typing import Any, Sequence
 
 import torch
 from torch.utils.data import Dataset
-
 from mmpartnet.protein import ProteinConfig, ProteinSource, get_protein
+import h5py
+
 from mmpartnet.process.onehot import onehot
 
 

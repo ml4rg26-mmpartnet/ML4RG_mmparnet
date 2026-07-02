@@ -39,7 +39,7 @@ def read_bed(path, max_peaks=100_000):
 def resolve_bed(rec):
     """Resolve a manifest record's BED path PORTABLY: the stored path if it exists, else
     ``config.DATA/'eclip'/<basename>``. Handles Windows-absolute manifest paths on any OS, so the
-    shared dataset works unchanged on the laptop, the 5090 node, or a teammate's clone."""
+    shared dataset works unchanged on the laptop, the GPU node, or a teammate's clone."""
     p = rec.get("path", "")
     if p and Path(p).exists():
         return Path(p)

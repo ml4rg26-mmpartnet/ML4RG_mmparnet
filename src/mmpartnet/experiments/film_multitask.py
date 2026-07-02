@@ -33,30 +33,31 @@ import torch
 from datasets import load_from_disk
 from torch.utils.data import DataLoader, Sampler
 
+from mmpartnet import config
 from mmpartnet.data.multimodal import (
     MultimodalCollator,
     ParnetMultimodalDataset,
     build_cell_vocab,
     load_track_protein_map,
 )
-from mmpartnet.models import EarlyFusionConcatHead, ProteinCellFiLMProfileHead, load_parnet
+from mmpartnet.models import ProteinCellFiLMProfileHead, load_parnet
 
 
-SHARED = Path("/home/dgu/storage_ml4rg26-shared")
-MMPARNET = Path("/home/dgu/storage_ml4rg26-mmparnet")
+# Shared roots via config (env-overridable, user-agnostic — /mnt/storage1 by default, no $HOME baked in).
+SHARED = config.SHARED_DIR
+MMPARNET = config.MMPARNET_DIR
 REPO = Path(__file__).resolve().parents[3]
-DEFAULT_HFDS = (
-    SHARED
-    / "parnet-eclip/data-formatted-for-training/"
-    / "600nt_windows.no-one-hot.stripped/encode.filtered.hfds"
-)
-DEFAULT_TRACK_MAP = REPO / "mmpartnet_out/prott5_track_map.tsv"
-DEFAULT_PROTEIN_H5 = MMPARNET / "manually_gathered/ProtT5_zenodo_datasets/reduced_embeddings_file.h5"
-DEFAULT_BINDING = (
-    MMPARNET
-    / "manually_gathered/600nt_windows.no-one-hot.stripped.binding/"
-    / "600nt_windows.no-one-hot.stripped.binding.narrowpeak_intersect/dataset.pt"
-)
+DEFAULT_HFDS = Path(os.environ.get(
+    "ML4RG_HFDS",
+    SHARED / "parnet-eclip/data-formatted-for-training/"
+             "600nt_windows.no-one-hot.stripped/encode.filtered.hfds"))
+DEFAULT_TRACK_MAP = Path(os.environ.get("ML4RG_TRACK_MAP", REPO / "mmpartnet_out/prott5_track_map.tsv"))
+DEFAULT_PROTEIN_H5 = Path(os.environ.get(
+    "ML4RG_PROTT5_H5", MMPARNET / "manually_gathered/ProtT5_zenodo_datasets/reduced_embeddings_file.h5"))
+DEFAULT_BINDING = Path(os.environ.get(
+    "ML4RG_BINDING_PT",
+    MMPARNET / "manually_gathered/600nt_windows.no-one-hot.stripped.binding/"
+               "600nt_windows.no-one-hot.stripped.binding.narrowpeak_intersect/dataset.pt"))
 DEFAULT_OUT = REPO / "mmpartnet_out/film_runs"
 
 

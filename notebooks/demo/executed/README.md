@@ -1,6 +1,6 @@
 # notebooks/demo/executed - executed copies (with outputs)
 
-00-02 were executed on an RTX 5090 GPU node on real public data (ENCODE eCLIP peaks + remote bigWig signal +
+00-02 were executed on an a CUDA GPU GPU node on real public data (ENCODE eCLIP peaks + remote bigWig signal +
 hg38 + frozen PARNET); 03 runs anywhere (committed JSON only). These are the demonstration record; the clean
 (output-stripped) sources are one level up in `notebooks/demo/`.
 

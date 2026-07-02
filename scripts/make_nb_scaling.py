@@ -1,0 +1,139 @@
+"""Notebook 14 — scaling the protein-conditioned head toward CORAL. One executed notebook for the modular
+binding_x sweep program (P1 dim, P2 global-context fusion, P3 capacity/bidir), each a config of the SAME
+leakage-controlled harness. Demo format, LaTeX math, violin/dim-sweep figures, executed. Targets the merge
+worktree; re-runs on any same-schema binding_x_*.json."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+from nbgen import md, code, build
+
+W = Path(r"D:/FOAM2.0/poc/ml4rg_parnet/dist/mmparnet-merge")
+DEMO = W / "notebooks" / "demo"; EX = DEMO / "executed"
+HEAD = (
+    "import os, sys, json, pathlib\nimport numpy as np, matplotlib.pyplot as plt\n"
+    "from IPython.display import Markdown, display\n_here=pathlib.Path.cwd().resolve()\n"
+    "REPO=next((c for c in (_here,*_here.parents) if (c/'src'/'mmpartnet').is_dir()),_here)\n"
+    "sys.path.insert(0,str(REPO/'scripts')); import viz\nOUT=REPO/'mmpartnet_out'; FIGD=REPO/'notebooks'/'demo'/'executed'\n"
+    "def J(n): return json.loads((OUT/n).read_text())\n"
+    "from IPython.display import Image as _Img\n"
+    "def show(fig,name,sup=None):\n"
+    "    if sup: fig.suptitle(sup,fontsize=12.5,fontweight='bold',y=1.02)\n"
+    "    fig.savefig(str(FIGD/name),bbox_inches='tight',dpi=150); plt.close(fig)\n"
+    "    display(_Img(filename=str(FIGD/name)))\n"
+)
+DATA = ("**Data (Moyon/Marsico lab).** Frozen PARNET `parnet.7m-0.0`, lab binding `binding/pureclip`, "
+        "ESM-2 (pooled + per-residue, computed on-node), ProtT5, STRING-PE. K=68 eCLIP tracks (45 RBPs). "
+        "Every panel = one `binding_x` config (rep / proj / arch / layers / add) through the SAME "
+        "leakage-controlled eval (`eval_controls.py`): RNA-only multitask baseline + random-body leakage "
+        "control + derangement shuffle + paired bootstrap CI + binomial/Wilcoxon sign test. "
+        "**In-distribution** (all-223 PARNET); leave-out PARNET is the decisive follow-up.")
+ATTR = ("\n\nClaude-assisted; per-residue cross-attention per TFBindFormer/CORAL; leakage controls are ours. "
+        "All numbers from committed `mmpartnet_out/binding_x_*.json`; figures via `scripts/viz.py`.")
+
+build(DEMO / "14_scaling_toward_coral.ipynb", EX / "14_scaling_toward_coral_executed.ipynb", [
+    md("# 14 — Scaling the protein-conditioned head toward CORAL\n\n"
+       "**What.** Per-residue cross-attention is the only M1 conditioning that robustly beats the RNA-only "
+       "baseline (notebook 10: +0.016 auPRC). Here we ask **which lever scales that gain toward CORAL**, testing "
+       "three families as configs of one modular harness: **P1** widen the protein tokens (PCA dim-sweep), "
+       "**P2** add global protein context (STRING-PE PPI / ProtT5), **P3** add capacity / bidirectionality "
+       "(CORAL's actual block).\n\n"
+       "**Why.** CORAL out-scales us on raw architecture (DNABERT-2 + ESM-2 + LoRA, 24k RPI pairs). Before "
+       "investing there, we test cheaply whether the *easy* levers move our leakage-controlled M1 number — a "
+       "sound, falsifiable step that redirects effort honestly.\n\n" + DATA +
+       "\n\n**Builds on.** notebook 10 (fair M1 baseline), gudiyi PARNET-eval, Christoph early-fusion."),
+    md("## Definitions\n\nPer-RBP **gain** $\\delta_g=\\mathrm{auPRC}(g\\mid e_g)-\\mathrm{auPRC}_{\\text{RNA-only}}(g)$ "
+       "where the RNA-only head is a track-aware multitask MLP on frozen PARNET features (no protein). "
+       "**P1 dim-sweep:** per-residue ESM-2 tokens $P\\in\\mathbb{R}^{L_p\\times d}$ PCA-projected to "
+       "$d'\\in\\{32,128,256,640\\}$, vs the lab's 32-d reduced rep. "
+       "**P2 fusion:** broadcast a pooled context vector $c$ (STRING-PE and/or ProtT5) onto every residue token "
+       "$\\tilde P_i=[P_i;c]$. "
+       "**P3 capacity:** per-residue (RNA queries attend protein residues) vs **bidirectional** "
+       "(RNA$\\leftrightarrow$protein each layer, CORAL/TFBindFormer block) $\\times$ depth $L\\in\\{2,4\\}$. "
+       "Honesty gate: a method only 'wins' if its per-RBP gain CI excludes 0 AND it beats RNA-only on a "
+       "binomial sign test — not merely on the mean."),
+
+    # ---- P1 ----
+    md("## P1 — does widening the per-residue protein help?"),
+    code(HEAD + "d=J('binding_x_p1_dimsweep.json'); b=d['baselines']\n"
+         "print(f\"baseline RNA-only {b['rna_only_multitask']:.4f} | random-body {b['rna_only_randombody']:.4f} (leakage {d['leakage_attributable_auprc']:+.4f})\")\n"
+         "for m,v in d['methods'].items(): print(f\"  {m:15} gap {v['gap_vs_rna_only']:+.4f} CI[{v['gap_vs_rna_only_ci'][0]:+.4f},{v['gap_vs_rna_only_ci'][1]:+.4f}] | {v['n_beat_rna_only']}/{v['n_rbp']} p={v['sign_test_binom_p']:.1e}\")"),
+    code(HEAD + "show(viz.fig_dimsweep(J('binding_x_p1_dimsweep.json')),'nb14_p1_dimsweep.png','P1: per-residue gain vs projection dim (flat)')"),
+    code(HEAD + "show(viz.fig_fair(J('binding_x_p1_dimsweep.json')),'nb14_p1_fair.png','P1: per-RBP gain distributions by projection dim')"),
+    code(HEAD + "d=J('binding_x_p1_dimsweep.json'); M=d['methods']\n"
+         "best=max((m for m in M if m.startswith('perres_full_')),key=lambda m:M[m]['gap_vs_rna_only'])\n"
+         "ref=M['perres32_ref']['gap_vs_rna_only']\n"
+         "display(Markdown(f'''**Result (P1).** The dim-sweep is **flat**: best is {best} at "
+         "{M[best]['gap_vs_rna_only']:+.4f} vs the lab 32-d {ref:+.4f} — a {M[best]['gap_vs_rna_only']-ref:+.4f} "
+         "difference whose CI overlaps zero. Full 640-d does no better "
+         "({M['perres_full_640']['gap_vs_rna_only']:+.4f}). Note the breadth/magnitude split: higher dims beat "
+         "RNA-only on *more* RBPs ({M['perres_full_640']['n_beat_rna_only']}/{M['perres_full_640']['n_rbp']} at "
+         "640 vs {M['perres_full_32']['n_beat_rna_only']}/{M['perres_full_32']['n_rbp']} at 32) yet not on the "
+         "mean — a few RBPs degrade. **The +0.016 gain was not bottlenecked by the 32-d reduction;** token width "
+         "is not the lever.'''))"),
+
+    # ---- P2 ----
+    md("## P2 — does adding global protein context (PPI / ProtT5) help?"),
+    code(HEAD + "d=J('binding_x_p2_stringfusion.json')\n"
+         "for m,v in d['methods'].items(): print(f\"  {m:16} gap {v['gap_vs_rna_only']:+.4f} CI[{v['gap_vs_rna_only_ci'][0]:+.4f},{v['gap_vs_rna_only_ci'][1]:+.4f}] | {v['n_beat_rna_only']}/{v['n_rbp']} p={v['sign_test_binom_p']:.1e}\")"),
+    code(HEAD + "show(viz.fig_fair(J('binding_x_p2_stringfusion.json')),'nb14_p2_fair.png','P2: per-RBP gain — base vs +STRING/+ProtT5')"),
+    code(HEAD + "d=J('binding_x_p2_stringfusion.json'); M=d['methods']; base=M['perres32']['gap_vs_rna_only']\n"
+         "display(Markdown(f'''**Result (P2).** Broadcasting a pooled context vector onto every residue token "
+         "**does not help and mildly hurts**: base {base:+.4f} → +string "
+         "{M['perres32+string']['gap_vs_rna_only']:+.4f} → +prott5 {M['perres32+prott5']['gap_vs_rna_only']:+.4f} "
+         "→ +both {M['perres32+both']['gap_vs_rna_only']:+.4f}, all at or below base with fewer RBPs beating. "
+         "A constant per-residue add dilutes the position-specific signal. STRING-PE is the driver for the "
+         "RNA-level RPI benchmark, **not** for this per-nucleotide binding head.'''))"),
+
+    # ---- P3 ----
+    md("## P3 — does capacity / bidirectionality (CORAL's block) help?"),
+    code(HEAD + "d=J('binding_x_p3_capacity.json')\n"
+         "for m,v in d['methods'].items(): print(f\"  {m:12} gap {v['gap_vs_rna_only']:+.4f} CI[{v['gap_vs_rna_only_ci'][0]:+.4f},{v['gap_vs_rna_only_ci'][1]:+.4f}] | {v['n_beat_rna_only']}/{v['n_rbp']} p={v['sign_test_binom_p']:.1e}\")"),
+    code(HEAD + "show(viz.fig_fair(J('binding_x_p3_capacity.json')),'nb14_p3_fair.png','P3: per-RBP gain — per-residue vs bidirectional x depth')"),
+    code(HEAD + "d=J('binding_x_p3_capacity.json'); M=d['methods']; ref=M['perres_L2']['gap_vs_rna_only']\n"
+         "best=max(M,key=lambda m:M[m]['gap_vs_rna_only']); db=M[best]['gap_vs_rna_only']-ref\n"
+         "verdict=('a real lift' if (M[best]['gap_vs_rna_only_ci'][0]>ref and best!='perres_L2') else 'within noise')\n"
+         "display(Markdown(f'''**Result (P3).** Best capacity config is **{best}** "
+         "({M[best]['gap_vs_rna_only']:+.4f}) vs the per-residue L2 reference {ref:+.4f} — {db:+.4f}, **{verdict}**. "
+         "Bidirectional cross-attention (CORAL's block) and extra depth are tested on identical per-residue "
+         "features, so this isolates architecture capacity from representation.'''))"),
+
+    # ---- M2 zero-shot: the positive turn ----
+    md("## The pivot — M2 nt-resolution **zero-shot** to unseen RBPs\n\n"
+       "The M1 levers are exhausted in-distribution. But the multimodal value shows up where CORAL does not "
+       "operate: the **per-nucleotide eCLIP profile**, generalized to RBPs held out of training entirely. A "
+       "single protein-conditioned head (FiLM / per-residue) predicts an *unseen* RBP's profile from its "
+       "protein rep alone (30% of RBPs held out, `M2_SPLIT=rbp`), scored by profile Pearson vs a "
+       "shuffled-protein and a harder within-family shuffle, replicated across HepG2 and K562."),
+    code(HEAD + "for nm,fn in [('HepG2','m2_profile_zeroshot_hepg2.json'),('K562','m2_profile_zeroshot_k562.json')]:\n"
+         "    d=J(fn)\n"
+         "    for a,v in d['archs'].items(): print(f\"  {nm:5} {a:7} Pearson real={v['real']:.3f} shuf={v['shuf']:.3f} gap_der={v['gap_der']:+.3f} gap_fam={v['gap_fam']:+.3f} (n={len(v['rows'])})\")"),
+    code(HEAD + "show(viz.fig_m2([('zero-shot HepG2',J('m2_profile_zeroshot_hepg2.json')),('zero-shot K562',J('m2_profile_zeroshot_k562.json'))]),\n"
+         "     'nb14_m2_zeroshot.png','M2 zero-shot: predicting UNSEEN RBP nt-profiles, replicated across cells')"),
+    code(HEAD + "h=J('m2_profile_zeroshot_hepg2.json'); k=J('m2_profile_zeroshot_k562.json')\n"
+         "display(Markdown(f'''**Result (M2 zero-shot).** On RBPs never seen in training, the **per-residue** head "
+         "generalizes robustly across both cells (profile-Pearson gap vs shuffled-protein: HepG2 "
+         "{h['archs']['perres']['gap_der']:+.3f} / K562 {k['archs']['perres']['gap_der']:+.3f}; and **vs the harder "
+         "within-family shuffle** {h['archs']['perres']['gap_fam']:+.3f} / {k['archs']['perres']['gap_fam']:+.3f}, so it "
+         "uses RBP-specific — not merely family-level — protein information). FiLM is cell-variable "
+         "({h['archs']['film']['gap_der']:+.3f} / {k['archs']['film']['gap_der']:+.3f}). Crucially this is **far less "
+         "PARNET-leakage-confounded** than the binary M1 task: the profile head is trained leave-out and PARNET is "
+         "only a frozen feature extractor. This is the contribution CORAL's RNA-level binary RPI cannot make.'''))"),
+
+    md("## Conclusion — where the CORAL gap actually is\n\n"
+       "| lever | result | verdict |\n|---|---|---|\n"
+       "| P1 widen tokens (32→640) | flat, +0.015–0.017 | **not the lever** |\n"
+       "| P2 +STRING / +ProtT5 | ≤ base | **not the lever (dilutes)** |\n"
+       "| P3 capacity / bidir | see panel | architecture test |\n"
+       "| **M2 zero-shot, unseen RBPs** | **per-residue gap +0.039–0.047 (×cell), +0.026–0.035 vs family** | **the win** |\n\n"
+       "The three M1 'make the protein richer/bigger' levers are ruled out cheaply: the per-residue M1 gain "
+       "(+0.016, leakage-controlled) is robust but small *in-distribution* — exactly because the RNA-only "
+       "baseline is ~47% PARNET leakage. **The path past CORAL is not a bigger in-distribution M1 number** "
+       "(CORAL out-scales us there) but the axes where we are uniquely ahead: (1) **M2 nt-resolution zero-shot** "
+       "to unseen RBPs — robust, cross-cell-replicated, and ~leakage-free (above); CORAL does RNA-level binary "
+       "RPI only, with no nt-resolution profile. (2) **Faithfulness** interpretability (notebook 11). (3) The "
+       "decisive **leave-out-PARNET binary** test — same harness, but BLOCKED on a PARNET checkpoint trained "
+       "without the held RBPs (lab `parnet.7m-0.0` is all-223 / leaked); worth requesting from the lab. The "
+       "modular `binding_x` / `m2_profile` make each of these a config on the same validated, leakage-controlled "
+       "harness." + ATTR),
+])
+print("NB14 SCALING DONE")

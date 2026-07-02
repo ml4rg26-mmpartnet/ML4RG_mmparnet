@@ -34,6 +34,18 @@ PARNET_IDX2SYM = PARNET_PKG / "assets" / "ENCODE.idx2symbol-cell.pt"
 LAB_UTILS_SRC = REFS / "parnet--demo--train-models" / "src"         # parnet_demo_utils (the contract)
 SCAFFOLD = REFS / "parnet--demo--train-models"
 
+# ── Shared lab storage (the Paperspace /mnt/storage1 mount) — env-overridable, USER-AGNOSTIC ──────
+# Two areas: `ml4rg26-shared` (read-shared assets) and `ml4rg26-mmparnet` (the project area). Default to
+# the mount root so ANY box with the mount works with zero edits; on a box where it is symlinked under
+# $HOME (e.g. ~/storage_ml4rg26-shared), set ML4RG_STORAGE (or the per-area vars) — no user/home is baked in.
+_STORAGE = Path(os.environ.get("ML4RG_STORAGE", "/mnt/storage1"))
+SHARED_DIR = Path(os.environ.get("ML4RG_SHARED", _STORAGE / "ml4rg26-shared"))
+MMPARNET_DIR = Path(os.environ.get("ML4RG_MMPARNET", _STORAGE / "ml4rg26-mmparnet"))
+# Where we WRITE reusable computed results teammates can read. The committed repo `mmpartnet_out/` is the
+# canonical shared space for small result JSONs (travels with a clone); point ML4RG_SHARED_RESULTS at a
+# writable shared-mount area for large artifacts when one is available.
+SHARED_RESULTS = Path(os.environ.get("ML4RG_SHARED_RESULTS", RESULTS))
+
 # ── Genome + embedding / motif assets (under DATA, gitignored) ────────────────
 HG38 = Path(os.environ.get("ML4RG_HG38", DATA / "hg38.fa"))
 EMB_POOLED = DATA / "embeddings_all.npz"          # ESM2-650M pooled (640-d), human
@@ -52,11 +64,25 @@ class RunConfig:
     The gated swap-ins (substrate/protein + the PARNET weight env var) flip here."""
     substrate: str = "peaks"          # "peaks" (public ENCODE eCLIP, now) | "hfds" (lab canonical)
     cohort_filter: str = "all"        # "all" | "rrm" | "spliceosome" | <family>
-    split: str = "naive"              # "naive" | "family" | "rbp_holdout"
+    split: str = "naive"              # "naive" | "family" | "rbp_holdout" | "chromosome" | "paralog"
     protein: str = "esm650_pooled"    # "esm650_pooled" | "ribex_proxy" | "ribex_real"
     loss: str = "bidir_n2"            # bidirectional symmetric N2 contrast WINS (3-seed); also bce/infonce/margin
     model: str = "parnet_7m"          # frozen-body PARNET checkpoint id
+    conditioning: str = "film"        # head registry key: film | xattn | xattn2 | early | perres (models/registry.py)
+    control: tuple = ()               # controls to run in eval/protocol (eval/controls.py CONTROLS keys)
     lwin: int = 600                   # window length (matches PARNET training tiles)
     seeds: tuple = (0, 1, 2)
     device: str = "cuda"
     out_dir: Path = field(default_factory=lambda: RESULTS)
+
+
+def honest_zero_shot() -> bool:
+    """True only when the loaded PARNET weights are a LEAVE-OUT-pretrained checkpoint (an RBP the head
+    is evaluated on was NOT seen during PARNET pretraining). The default all-223 checkpoint LEAKS the
+    held RBP into the frozen body, so every "zero-shot"/"multimodal-generalization" number computed on
+    it is PROXY-LEVEL, not a real held-out claim. eval/protocol stamps results with this flag; set
+    ML4RG_PARNET_WEIGHTS to a leave-out checkpoint (name/dir contains "leaveout"/"leave-out"/"holdout")
+    and ML4RG_HONEST_ZEROSHOT=1 to promote a run to a headline claim. See CONTRACT.md swap-in #1."""
+    w = str(PARNET_WEIGHTS).lower()
+    tagged = any(t in w for t in ("leaveout", "leave-out", "leave_out", "holdout", "held-out"))
+    return tagged or os.environ.get("ML4RG_HONEST_ZEROSHOT", "0") == "1"

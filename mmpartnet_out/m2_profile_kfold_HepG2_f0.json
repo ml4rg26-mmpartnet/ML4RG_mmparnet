@@ -1,0 +1,275 @@
+{
+ "cell": "HepG2",
+ "K": 34,
+ "n_windows": 6000,
+ "split": "rbp-kfold-0of5",
+ "n_pairs_train": 49416,
+ "n_pairs_test": 14225,
+ "held_chrom": [
+  "chr16",
+  "chr2",
+  "chr9"
+ ],
+ "archs": {
+  "perres": {
+   "real": 0.1357076398622146,
+   "shuf": 0.1071071580970004,
+   "fam": 0.10919454326639931,
+   "gap_der": 0.028600481765214188,
+   "gap_fam": 0.02651309659581527,
+   "rows": [
+    {
+     "rbp": "FUS",
+     "family": "RRM",
+     "n": 3227,
+     "pearson_real": 0.13278616127962872,
+     "pearson_shuf": 0.1744254898630928,
+     "pearson_fam": 0.09805733640668757
+    },
+    {
+     "rbp": "G3BP1",
+     "family": "RRM",
+     "n": 1025,
+     "pearson_real": 0.10311888311848345,
+     "pearson_shuf": 0.13318864981362755,
+     "pearson_fam": 0.03545944222423004
+    },
+    {
+     "rbp": "HNRNPU",
+     "family": "SAP;SPRY",
+     "n": 3024,
+     "pearson_real": 0.1718315936465876,
+     "pearson_shuf": 0.13270354495483766,
+     "pearson_fam": 0.1718315936465876
+    },
+    {
+     "rbp": "PTBP1",
+     "family": "PTBP1",
+     "n": 2247,
+     "pearson_real": 0.190558143600929,
+     "pearson_shuf": 0.08238866785947199,
+     "pearson_fam": 0.190558143600929
+    },
+    {
+     "rbp": "SFPQ",
+     "family": "RRM",
+     "n": 2402,
+     "pearson_real": 0.06598286309186546,
+     "pearson_shuf": 0.07719568436190453,
+     "pearson_fam": 0.06625117937980352
+    },
+    {
+     "rbp": "SRSF7",
+     "family": "RRM",
+     "n": 838,
+     "pearson_real": 0.1600507580887073,
+     "pearson_shuf": 0.08149974115789202,
+     "pearson_fam": 0.07657903139725694
+    },
+    {
+     "rbp": "XPO5",
+     "family": "XPO1",
+     "n": 1462,
+     "pearson_real": 0.12562507620930055,
+     "pearson_shuf": 0.0683483286681762,
+     "pearson_fam": 0.12562507620930055
+    }
+   ]
+  },
+  "biopwm": {
+   "real": 0.02942320403558071,
+   "shuf": 0.023511250038927702,
+   "fam": 0.02591409778280056,
+   "gap_der": 0.005911953996653014,
+   "gap_fam": 0.0035091062527801502,
+   "rows": [
+    {
+     "rbp": "FUS",
+     "family": "RRM",
+     "n": 3227,
+     "pearson_real": 0.02820725680156596,
+     "pearson_shuf": 0.05698903056738119,
+     "pearson_fam": -0.0015074379029099438
+    },
+    {
+     "rbp": "G3BP1",
+     "family": "RRM",
+     "n": 1025,
+     "pearson_real": 0.02519434189578311,
+     "pearson_shuf": 0.0031006940950109997,
+     "pearson_fam": 0.00601452108135385
+    },
+    {
+     "rbp": "HNRNPU",
+     "family": "SAP;SPRY",
+     "n": 3024,
+     "pearson_real": 0.06846447938645696,
+     "pearson_shuf": 0.06194913170010187,
+     "pearson_fam": 0.06846447938645696
+    },
+    {
+     "rbp": "PTBP1",
+     "family": "PTBP1",
+     "n": 2247,
+     "pearson_real": 0.09179535551340995,
+     "pearson_shuf": -0.008651054194720462,
+     "pearson_fam": 0.09179535551340995
+    },
+    {
+     "rbp": "SFPQ",
+     "family": "RRM",
+     "n": 2402,
+     "pearson_real": -0.004966327644047718,
+     "pearson_shuf": 0.030757632825442395,
+     "pearson_fam": -0.011843477105408286
+    },
+    {
+     "rbp": "SRSF7",
+     "family": "RRM",
+     "n": 838,
+     "pearson_real": 0.0022701543598736373,
+     "pearson_shuf": 0.013724765607631246,
+     "pearson_fam": 0.03347807557067832
+    },
+    {
+     "rbp": "XPO5",
+     "family": "XPO1",
+     "n": 1462,
+     "pearson_real": -0.005002832063976907,
+     "pearson_shuf": 0.006708549671646662,
+     "pearson_fam": -0.005002832063976907
+    }
+   ]
+  },
+  "envpwm": {
+   "real": 0.07883840767839963,
+   "shuf": 0.08620904705935428,
+   "fam": 0.07805794762008676,
+   "gap_der": -0.007370639380954651,
+   "gap_fam": 0.0007804600583128503,
+   "rows": [
+    {
+     "rbp": "FUS",
+     "family": "RRM",
+     "n": 3227,
+     "pearson_real": 0.10322214321558128,
+     "pearson_shuf": 0.1416730110123667,
+     "pearson_fam": 0.08287730852958854
+    },
+    {
+     "rbp": "G3BP1",
+     "family": "RRM",
+     "n": 1025,
+     "pearson_real": 0.04892199838951389,
+     "pearson_shuf": 0.052937885901319974,
+     "pearson_fam": 0.045538863940293994
+    },
+    {
+     "rbp": "HNRNPU",
+     "family": "SAP;SPRY",
+     "n": 3024,
+     "pearson_real": 0.10976533191693527,
+     "pearson_shuf": 0.09941011316825887,
+     "pearson_fam": 0.10976533191693527
+    },
+    {
+     "rbp": "PTBP1",
+     "family": "PTBP1",
+     "n": 2247,
+     "pearson_real": 0.15779729235694445,
+     "pearson_shuf": 0.07730284765471623,
+     "pearson_fam": 0.15779729235694445
+    },
+    {
+     "rbp": "SFPQ",
+     "family": "RRM",
+     "n": 2402,
+     "pearson_real": 0.027691167086572648,
+     "pearson_shuf": 0.08536218135468683,
+     "pearson_fam": 0.055929358608645424
+    },
+    {
+     "rbp": "SRSF7",
+     "family": "RRM",
+     "n": 838,
+     "pearson_real": 0.0715073014147501,
+     "pearson_shuf": 0.07773484914925276,
+     "pearson_fam": 0.06153385861970001
+    },
+    {
+     "rbp": "XPO5",
+     "family": "XPO1",
+     "n": 1462,
+     "pearson_real": 0.032963619368499716,
+     "pearson_shuf": 0.06904244117487854,
+     "pearson_fam": 0.032963619368499716
+    }
+   ]
+  },
+  "envpwm_z": {
+   "real": 0.07598106270604676,
+   "shuf": 0.08370217557378874,
+   "fam": 0.0760229827936533,
+   "gap_der": -0.00772111286774197,
+   "gap_fam": -4.19200876065206e-05,
+   "rows": [
+    {
+     "rbp": "FUS",
+     "family": "RRM",
+     "n": 3227,
+     "pearson_real": 0.09882066074240382,
+     "pearson_shuf": 0.13901500648885698,
+     "pearson_fam": 0.0836526814280272
+    },
+    {
+     "rbp": "G3BP1",
+     "family": "RRM",
+     "n": 1025,
+     "pearson_real": 0.043075735245912676,
+     "pearson_shuf": 0.048893632993752295,
+     "pearson_fam": 0.04080678344315213
+    },
+    {
+     "rbp": "HNRNPU",
+     "family": "SAP;SPRY",
+     "n": 3024,
+     "pearson_real": 0.10715684529136695,
+     "pearson_shuf": 0.09938229315114587,
+     "pearson_fam": 0.10715684529136695
+    },
+    {
+     "rbp": "PTBP1",
+     "family": "PTBP1",
+     "n": 2247,
+     "pearson_real": 0.15661502396869809,
+     "pearson_shuf": 0.07540364635267843,
+     "pearson_fam": 0.15661502396869809
+    },
+    {
+     "rbp": "SFPQ",
+     "family": "RRM",
+     "n": 2402,
+     "pearson_real": 0.02466399106341662,
+     "pearson_shuf": 0.0834031835686867,
+     "pearson_fam": 0.0544756199735637
+    },
+    {
+     "rbp": "SRSF7",
+     "family": "RRM",
+     "n": 838,
+     "pearson_real": 0.06923049099917433,
+     "pearson_shuf": 0.07029246349467076,
+     "pearson_fam": 0.05714923381941006
+    },
+    {
+     "rbp": "XPO5",
+     "family": "XPO1",
+     "n": 1462,
+     "pearson_real": 0.03230469163135493,
+     "pearson_shuf": 0.06952500296673016,
+     "pearson_fam": 0.03230469163135493
+    }
+   ]
+  }
+ }
+}

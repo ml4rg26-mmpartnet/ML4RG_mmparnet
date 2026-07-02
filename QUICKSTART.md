@@ -1,7 +1,7 @@
 # MultiModal PARNET - quickstart (clone, fetch, run)
 
 ML4RG SS26 Project 07. This gets you from a fresh clone to running the demo notebooks on a CUDA GPU node
-(an RTX 5090, or any CUDA machine). The pipeline conditions the lab's frozen PARNET (RNA -> per-nt eCLIP profile) on a
+(an a CUDA GPU, or any CUDA machine). The pipeline conditions the lab's frozen PARNET (RNA -> per-nt eCLIP profile) on a
 protein representation; this repo is the runnable substrate + the tests that verify our public-data proxies.
 
 ## 1. Environment
@@ -10,7 +10,7 @@ protein representation; this repo is the runnable substrate + the tests that ver
 git clone <this-repo> mmpartnet && cd mmpartnet
 python3 -m venv .venv && . .venv/bin/activate     # Python 3.12 (e.g. on a GPU node)
 pip install --upgrade pip
-# Blackwell (RTX 5090, sm_120) needs the cu128 nightly torch:
+# Newer CUDA GPUs (sm_120) need the cu128 nightly torch:
 pip install --pre torch --index-url https://download.pytorch.org/whl/nightly/cu128
 pip install -e ".[eclip,viz,interp]"              # pulls jupyter/nbconvert/ipykernel via [viz]
 pip install gin-config tqdm                        # PARNET unpickler deps

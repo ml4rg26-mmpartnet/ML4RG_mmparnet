@@ -9,6 +9,7 @@ standard per-symbol registry API.
 from __future__ import annotations
 
 import csv
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -17,12 +18,13 @@ import numpy as np
 
 from ..base import ProteinSource
 from ..registry import register
+from ... import config
 
 
-DEFAULT_PROTT5_H5 = (
-    Path("/home/dgu/storage_ml4rg26-mmparnet")
-    / "manually_gathered/ProtT5_zenodo_datasets/reduced_embeddings_file.h5"
-)
+# Env-overridable, user-agnostic (defaults to the /mnt/storage1 project area via config, not any $HOME).
+DEFAULT_PROTT5_H5 = Path(os.environ.get(
+    "ML4RG_PROTT5_H5",
+    config.MMPARNET_DIR / "manually_gathered/ProtT5_zenodo_datasets/reduced_embeddings_file.h5"))
 
 
 @register("prott5_h5")
