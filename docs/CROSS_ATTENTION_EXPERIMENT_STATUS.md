@@ -263,11 +263,11 @@ in its gated positional pooling. This is a useful signal for the hypothesis
 that the profile head can help the binary head, but it still needs fair
 single-task lower-LR comparisons.
 
-## Next Fair Comparisons
+## Completed Lower-LR Single-Task Comparisons
 
 The previous `profile-only` and `binary-only` ablations were run under older
-settings, so they are no longer fully comparable with the improved lower-LR
-multitask run. The next fair single-task comparisons should use the same
+settings, so they were not fully comparable with the improved lower-LR
+multitask run. The fairer single-task comparisons were rerun with the same
 full-data-style setup:
 
 ```text
@@ -275,10 +275,294 @@ task = profile-only, lr = 3e-4, protein_latent_len = 256, 15 epochs
 task = binary-only,  lr = 3e-4, protein_latent_len = 256, 15 epochs
 ```
 
-These runs are needed to distinguish:
+### Profile-Only Lower-LR 15-Epoch Run
+
+Run name:
 
 ```text
-better optimization of the shared cross-attention backbone
-vs.
-actual benefit from coupling the profile and binary heads
+profile_only_lr3e4_latent256_15x500_seed0
 ```
+
+Configuration:
+
+```text
+task = profile-only
+lr = 3e-4
+protein_latent_len = 256
+lambda_profile = 1
+lambda_binary = 0
+batch_size = 32
+epochs = 15
+steps_per_epoch = 500
+balanced_train = true
+balanced_pos_fraction = 1.0
+tracks = all
+max_train_windows = 0
+max_valid_windows = 0
+valid_sample_size = 32000
+include_short = true
+profile_mask_source = binding
+num_blocks = 1
+```
+
+Results:
+
+```text
+best valid Pearson  = 0.48450, epoch 14
+final valid Pearson = 0.48391, epoch 15
+final train Pearson = 0.48609
+```
+
+This profile-only run is currently the strongest cross-attention profile result.
+It outperforms the lower-LR 15-epoch multitask run on profile Pearson:
+
+```text
+profile-only best valid Pearson = 0.48450
+multitask best valid Pearson    = 0.43395
+```
+
+This suggests that the current multitask coupling does not improve profile
+prediction. The binary objective may be competing with, or regularizing away
+from, the profile-only optimum under the current settings.
+
+### Binary-Only Lower-LR 15-Epoch Run
+
+Run name:
+
+```text
+binary_only_l10_lr3e4_latent256_15x1000_seed0
+```
+
+Configuration:
+
+```text
+task = binary-only
+lr = 3e-4
+protein_latent_len = 256
+lambda_profile = 0
+lambda_binary = 10
+binary_pooling = position
+batch_size = 32
+epochs = 15
+steps_per_epoch = 1000
+balanced_train = true
+balanced_pos_fraction = 0.5
+tracks = all
+max_train_windows = 0
+max_valid_windows = 0
+valid_sample_size = 32000
+include_short = true
+profile_mask_source = binding
+num_blocks = 1
+```
+
+Results:
+
+```text
+best valid AUPRC  = 0.08400, epoch 1
+final valid AUPRC = 0.04025, epoch 15
+final train AUPRC = 0.62596
+valid positive rate = 0.02578
+```
+
+The binary-only model learns some signal on the balanced training stream, but
+validation AUPRC remains low and degrades with longer training. This suggests
+that the current binary-only position-pooling head is not a strong standalone
+model under the full-data setting.
+
+### Updated Interpretation After Fair Single-Task Runs
+
+The fairer lower-LR results separate the two tasks more clearly:
+
+```text
+profile prediction:
+  profile-only best valid Pearson = 0.48450
+  multitask best valid Pearson    = 0.43395
+
+binary prediction:
+  multitask best valid AUPRC      = 0.23989
+  binary-only best valid AUPRC    = 0.08400
+```
+
+The profile-only result indicates that multitask coupling is not currently
+helping profile prediction. However, the multitask result is much stronger than
+binary-only on binary AUPRC. This is consistent with the hypothesis that the
+multitask binary head benefits from the profile head's predicted `target_prob`.
+
+The key open question is whether that benefit comes from useful profile-guided
+positional evidence, from optimization differences, or from dataset-specific
+in-distribution signals.
+
+## Binary Loss Weight And Pooling Diagnostics
+
+Because the binary-only run with `lambda_binary = 10` was weak and appeared
+unstable on validation, a short 5-epoch diagnostic lowered the binary loss
+weight to `lambda_binary = 1`.
+
+### Completed Position-Pooling Lambda-1 Diagnostic
+
+Run name:
+
+```text
+binary_only_position_lam1_lr3e4_latent256_5x1000_seed0
+```
+
+Configuration:
+
+```text
+task = binary-only
+lr = 3e-4
+protein_latent_len = 256
+lambda_profile = 0
+lambda_binary = 1
+binary_pooling = position
+batch_size = 32
+epochs = 5
+steps_per_epoch = 1000
+valid_sample_size = 32000
+include_short = true
+```
+
+Results:
+
+```text
+best valid AUPRC  = 0.05276, epoch 4
+final valid AUPRC = 0.05198, epoch 5
+final train AUPRC = 0.63285
+```
+
+Lowering `lambda_binary` from 10 to 1 did not fix the position-pooling
+binary-only model. The result is below the earlier 2-epoch lower-LR diagnostic
+and below the 15-epoch `lambda_binary = 10` best epoch. This makes the loss
+scale a less likely sole explanation for the binary-only weakness.
+
+## Currently Running Or Queued Diagnostics
+
+As of the latest update, the following diagnostics are running or queued in
+`tmux` on the VM:
+
+```text
+xattn_binary_lambda1_pool_diag
+  completed:
+    binary_only_position_lam1_lr3e4_latent256_5x1000_seed0
+  currently running:
+    binary_only_mean_lam1_lr3e4_latent256_5x1000_seed0
+
+xattn_multitask_targetalpha_after_binary_diag
+  queued after xattn_binary_lambda1_pool_diag finishes:
+    multitask_targetalpha_l10_lr3e4_latent256_5x1000_seed0
+```
+
+The currently running mean-pooling diagnostic uses:
+
+```text
+task = binary-only
+binary_pooling = mean
+lambda_binary = 1
+lr = 3e-4
+protein_latent_len = 256
+epochs = 5
+steps_per_epoch = 1000
+valid_sample_size = 32000
+```
+
+This experiment asks whether the weak `binary-only` results are caused by the
+learned position-softmax pooling mechanism rather than by the fused
+cross-attention representation itself.
+
+The original `binary-only` head learns a positional distribution:
+
+```text
+binary_position_prob = softmax(binary position logits)
+v_bind = sum_i binary_position_prob_i * Z_i
+binding_logit = MLP(v_bind)
+```
+
+This is a relatively hard optimization problem because the binary supervision
+only says whether the whole RNA window binds; it does not directly say which
+position should receive the pooling mass. The model must discover a useful
+positional attention distribution from a single window-level binary label.
+
+The mean-pooling diagnostic removes that extra learned positional distribution:
+
+```text
+v_bind = masked_mean(Z)
+binding_logit = MLP(v_bind)
+```
+
+If mean pooling works better, then the problem is likely the position-pooling
+binary head. If mean pooling also performs poorly, then the issue is more
+likely in the full-data binary task setup, the representation, or the
+in-distribution label structure.
+
+The queued `target-alpha` multitask diagnostic uses:
+
+```text
+task = multitask
+binary_alpha_source = target
+lambda_profile = 1
+lambda_binary = 10
+lr = 3e-4
+protein_latent_len = 256
+epochs = 5
+steps_per_epoch = 1000
+valid_sample_size = 32000
+```
+
+This experiment asks whether the multitask binary improvement comes mainly from
+the profile head's positional signal.
+
+In the original multitask head, the binary pooling distribution is a gated
+mixture:
+
+```text
+alpha_bind = gate * target_prob + (1 - gate) * binary_position_prob
+```
+
+Here:
+
+- `target_prob` is the profile head's predicted binding profile distribution.
+- `binary_position_prob` is a separate positional distribution learned only
+  through binary supervision.
+- `gate` decides how much the binary head relies on the profile-derived
+  distribution versus its own binary-specific distribution.
+
+The completed runs suggest that the standalone binary-position branch is weak:
+
+```text
+binary-only position, lambda_binary = 10:
+  best valid AUPRC = 0.08400
+
+binary-only position, lambda_binary = 1:
+  best valid AUPRC = 0.05276
+
+multitask gated:
+  best valid AUPRC = 0.23989
+```
+
+This pattern suggests that the useful binary signal in multitask may be coming
+from the profile head's `target_prob`, not from the separately learned
+`binary_position_prob`.
+
+The queued diagnostic therefore removes the learned binary positional mixture
+and pools the fused representation using only the profile head's predicted
+`target_prob`:
+
+```text
+alpha_bind = target_prob
+```
+
+The `target_prob` is not detached, so binary loss can still backpropagate
+through the profile head. This diagnostic directly tests whether the learned
+`binary_position_prob` and gate are useful, or whether the profile-predicted
+distribution is the main useful positional signal for binary prediction.
+
+The reason to test this is conceptual as well as empirical. The profile head is
+trained with per-position signal information, so it has a much stronger reason
+to learn where binding-like signal lies within the 600 nt window. The binary
+head only receives a window-level label, so asking it to learn a separate
+position distribution may be underconstrained. If `target_prob` pooling matches
+or beats the gated multitask head, then the simpler interpretation is that the
+profile task is providing the useful positional evidence for binary prediction.
+If it performs worse, then the separate binary-position branch and gate are
+contributing useful information beyond the profile distribution.

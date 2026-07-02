@@ -151,6 +151,7 @@ def main() -> None:
         protein_compression=str(config.get("protein_compression", "none")),
         protein_latent_len=int(config.get("protein_latent_len", 256)),
         binary_pooling=str(config.get("binary_pooling", "position")),
+        binary_alpha_source=str(config.get("binary_alpha_source", "gated")),
     ).to(device)
     head.load_state_dict(checkpoint["model_state_dict"])
 
