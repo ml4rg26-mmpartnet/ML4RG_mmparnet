@@ -52,11 +52,25 @@ class RunConfig:
     The gated swap-ins (substrate/protein + the PARNET weight env var) flip here."""
     substrate: str = "peaks"          # "peaks" (public ENCODE eCLIP, now) | "hfds" (lab canonical)
     cohort_filter: str = "all"        # "all" | "rrm" | "spliceosome" | <family>
-    split: str = "naive"              # "naive" | "family" | "rbp_holdout"
+    split: str = "naive"              # "naive" | "family" | "rbp_holdout" | "paralog"
     protein: str = "esm650_pooled"    # "esm650_pooled" | "ribex_proxy" | "ribex_real"
     loss: str = "bidir_n2"            # bidirectional symmetric N2 contrast WINS (3-seed); also bce/infonce/margin
     model: str = "parnet_7m"          # frozen-body PARNET checkpoint id
+    conditioning: str = "film"        # head registry key: film | xattn | xattn2 | early (models/registry.py)
+    control: tuple = ()               # controls to run in eval/protocol (eval/controls.py CONTROLS keys)
     lwin: int = 600                   # window length (matches PARNET training tiles)
     seeds: tuple = (0, 1, 2)
     device: str = "cuda"
     out_dir: Path = field(default_factory=lambda: RESULTS)
+
+
+def honest_zero_shot() -> bool:
+    """True only when the loaded PARNET weights are a LEAVE-OUT-pretrained checkpoint (an RBP the head
+    is evaluated on was NOT seen during PARNET pretraining). The default all-223 checkpoint LEAKS the
+    held RBP into the frozen body, so every "zero-shot"/"multimodal-generalization" number computed on
+    it is PROXY-LEVEL, not a real held-out claim. eval/protocol stamps results with this flag; set
+    ML4RG_PARNET_WEIGHTS to a leave-out checkpoint (name/dir contains "leaveout"/"leave-out"/"holdout")
+    and ML4RG_HONEST_ZEROSHOT=1 to promote a run to a headline claim. See CONTRACT.md swap-in #1."""
+    w = str(PARNET_WEIGHTS).lower()
+    tagged = any(t in w for t in ("leaveout", "leave-out", "leave_out", "holdout", "held-out"))
+    return tagged or os.environ.get("ML4RG_HONEST_ZEROSHOT", "0") == "1"
