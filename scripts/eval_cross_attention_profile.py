@@ -19,7 +19,16 @@ import torch
 from datasets import load_from_disk
 
 from mmpartnet.data.multimodal import build_cell_vocab, load_track_protein_map
-from mmpartnet.models import ProteinCellCrossAttentionProfileHead, load_parnet
+from mmpartnet.models import (
+    ProteinCellCrossAttentionProfileHead,
+    TFBindCrossAttentionProfileHead,
+    load_parnet,
+)
+
+MODEL_CLASSES = {
+    "original": ProteinCellCrossAttentionProfileHead,
+    "tfbind": TFBindCrossAttentionProfileHead,
+}
 from scripts.train_cross_attention_profile import (
     DEFAULT_BINDING,
     DEFAULT_HFDS,
@@ -133,7 +142,10 @@ def main() -> None:
     parnet = load_parnet(device=device)
 
     config = checkpoint.get("model_config", {})
-    head = ProteinCellCrossAttentionProfileHead(
+    model_name = ckpt_args.get("model", "original")
+    model_class = MODEL_CLASSES.get(model_name, ProteinCellCrossAttentionProfileHead)
+    print(f"model:          {model_name} ({model_class.__name__})")
+    head = model_class(
         protein_dim=int(checkpoint["protein_dim"]),
         rna_channels=int(checkpoint["rna_channels"]),
         cell_count=len(cell_to_index),

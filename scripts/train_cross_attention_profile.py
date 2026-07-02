@@ -32,7 +32,16 @@ from mmpartnet.data.multimodal import (
     build_cell_vocab,
     load_track_protein_map,
 )
-from mmpartnet.models import ProteinCellCrossAttentionProfileHead, load_parnet
+from mmpartnet.models import (
+    ProteinCellCrossAttentionProfileHead,
+    TFBindCrossAttentionProfileHead,
+    load_parnet,
+)
+
+MODEL_CLASSES = {
+    "original": ProteinCellCrossAttentionProfileHead,
+    "tfbind": TFBindCrossAttentionProfileHead,
+}
 
 from scripts.train_film_profile import (
     BindingBalancedSampler,
@@ -403,6 +412,7 @@ def main() -> None:
     parser.add_argument("--balanced-train", action="store_true")
     parser.add_argument("--balanced-pos-fraction", type=float, default=0.5)
     parser.add_argument("--steps-per-epoch", type=int, default=None)
+    parser.add_argument("--model", default="original", choices=list(MODEL_CLASSES))
     parser.add_argument("--hidden-dim", type=int, default=256)
     parser.add_argument("--num-heads", type=int, default=8)
     parser.add_argument("--num-blocks", type=int, default=1)
@@ -501,7 +511,9 @@ def main() -> None:
     probe = move_batch(next(iter(train_loader)), device)
     with torch.no_grad():
         probe_features = parnet.body_feats(probe["onehot"])
-    head = ProteinCellCrossAttentionProfileHead(
+    model_class = MODEL_CLASSES[args.model]
+    print(f"model:          {args.model} ({model_class.__name__})", flush=True)
+    head = model_class(
         protein_dim=int(probe["protein_residue_embedding"].shape[-1]),
         rna_channels=int(probe_features.shape[1]),
         cell_count=len(cell_to_index),
@@ -516,7 +528,7 @@ def main() -> None:
     if args.resume is not None and args.run_name is None:
         run_name = args.resume.parent.name
     else:
-        run_name = args.run_name or f"cross_attention_{args.mode}_seed{args.seed}"
+        run_name = args.run_name or f"cross_attention_{args.model}_{args.mode}_seed{args.seed}"
     out_dir = args.out_dir / run_name
     out_dir.mkdir(parents=True, exist_ok=True)
     metrics_config = {
