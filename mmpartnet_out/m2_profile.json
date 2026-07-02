@@ -1,0 +1,577 @@
+{
+ "cell": "HepG2",
+ "K": 34,
+ "n_windows": 6000,
+ "split": "random-window-30pct",
+ "n_pairs_train": 44799,
+ "n_pairs_test": 18842,
+ "held_chrom": [
+  "chr16",
+  "chr2",
+  "chr9"
+ ],
+ "archs": {
+  "film": {
+   "real": 0.20557347169652557,
+   "shuf": 0.10009766819642192,
+   "fam": 0.13254340696597974,
+   "gap_der": 0.10547580350010363,
+   "gap_fam": 0.07303006473054584,
+   "rows": [
+    {
+     "rbp": "AKAP1",
+     "family": "KH",
+     "n": 378,
+     "pearson_real": 0.11425227572392764,
+     "pearson_shuf": 0.11646878243243523,
+     "pearson_fam": 0.06987607000056419
+    },
+    {
+     "rbp": "CSTF2",
+     "family": "RRM",
+     "n": 579,
+     "pearson_real": 0.2826376614891799,
+     "pearson_shuf": 0.0864256053014358,
+     "pearson_fam": 0.08989622066268337
+    },
+    {
+     "rbp": "FUS",
+     "family": "RRM",
+     "n": 946,
+     "pearson_real": 0.1739912847124422,
+     "pearson_shuf": 0.11109310408843141,
+     "pearson_fam": 0.09801943718869276
+    },
+    {
+     "rbp": "FXR2",
+     "family": "KH",
+     "n": 221,
+     "pearson_real": 0.1818605790518401,
+     "pearson_shuf": 0.11095759661276129,
+     "pearson_fam": 0.12038225014826796
+    },
+    {
+     "rbp": "G3BP1",
+     "family": "RRM",
+     "n": 300,
+     "pearson_real": 0.20291251082683934,
+     "pearson_shuf": 0.03673690058261855,
+     "pearson_fam": 0.038405181890981716
+    },
+    {
+     "rbp": "GRSF1",
+     "family": "RRM",
+     "n": 205,
+     "pearson_real": 0.14494967752295296,
+     "pearson_shuf": 0.07696225637308798,
+     "pearson_fam": 0.08986680615159524
+    },
+    {
+     "rbp": "HNRNPA1",
+     "family": "RRM",
+     "n": 1109,
+     "pearson_real": 0.29542341059427774,
+     "pearson_shuf": 0.06861001635206367,
+     "pearson_fam": 0.16882258414535656
+    },
+    {
+     "rbp": "HNRNPC",
+     "family": "RRM",
+     "n": 1190,
+     "pearson_real": 0.4208229058521199,
+     "pearson_shuf": 0.2691382710831954,
+     "pearson_fam": 0.13815854884874973
+    },
+    {
+     "rbp": "HNRNPK",
+     "family": "KH",
+     "n": 393,
+     "pearson_real": 0.2596642766290039,
+     "pearson_shuf": 0.091061306443493,
+     "pearson_fam": 0.091061306443493
+    },
+    {
+     "rbp": "HNRNPL",
+     "family": "RRM",
+     "n": 940,
+     "pearson_real": 0.20071854006014195,
+     "pearson_shuf": 0.0856448404786785,
+     "pearson_fam": 0.1315789789784368
+    },
+    {
+     "rbp": "HNRNPM",
+     "family": "HNRNP_M;RRM",
+     "n": 472,
+     "pearson_real": 0.2928827619932343,
+     "pearson_shuf": 0.0903670141358477,
+     "pearson_fam": 0.2928827619932343
+    },
+    {
+     "rbp": "HNRNPU",
+     "family": "SAP;SPRY",
+     "n": 891,
+     "pearson_real": 0.18143928371156606,
+     "pearson_shuf": 0.11017170541459088,
+     "pearson_fam": 0.18143928371156606
+    },
+    {
+     "rbp": "IGF2BP1",
+     "family": "KH;RRM",
+     "n": 286,
+     "pearson_real": 0.2565895937013984,
+     "pearson_shuf": 0.16663078487552768,
+     "pearson_fam": 0.24012232373201556
+    },
+    {
+     "rbp": "IGF2BP3",
+     "family": "KH;RRM",
+     "n": 381,
+     "pearson_real": 0.2541064834576638,
+     "pearson_shuf": 0.07065684946854382,
+     "pearson_fam": 0.245699366437897
+    },
+    {
+     "rbp": "KHSRP",
+     "family": "KH",
+     "n": 1134,
+     "pearson_real": 0.18852319539918005,
+     "pearson_shuf": 0.17667697910539215,
+     "pearson_fam": 0.11752809821856706
+    },
+    {
+     "rbp": "MATR3",
+     "family": "RRM",
+     "n": 590,
+     "pearson_real": 0.18362557571085358,
+     "pearson_shuf": 0.09590261332381549,
+     "pearson_fam": 0.15529046772291807
+    },
+    {
+     "rbp": "PABPN1",
+     "family": "RRM",
+     "n": 449,
+     "pearson_real": 0.13807475611984674,
+     "pearson_shuf": 0.13108022935859748,
+     "pearson_fam": 0.07114876754216218
+    },
+    {
+     "rbp": "PCBP1",
+     "family": "KH",
+     "n": 82,
+     "pearson_real": 0.0952023130205528,
+     "pearson_shuf": 0.07791592182006642,
+     "pearson_fam": 0.10236064916499323
+    },
+    {
+     "rbp": "PCBP2",
+     "family": "KH",
+     "n": 391,
+     "pearson_real": 0.22029151970727842,
+     "pearson_shuf": 0.06855310975860009,
+     "pearson_fam": 0.22147833425230096
+    },
+    {
+     "rbp": "PTBP1",
+     "family": "PTBP1",
+     "n": 653,
+     "pearson_real": 0.19200130381254524,
+     "pearson_shuf": 0.1089525374834915,
+     "pearson_fam": 0.19200130381254524
+    },
+    {
+     "rbp": "QKI",
+     "family": "KH",
+     "n": 703,
+     "pearson_real": 0.17315589848637203,
+     "pearson_shuf": 0.08158125293183695,
+     "pearson_fam": 0.15831327727051656
+    },
+    {
+     "rbp": "RBFOX2",
+     "family": "RRM",
+     "n": 397,
+     "pearson_real": 0.21907636764170765,
+     "pearson_shuf": 0.1062295490723943,
+     "pearson_fam": 0.1529242300603806
+    },
+    {
+     "rbp": "RBM5",
+     "family": "ZF_RANBP",
+     "n": 847,
+     "pearson_real": 0.17902309221458548,
+     "pearson_shuf": 0.11237792060049727,
+     "pearson_fam": 0.17902309221458548
+    },
+    {
+     "rbp": "SFPQ",
+     "family": "RRM",
+     "n": 706,
+     "pearson_real": 0.16845946633592737,
+     "pearson_shuf": 0.06080772032089144,
+     "pearson_fam": 0.054287553871355
+    },
+    {
+     "rbp": "SRSF1",
+     "family": "RRM",
+     "n": 494,
+     "pearson_real": 0.261442145275429,
+     "pearson_shuf": 0.07856414364714473,
+     "pearson_fam": 0.17821911637725965
+    },
+    {
+     "rbp": "SRSF7",
+     "family": "RRM",
+     "n": 262,
+     "pearson_real": 0.2039335363887549,
+     "pearson_shuf": 0.04770712446948364,
+     "pearson_fam": 0.10461209223652125
+    },
+    {
+     "rbp": "SRSF9",
+     "family": "RRM",
+     "n": 340,
+     "pearson_real": 0.23717147547149045,
+     "pearson_shuf": 0.03984555067958461,
+     "pearson_fam": 0.11017273197798846
+    },
+    {
+     "rbp": "SSB",
+     "family": "LA;RRM",
+     "n": 628,
+     "pearson_real": 0.14130692000233924,
+     "pearson_shuf": 0.09596810236994344,
+     "pearson_fam": 0.14130692000233924
+    },
+    {
+     "rbp": "SUPV3L1",
+     "family": "HELICASE_C;SUV3",
+     "n": 286,
+     "pearson_real": 0.0955467896272023,
+     "pearson_shuf": 0.0800477208932706,
+     "pearson_fam": 0.0955467896272023
+    },
+    {
+     "rbp": "TIA1",
+     "family": "RRM",
+     "n": 715,
+     "pearson_real": 0.2825367955731104,
+     "pearson_shuf": 0.186635991400295,
+     "pearson_fam": 0.08569829813122279
+    },
+    {
+     "rbp": "TIAL1",
+     "family": "RRM",
+     "n": 481,
+     "pearson_real": 0.21317083985540386,
+     "pearson_shuf": 0.09080434391947556,
+     "pearson_fam": 0.10342699843117573
+    },
+    {
+     "rbp": "TRA2A",
+     "family": "RRM",
+     "n": 156,
+     "pearson_real": 0.170115431467704,
+     "pearson_shuf": 0.08268407946292054,
+     "pearson_fam": 0.06579068375942417
+    },
+    {
+     "rbp": "U2AF2",
+     "family": "RRM",
+     "n": 783,
+     "pearson_real": 0.23653888846090418,
+     "pearson_shuf": 0.12796286087214281,
+     "pearson_fam": 0.0930848300522252
+    },
+    {
+     "rbp": "XPO5",
+     "family": "XPO1",
+     "n": 454,
+     "pearson_real": 0.12805048178409334,
+     "pearson_shuf": 0.06209793354579065,
+     "pearson_fam": 0.12805048178409334
+    }
+   ]
+  },
+  "perres": {
+   "real": 0.2144791534653687,
+   "shuf": 0.10405794414592606,
+   "fam": 0.1338740877414846,
+   "gap_der": 0.11042120931944262,
+   "gap_fam": 0.08060506572388407,
+   "rows": [
+    {
+     "rbp": "AKAP1",
+     "family": "KH",
+     "n": 378,
+     "pearson_real": 0.1609820921365763,
+     "pearson_shuf": 0.13573309767585315,
+     "pearson_fam": 0.05358767325871485
+    },
+    {
+     "rbp": "CSTF2",
+     "family": "RRM",
+     "n": 579,
+     "pearson_real": 0.2928138873290547,
+     "pearson_shuf": 0.10487990858751998,
+     "pearson_fam": 0.14573637339554416
+    },
+    {
+     "rbp": "FUS",
+     "family": "RRM",
+     "n": 946,
+     "pearson_real": 0.2175702839172935,
+     "pearson_shuf": 0.0999382951530112,
+     "pearson_fam": 0.04435209479471897
+    },
+    {
+     "rbp": "FXR2",
+     "family": "KH",
+     "n": 221,
+     "pearson_real": 0.16214137986445656,
+     "pearson_shuf": 0.10753040809866607,
+     "pearson_fam": 0.1366835033030637
+    },
+    {
+     "rbp": "G3BP1",
+     "family": "RRM",
+     "n": 300,
+     "pearson_real": 0.19208202779637457,
+     "pearson_shuf": 0.08722945129743796,
+     "pearson_fam": 0.03852675643914457
+    },
+    {
+     "rbp": "GRSF1",
+     "family": "RRM",
+     "n": 205,
+     "pearson_real": 0.15751458050955722,
+     "pearson_shuf": 0.071026688817464,
+     "pearson_fam": 0.10471792740870846
+    },
+    {
+     "rbp": "HNRNPA1",
+     "family": "RRM",
+     "n": 1109,
+     "pearson_real": 0.2914335798611242,
+     "pearson_shuf": 0.11284883176728183,
+     "pearson_fam": 0.1502965342006392
+    },
+    {
+     "rbp": "HNRNPC",
+     "family": "RRM",
+     "n": 1190,
+     "pearson_real": 0.42329094059659683,
+     "pearson_shuf": 0.2712997706987046,
+     "pearson_fam": 0.1613087605256998
+    },
+    {
+     "rbp": "HNRNPK",
+     "family": "KH",
+     "n": 393,
+     "pearson_real": 0.2439636906653965,
+     "pearson_shuf": 0.11089019762333151,
+     "pearson_fam": 0.11089019762333151
+    },
+    {
+     "rbp": "HNRNPL",
+     "family": "RRM",
+     "n": 940,
+     "pearson_real": 0.19465450045589874,
+     "pearson_shuf": 0.1093034164420347,
+     "pearson_fam": 0.14807422409141238
+    },
+    {
+     "rbp": "HNRNPM",
+     "family": "HNRNP_M;RRM",
+     "n": 472,
+     "pearson_real": 0.2637682254766548,
+     "pearson_shuf": 0.1250830317151405,
+     "pearson_fam": 0.2637682254766548
+    },
+    {
+     "rbp": "HNRNPU",
+     "family": "SAP;SPRY",
+     "n": 891,
+     "pearson_real": 0.19773646824189392,
+     "pearson_shuf": 0.05328716798952031,
+     "pearson_fam": 0.19773646824189392
+    },
+    {
+     "rbp": "IGF2BP1",
+     "family": "KH;RRM",
+     "n": 286,
+     "pearson_real": 0.25809128860246155,
+     "pearson_shuf": 0.13203576093350727,
+     "pearson_fam": 0.24648677195150445
+    },
+    {
+     "rbp": "IGF2BP3",
+     "family": "KH;RRM",
+     "n": 381,
+     "pearson_real": 0.2541070258308618,
+     "pearson_shuf": 0.08462203941234248,
+     "pearson_fam": 0.2378201856729489
+    },
+    {
+     "rbp": "KHSRP",
+     "family": "KH",
+     "n": 1134,
+     "pearson_real": 0.2319322166581699,
+     "pearson_shuf": 0.20482108730616355,
+     "pearson_fam": 0.1064401996802544
+    },
+    {
+     "rbp": "MATR3",
+     "family": "RRM",
+     "n": 590,
+     "pearson_real": 0.21043971913819343,
+     "pearson_shuf": 0.07341938725563153,
+     "pearson_fam": 0.16378434978176887
+    },
+    {
+     "rbp": "PABPN1",
+     "family": "RRM",
+     "n": 449,
+     "pearson_real": 0.1614203009334261,
+     "pearson_shuf": 0.12044148410505559,
+     "pearson_fam": 0.06206234217320131
+    },
+    {
+     "rbp": "PCBP1",
+     "family": "KH",
+     "n": 82,
+     "pearson_real": 0.13882273267855208,
+     "pearson_shuf": 0.10058466459215595,
+     "pearson_fam": 0.0894672424424576
+    },
+    {
+     "rbp": "PCBP2",
+     "family": "KH",
+     "n": 391,
+     "pearson_real": 0.22327965412460402,
+     "pearson_shuf": 0.07160225998395292,
+     "pearson_fam": 0.1864826712841311
+    },
+    {
+     "rbp": "PTBP1",
+     "family": "PTBP1",
+     "n": 653,
+     "pearson_real": 0.21384089503886183,
+     "pearson_shuf": 0.1411908265442308,
+     "pearson_fam": 0.21384089503886183
+    },
+    {
+     "rbp": "QKI",
+     "family": "KH",
+     "n": 703,
+     "pearson_real": 0.2025981659416502,
+     "pearson_shuf": 0.061375377443552835,
+     "pearson_fam": 0.18564856103270355
+    },
+    {
+     "rbp": "RBFOX2",
+     "family": "RRM",
+     "n": 397,
+     "pearson_real": 0.22451959517464787,
+     "pearson_shuf": 0.09550127147874908,
+     "pearson_fam": 0.14660838815842236
+    },
+    {
+     "rbp": "RBM5",
+     "family": "ZF_RANBP",
+     "n": 847,
+     "pearson_real": 0.21106535443717805,
+     "pearson_shuf": 0.14380956864760477,
+     "pearson_fam": 0.21106535443717805
+    },
+    {
+     "rbp": "SFPQ",
+     "family": "RRM",
+     "n": 706,
+     "pearson_real": 0.1439011344949899,
+     "pearson_shuf": 0.05643713315010081,
+     "pearson_fam": 0.05949117325238254
+    },
+    {
+     "rbp": "SRSF1",
+     "family": "RRM",
+     "n": 494,
+     "pearson_real": 0.24337381841134098,
+     "pearson_shuf": 0.06131910989506098,
+     "pearson_fam": 0.18148409199089316
+    },
+    {
+     "rbp": "SRSF7",
+     "family": "RRM",
+     "n": 262,
+     "pearson_real": 0.2048730236614338,
+     "pearson_shuf": 0.011043350836564254,
+     "pearson_fam": 0.08954548606722801
+    },
+    {
+     "rbp": "SRSF9",
+     "family": "RRM",
+     "n": 340,
+     "pearson_real": 0.22776071964591907,
+     "pearson_shuf": 0.03862468480302221,
+     "pearson_fam": 0.11251461432914178
+    },
+    {
+     "rbp": "SSB",
+     "family": "LA;RRM",
+     "n": 628,
+     "pearson_real": 0.16244737520697342,
+     "pearson_shuf": 0.13203378840758181,
+     "pearson_fam": 0.16244737520697342
+    },
+    {
+     "rbp": "SUPV3L1",
+     "family": "HELICASE_C;SUV3",
+     "n": 286,
+     "pearson_real": 0.12412586025632796,
+     "pearson_shuf": 0.07216197993261153,
+     "pearson_fam": 0.12412586025632796
+    },
+    {
+     "rbp": "TIA1",
+     "family": "RRM",
+     "n": 715,
+     "pearson_real": 0.27940523054066496,
+     "pearson_shuf": 0.18217201735467164,
+     "pearson_fam": 0.03116823619818136
+    },
+    {
+     "rbp": "TIAL1",
+     "family": "RRM",
+     "n": 481,
+     "pearson_real": 0.2250690554721734,
+     "pearson_shuf": 0.0654600757324735,
+     "pearson_fam": 0.08937052342564031
+    },
+    {
+     "rbp": "TRA2A",
+     "family": "RRM",
+     "n": 156,
+     "pearson_real": 0.17046431858817904,
+     "pearson_shuf": 0.103117037696043,
+     "pearson_fam": 0.06732097093444257
+    },
+    {
+     "rbp": "U2AF2",
+     "family": "RRM",
+     "n": 783,
+     "pearson_real": 0.2361983178845948,
+     "pearson_shuf": 0.144821754444512,
+     "pearson_fam": 0.08226119288585351
+    },
+    {
+     "rbp": "XPO5",
+     "family": "XPO1",
+     "n": 454,
+     "pearson_real": 0.14660375825045344,
+     "pearson_shuf": 0.052325175139932005,
+     "pearson_fam": 0.14660375825045344
+    }
+   ]
+  }
+ }
+}

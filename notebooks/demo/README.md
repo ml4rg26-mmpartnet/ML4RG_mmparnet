@@ -13,7 +13,7 @@ hardcoded), read beside the established nulls.
 | `02_finetune_negative_controls.ipynb` | head-finetune vs pretrained, with Control 3 (random body) + Control 2 (faithful RBPNet objective): is the gain real transfer? | PARNET weights + network |
 | `03_interpretability_mixcoeff.ipynb` | PARNET's per-RBP additive mix-coefficient (sequence- vs bias-driven) | committed JSON only |
 
-`executed/` holds the run-with-outputs copies (00-02 from a full RTX 5090 run, 03 from the committed JSON).
+`executed/` holds the run-with-outputs copies (00-02 from a full a CUDA GPU run, 03 from the committed JSON).
 Notebook 03 only needs the committed result JSONs; 00-02 need the PARNET weights + network.
 
 ## Run

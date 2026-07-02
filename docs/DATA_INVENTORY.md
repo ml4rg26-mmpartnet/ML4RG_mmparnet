@@ -6,7 +6,7 @@ Compiled 2026-06-16 from on-disk assets, `parnet--demo--train-models`, live ENCO
 Claude-assisted review against cited primary literature (§5). A verification run is in progress (§7), so a
 short final pass will follow.
 
-> **For supervisors (priorities).** Using **an RTX 5090 GPU** we can already make real progress now: every
+> **For supervisors (priorities).** Using **an a CUDA GPU GPU** we can already make real progress now: every
 > surrogate below we can build / work around ourselves. Two pieces have **no temporary workaround**, so they
 > are the actual bottleneck: the lab's **leave-out-pretraining PARNET** and **trained RIBEX**. The lab's
 > canonical data (counts, genome-wide tiles) is a **nice-to-have** we are still keen on, mainly for
@@ -121,7 +121,7 @@ the regime the method calls success. Caveat: shuffle null is weak and the gain h
 depth-normalized objective, leakage), so treat as pipeline-validation plus real-signal evidence, hardened by
 §7.
 
-### Executed control verdicts (2026-06-16, RTX 5090)
+### Executed control verdicts (2026-06-16, a CUDA GPU)
 
 **Profile claim — Controls 1 + 4 (DONE).** 11 spliceosome HepG2 RBPs, nwin=40, frozen pretrained PARNET:
 
@@ -142,7 +142,7 @@ carry the headline.** (Controls 4 + 1 wired: `recover_demo_profile.py` circular/
 
 ## 7. Verification controls (in progress; mostly IO bound, my internet sucks)
 
-Replacing each surrogate with its established version, on an RTX 5090 GPU. Controls 3 and 4 are already
+Replacing each surrogate with its established version, on an a CUDA GPU GPU. Controls 3 and 4 are already
 wired in code (`recover_demo_finetune.py --baseline randbody`; circular-shift + center-bump nulls in
 `recover_demo_profile.py`); a run is in progress, so §6 / §4 verdicts get a final update after.
 1. **Established eCLIP target:** re-derive 5′-truncation crosslink counts from public ENCODE BAMs, re-score (target #3, control #4).

@@ -13,12 +13,11 @@ numpy = ">=1.24"
 pytorch = ">=2.1"
 datasets = ">=4.0"
 pyarrow = ">=15"
-h5py = ">=3.10"
+h5py = ">=3.16.0,<4"      # merged: dgu (>=3.10) + cgerards (>=3.16) -> tighter pin
 pyfaidx = ">=0.7"
 scikit-learn = ">=1.3"
 pytest = ">=7"
 ruff = ">=0.4"
-h5py = ">=3.16.0,<4"
 ipykernel = ">=7.3.0,<8"
 pandas = ">=3.0.3,<4"
 
