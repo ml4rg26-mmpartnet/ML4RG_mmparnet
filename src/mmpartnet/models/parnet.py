@@ -53,6 +53,11 @@ def _install_stubs():
         tr.EsmConfig = type("EsmConfig", (), {"from_pretrained": classmethod(lambda cls, *_a, **_k: cls())})
         tr.EsmModel = type("EsmModel", (), {})
         sys.modules["transformers"] = tr
+    if "captum" not in sys.modules:
+        captum = _module("captum")
+        captum.attr = _module("captum.attr")
+        captum.attr.IntegratedGradients = type("IntegratedGradients", (), {"__init__": lambda self, *a, **k: None})
+        sys.modules.update({"captum": captum, "captum.attr": captum.attr})
     if "sequence_models" not in sys.modules:
         sm = _module("sequence_models")
         conv = _module("sequence_models.convolutional")

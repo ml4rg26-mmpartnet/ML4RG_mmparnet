@@ -7,7 +7,7 @@ name = "mmpartnet"
 version = "0.1.0"
 description = "MultiModal PARNET — condition the lab's PARNET (RNA-seq -> per-nt eCLIP profile) on a protein representation (RIBEX) to predict RBP binding, generalizing to RBPs without CLIP data. Emphasis on interpretability and honest competence bounds."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "ML4RG SS26 Project 07 — MultiModal PARNET team" }]
 dependencies = [

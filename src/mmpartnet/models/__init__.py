@@ -8,7 +8,14 @@ checkpoint is a one-line config change (CONTRACT.md swap-in #1).
 from __future__ import annotations
 
 from .cross_attention import ProteinCellCrossAttentionProfileHead
+from .cross_attention_tfbind import TFBindCrossAttentionProfileHead
 from .film import ProteinCellFiLMProfileHead
 from .parnet import ParnetModel, load_parnet
 
-__all__ = ["ParnetModel", "ProteinCellCrossAttentionProfileHead", "ProteinCellFiLMProfileHead", "load_parnet"]
+__all__ = [
+    "ParnetModel",
+    "ProteinCellCrossAttentionProfileHead",
+    "TFBindCrossAttentionProfileHead",
+    "ProteinCellFiLMProfileHead",
+    "load_parnet",
+]
