@@ -794,6 +794,7 @@ def eval_main() -> None:
     )
     parser.add_argument("--checkpoint", type=Path, required=True, help="Full checkpoint, usually best.pt or last.pt.")
     parser.add_argument("--split", default="valid", choices=["train", "valid", "test"])
+    parser.add_argument("--arch", default="film", choices=["film", "concat"], help="Head architecture (must match how the checkpoint was trained).")
     parser.add_argument("--hfds", type=Path, default=None)
     parser.add_argument("--binding-dataset", type=Path, default=None)
     parser.add_argument("--track-map", type=Path, default=None)
