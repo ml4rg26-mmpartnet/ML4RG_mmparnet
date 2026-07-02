@@ -8,7 +8,12 @@ paired with one specific RBP-cell track:
 
 The Dataset below keeps samples close to the source data.  The collator performs
 batch-level tensor work: one-hot encoding, sparse label extraction, padding masks,
-and ProtT5 embedding lookup.
+and protein embedding lookup.
+
+The collator supports two protein paths so every conditioning head plugs into the SAME
+collator (see ``MultimodalCollator``): a pooled path via the swappable ``mmpartnet.protein``
+layer (FiLM / early-fusion heads) and a per-residue path read directly from the ProtT5 H5
+(cross-attention heads xattn / xattn2).
 """
 from __future__ import annotations
 
@@ -175,10 +180,15 @@ class ParnetMultimodalDataset(Dataset):
 class MultimodalCollator:
     """Turn a list of multimodal samples into tensors for model input.
 
-    Protein vectors are resolved through ``mmpartnet.protein`` so the FiLM
-    workflow follows the repository's swappable protein-representation layer.
-    ``protein_h5`` is kept as a convenience/default for the current ProtT5 H5
-    provider.
+    Two protein paths coexist so every conditioning head plugs into the same collator:
+
+    * **pooled (default)** - protein vectors resolved through ``mmpartnet.protein`` (the swappable
+      representation layer). Used by the FiLM / early-fusion heads. ``protein_h5`` is a convenience
+      default for the current ProtT5 H5 provider.
+    * **residue** (``return_residue_embeddings=True``) - per-residue ProtT5 embeddings read directly
+      from the H5, padded across the batch with a ``protein_mask``. Used by the cross-attention heads
+      (xattn / xattn2). ``h5py`` is imported lazily so this module imports without it when the residue
+      path is unused.
     """
 
     def __init__(
@@ -189,21 +199,38 @@ class MultimodalCollator:
         protein_source: ProteinSource | None = None,
         protein_rep: str = "prott5_h5",
         track_map: str | Path | None = None,
+        *,
+        return_residue_embeddings: bool = False,
+        max_protein_len: int | None = None,
     ):
         self.protein_h5 = None if protein_h5 is None else Path(protein_h5)
         self.seq_len = seq_len
         self.cell_to_index = cell_to_index or {"HepG2": 0, "K562": 1}
-        if protein_source is None:
+        self.return_residue_embeddings = return_residue_embeddings
+        self.max_protein_len = max_protein_len
+        self._h5 = None
+        # pooled path uses the swappable protein layer; residue path reads the H5 directly (no source)
+        self.protein_source = protein_source
+        if not return_residue_embeddings and protein_source is None:
             extra = {}
             if self.protein_h5 is not None:
                 extra["h5_path"] = self.protein_h5
             if track_map is not None:
                 extra["track_map"] = track_map
-            protein_source = get_protein(protein_rep, ProteinConfig(mode=protein_rep, extra=extra))
-        self.protein_source = protein_source
+            self.protein_source = get_protein(protein_rep, ProteinConfig(mode=protein_rep, extra=extra))
+
+    @property
+    def h5(self):
+        if self._h5 is None:
+            import h5py  # lazy: residue path only, so the module imports without h5py otherwise
+            if self.protein_h5 is None:
+                raise ValueError("return_residue_embeddings=True needs protein_h5 (a per-residue ProtT5 H5)")
+            self._h5 = h5py.File(self.protein_h5, "r")
+        return self._h5
 
     def __getstate__(self):
         state = self.__dict__.copy()
+        state["_h5"] = None
         return state
 
     def _protein_vector(self, sample: dict[str, Any]) -> torch.Tensor:
@@ -224,6 +251,7 @@ class MultimodalCollator:
         eclip = []
         control = []
         proteins = []
+        residue_proteins = []
         binding = []
 
         for sample in samples:
@@ -232,7 +260,16 @@ class MultimodalCollator:
             masks.append(mask)
             eclip.append(sparse_track_to_dense(sample["eclip_sparse"], sample["track_index"], self.seq_len))
             control.append(sparse_track_to_dense(sample["control_sparse"], sample["track_index"], self.seq_len))
-            proteins.append(self._protein_vector(sample))
+            if self.return_residue_embeddings:
+                protein = torch.from_numpy(self.h5[sample["protein_h5_key"]][()]).float()
+                if protein.ndim == 1:
+                    protein = protein.unsqueeze(0)
+                if self.max_protein_len is not None:
+                    protein = protein[: self.max_protein_len]
+                residue_proteins.append(protein)
+                proteins.append(protein.mean(dim=0))
+            else:
+                proteins.append(self._protein_vector(sample))
             if "binding" in sample:
                 binding.append(float(sample["binding"]))
 
@@ -249,8 +286,20 @@ class MultimodalCollator:
             "cell": [s["cell"] for s in samples],
             "rbp_ct": [s["rbp_ct"] for s in samples],
             "window_name": [s["window_name"] for s in samples],
+            "sequence": [s["sequence"] for s in samples],
             "protein_h5_key": [s["protein_h5_key"] for s in samples],
         }
         if binding:
             batch["binding"] = torch.tensor(binding, dtype=torch.float32)
+        if self.return_residue_embeddings:
+            max_protein_len = max(int(x.shape[0]) for x in residue_proteins)
+            protein_dim = int(residue_proteins[0].shape[1])
+            padded = torch.zeros(len(residue_proteins), max_protein_len, protein_dim, dtype=torch.float32)
+            protein_mask = torch.zeros(len(residue_proteins), max_protein_len, dtype=torch.bool)
+            for i, protein in enumerate(residue_proteins):
+                length = int(protein.shape[0])
+                padded[i, :length] = protein
+                protein_mask[i, :length] = True
+            batch["protein_residue_embedding"] = padded
+            batch["protein_mask"] = protein_mask
         return batch
