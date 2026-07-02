@@ -8,3 +8,4 @@ from __future__ import annotations
 from . import naive        # noqa: F401
 from . import family       # noqa: F401
 from . import rbp_holdout  # noqa: F401
+from . import paralog      # noqa: F401
