@@ -192,6 +192,7 @@ class ProteinCellCrossAttentionProfileHead(nn.Module):
         protein_compression: str = "latent",
         protein_latent_len: int = 256,
         binary_pooling: str = "position",
+        binary_alpha_source: str = "gated",
     ):
         super().__init__()
         if hidden_dim % num_heads != 0:
@@ -200,12 +201,15 @@ class ProteinCellCrossAttentionProfileHead(nn.Module):
             raise ValueError("protein_compression must be 'none' or 'latent'")
         if binary_pooling not in {"position", "mean"}:
             raise ValueError("binary_pooling must be 'position' or 'mean'")
+        if binary_alpha_source not in {"gated", "target", "target-detached", "binary"}:
+            raise ValueError("binary_alpha_source must be one of: gated, target, target-detached, binary")
         self.rna_channels = rna_channels
         self.hidden_dim = hidden_dim
         self.num_blocks = num_blocks
         self.protein_compression = protein_compression
         self.protein_latent_len = protein_latent_len
         self.binary_pooling = binary_pooling
+        self.binary_alpha_source = binary_alpha_source
         self.cell_embedding = nn.Embedding(cell_count, cell_dim)
         if rna_channels == hidden_dim:
             self.rna_projection = nn.Identity()
@@ -355,10 +359,20 @@ class ProteinCellCrossAttentionProfileHead(nn.Module):
                 )
             binary_position_prob = torch.softmax(binary_position_logits, dim=-1)
             if task == "multitask":
-                binding_gate = torch.sigmoid(self.binary_gate(pooled)).squeeze(-1)
-                alpha_bind = binding_gate.unsqueeze(-1) * out["target"] + (
-                    1.0 - binding_gate.unsqueeze(-1)
-                ) * binary_position_prob
+                if self.binary_alpha_source == "gated":
+                    binding_gate = torch.sigmoid(self.binary_gate(pooled)).squeeze(-1)
+                    alpha_bind = binding_gate.unsqueeze(-1) * out["target"] + (
+                        1.0 - binding_gate.unsqueeze(-1)
+                    ) * binary_position_prob
+                elif self.binary_alpha_source == "target":
+                    binding_gate = torch.ones_like(pooled[:, 0])
+                    alpha_bind = out["target"]
+                elif self.binary_alpha_source == "target-detached":
+                    binding_gate = torch.ones_like(pooled[:, 0])
+                    alpha_bind = out["target"].detach()
+                else:
+                    binding_gate = torch.zeros_like(pooled[:, 0])
+                    alpha_bind = binary_position_prob
                 out["binding_gate"] = binding_gate
             else:
                 alpha_bind = binary_position_prob

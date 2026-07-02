@@ -43,7 +43,7 @@ REGISTRY: dict[str, HeadSpec] = {
         "xattn", "cross_attention_dgu", "ProteinCellCrossAttentionProfileHead", "profile", "perres", "dgu",
         "cell-FiLM bidirectional cross-attention + latent protein compressor (A/B variant A vs xattn2)."),
     "xattn2": HeadSpec(
-        "xattn2", "cross_attention_dfra", "ProteinCellCrossAttentionProfileHead", "profile", "perres", "dfra",
+        "xattn2", "cross_attention_dfra", "TFBindCrossAttentionProfileHead", "profile", "perres", "dfra",
         "residue-level ProtT5 cross-attention + position-weighted pool (A/B variant B vs xattn)."),
 }
 
