@@ -201,7 +201,7 @@ class _PositionWeightedPool(nn.Module):
 # 4. Full head
 # ---------------------------------------------------------------------------
 
-class ProteinCellCrossAttentionProfileHead(nn.Module):
+class TFBindCrossAttentionProfileHead(nn.Module):
     """TFBindFormer-style cross-attention head on top of frozen PARNET features.
 
     Args:
@@ -229,12 +229,14 @@ class ProteinCellCrossAttentionProfileHead(nn.Module):
         hidden_dim: int = 256,
         num_heads: int = 8,
         num_blocks: int = 3,
-        num_bidir_blocks: int = 2,
+        num_bidir_blocks: int | None = None,
         target_prot_len: int = 128,
         mix_hidden_dim: int = 128,
         dropout: float = 0.1,
     ):
         super().__init__()
+        if num_bidir_blocks is None:
+            num_bidir_blocks = max(1, num_blocks - 1)
         if hidden_dim % num_heads != 0:
             raise ValueError(f"hidden_dim ({hidden_dim}) must be divisible by num_heads ({num_heads})")
         if num_bidir_blocks > num_blocks:
@@ -480,4 +482,4 @@ class ProteinCellCrossAttentionProfileHead(nn.Module):
         )["loss"]
 
 
-__all__ = ["ProteinCellCrossAttentionProfileHead"]
+__all__ = ["TFBindCrossAttentionProfileHead"]
