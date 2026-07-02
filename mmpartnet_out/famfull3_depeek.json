@@ -1,0 +1,64 @@
+{
+ "provenance": {
+  "protocol": "3-way family split TRAIN(286)/VAL(60 family-disjoint early-stop)/TEST(60); CORAL model on a CUDA GPU; test@val-epoch = honest (no test peeking)",
+  "note": "folds 0,2 salvaged from surviving best_adapter after seat loss"
+ },
+ "per_fold": [
+  {
+   "fold": 0,
+   "best_val_epoch": 0,
+   "n_test_epochs": 5,
+   "test_MCC_at_val": 0.11484173838438907,
+   "test_Acc_at_val": 0.5486126283591872,
+   "test_MCC_last": 0.12910522867912372,
+   "test_MCC_bestpeek": 0.12910522867912372
+  },
+  {
+   "fold": 1,
+   "best_val_epoch": 0,
+   "n_test_epochs": 6,
+   "test_MCC_at_val": 0.5251179347952276,
+   "test_Acc_at_val": 0.7618432385874246,
+   "test_MCC_last": 0.2633042548182738,
+   "test_MCC_bestpeek": 0.5251179347952276
+  },
+  {
+   "fold": 2,
+   "best_val_epoch": 0,
+   "n_test_epochs": 4,
+   "test_MCC_at_val": 0.38746480356214463,
+   "test_Acc_at_val": 0.6903163950143816,
+   "test_MCC_last": 0.47176841740397213,
+   "test_MCC_bestpeek": 0.48497314861616514
+  },
+  {
+   "fold": 3,
+   "best_val_epoch": 2,
+   "n_test_epochs": 6,
+   "test_MCC_at_val": 0.3066547722180349,
+   "test_Acc_at_val": 0.6501487754634928,
+   "test_MCC_last": 0.23676625306193563,
+   "test_MCC_bestpeek": 0.3066547722180349
+  },
+  {
+   "fold": 4,
+   "best_val_epoch": 1,
+   "n_test_epochs": 6,
+   "test_MCC_at_val": 0.2500057366954445,
+   "test_Acc_at_val": 0.610223642172524,
+   "test_MCC_last": 0.4460387324108232,
+   "test_MCC_bestpeek": 0.4460387324108232
+  }
+ ],
+ "summary": {
+  "honest_test_MCC_mean": 0.31681699713104816,
+  "honest_test_MCC_std": 0.13692436866187016,
+  "honest_test_Acc_mean": 0.652228935919402,
+  "last_epoch_MCC_mean": 0.3093965772748257,
+  "bestpeek_MCC_mean": 0.3783779633438749,
+  "peeking_bias": 0.06156096621282675,
+  "rna_only_floor": 0.234,
+  "protein_signal_above_rna_floor": 0.08281699713104815,
+  "n_folds": 5
+ }
+}

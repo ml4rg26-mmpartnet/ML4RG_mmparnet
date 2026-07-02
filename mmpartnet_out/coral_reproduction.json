@@ -1,0 +1,26 @@
+{
+  "task": "CORAL RNA-protein INTERACTION detection (binary), component-wise cold-start split",
+  "provenance": {
+    "computed_on": "a CUDA GPU",
+    "repo": "github.com/MarioCatalano99/Coral, cloned + run directly (not re-implemented)",
+    "env": "torch 2.8+cu128 (the pinned 2.6+cu124 lacked compatible GPU kernels -> 'no kernel image')",
+    "protocol_pathA": "per-fold retrain: Data/datasets/component-wise/fold_{k}/{train,val}.csv, batch 4, lr 1e-6, bf16, LoRA rank 8; ESM-2-150M + DNABERT2-117M + bidirectional cross-attention",
+    "date": "2026-06 (this project's direct verification pass)",
+    "note": "Numbers below are DISPLAYED here (not recomputed from a clone) because they need the CORAL repo + its datasets + a GPU. This node re-plots them; recompute on a GPU node with the protocol above."
+  },
+  "splits": {
+    "random": "pairs shuffled -> heavy leakage (easy)",
+    "pairwise": "held pairs unseen but proteins/RNAs may recur",
+    "component_wise": "0% protein AND 0% RNA overlap with train = the TRUE cold-start; the decisive number"
+  },
+  "results": {
+    "released_checkpoint_reused_across_folds": {"metric": "F1", "value": 0.92,
+      "note": "LEAKS: 15-23% pair overlap across the released folds; own-fold clean still 0.94 => the released checkpoint was trained on a broader set, not honest per-fold CV"},
+    "paper_reported": {"metric": "F1", "value": 0.65, "note": "CORAL paper's component-wise F1"},
+    "clean_per_fold_retrain_pathA": {"metric": "F1", "value": 0.57,
+      "note": "HONEST reproduction: retrain per fold on that fold's train.csv only, evaluate that fold's val.csv"},
+    "external_eclip_through_coral": {"metric": "AUROC", "value": "~chance",
+      "note": "our Moyon eCLIP -> CORAL CSV (adapters/coral.py) run through CORAL: ~chance -- window-occupancy is a DIFFERENT task from RNA-protein interaction"}
+  },
+  "verdict": "Component-wise is a genuine cold-start (0% protein/RNA overlap). The single released checkpoint leaks across folds (F1 0.92); a clean per-fold retrain reproduces ~0.57, below the paper's 0.65. CORAL stands as an existence proof that INTERACTION/family diversity enables cold-start generalization -- which is exactly the motivation for our independent-family scaling curve (paralog/window scaling is flat; independent-family count is the lever)."
+}

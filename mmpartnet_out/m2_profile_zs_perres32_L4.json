@@ -1,0 +1,104 @@
+{
+ "cell": "HepG2",
+ "K": 34,
+ "n_windows": 6000,
+ "split": "rbp-holdout-10of34",
+ "n_pairs_train": 45047,
+ "n_pairs_test": 18594,
+ "held_chrom": [
+  "chr16",
+  "chr2",
+  "chr9"
+ ],
+ "archs": {
+  "perres": {
+   "real": 0.14975349333681315,
+   "shuf": 0.10772008667947164,
+   "fam": 0.12723100653382122,
+   "gap_der": 0.04203340665734152,
+   "gap_fam": 0.022522486802991924,
+   "rows": [
+    {
+     "rbp": "AKAP1",
+     "family": "KH",
+     "n": 1213,
+     "pearson_real": 0.1371611015956727,
+     "pearson_shuf": 0.11795170161482396,
+     "pearson_fam": 0.11459950706367274
+    },
+    {
+     "rbp": "CSTF2",
+     "family": "RRM",
+     "n": 1907,
+     "pearson_real": 0.12376353244617425,
+     "pearson_shuf": 0.07643720761263098,
+     "pearson_fam": 0.21567273456713307
+    },
+    {
+     "rbp": "FUS",
+     "family": "RRM",
+     "n": 3227,
+     "pearson_real": 0.1596836350973301,
+     "pearson_shuf": 0.11656683065901131,
+     "pearson_fam": 0.08717405142250655
+    },
+    {
+     "rbp": "GRSF1",
+     "family": "RRM",
+     "n": 668,
+     "pearson_real": 0.09911167237193645,
+     "pearson_shuf": 0.07915943158200289,
+     "pearson_fam": 0.0540994918064063
+    },
+    {
+     "rbp": "HNRNPC",
+     "family": "RRM",
+     "n": 4019,
+     "pearson_real": 0.2570724012027984,
+     "pearson_shuf": 0.18059867239606858,
+     "pearson_fam": 0.15625100616064147
+    },
+    {
+     "rbp": "HNRNPK",
+     "family": "KH",
+     "n": 1352,
+     "pearson_real": 0.1357444913395868,
+     "pearson_shuf": 0.10295632754877632,
+     "pearson_fam": 0.1813191322447214
+    },
+    {
+     "rbp": "IGF2BP3",
+     "family": "KH;RRM",
+     "n": 1279,
+     "pearson_real": 0.23339407241953672,
+     "pearson_shuf": 0.09791480694271183,
+     "pearson_fam": 0.23031944838409207
+    },
+    {
+     "rbp": "PABPN1",
+     "family": "RRM",
+     "n": 1513,
+     "pearson_real": 0.11968546092857629,
+     "pearson_shuf": 0.1276126527542737,
+     "pearson_fam": 0.0787731167524428
+    },
+    {
+     "rbp": "RBFOX2",
+     "family": "RRM",
+     "n": 1330,
+     "pearson_real": 0.12851173041986444,
+     "pearson_shuf": 0.08925773513433483,
+     "pearson_fam": 0.050694741389940505
+    },
+    {
+     "rbp": "SSB",
+     "family": "LA;RRM",
+     "n": 2086,
+     "pearson_real": 0.10340683554665527,
+     "pearson_shuf": 0.08874550055008193,
+     "pearson_fam": 0.10340683554665527
+    }
+   ]
+  }
+ }
+}

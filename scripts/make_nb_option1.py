@@ -1,0 +1,151 @@
+"""Build O1 (executed): "Does explicitly modeling the protein improve RBP-binding prediction, and is the
+cross-attention/multitask gain real or just optimization?" -- the rigorous in-distribution answer, from
+committed results, in the RBP-genomics paper style. Run: python scripts/make_nb_option1.py"""
+from __future__ import annotations
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from nbgen import md, code, build  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
+
+CELLS = [
+    md("# O1 - Does modeling the protein improve RBP-binding prediction? (in-distribution, leakage-controlled)\n"
+       "**Milestone 1** (binary: binds / doesn't) and **Milestone 2** (continuous per-nucleotide binding signal). "
+       "We ask two questions, rigorously: **(Q1)** does conditioning a frozen RNA model (PARNET) on a protein "
+       "representation beat what the RNA alone already predicts? **(Q2)** is any cross-attention / multitask "
+       "advantage a *real* architectural gain, or just better optimization?\n\n"
+       "*Scope: in-distribution (held-out chromosomes/windows, RBPs seen in training). Zero-shot to unseen RBP "
+       "families is treated separately (it does not hold up, see the S/PB series). All numbers from committed "
+       "`mmpartnet_out/` results computed on a CUDA GPU on the ENCODE eCLIP data.*"),
+
+    md("## Background (regulatory genomics)\n"
+       "RNA-binding proteins (RBPs) bind mRNAs to control **splicing, stability, localization and translation** "
+       "-- the post-transcriptional layer of gene regulation, and a growing therapeutic target space. **eCLIP** "
+       "maps, per nucleotide, where an RBP crosslinks to RNA (a target track + a size-matched input control); "
+       "**PARNET / RBPNet** learn to predict this crosslink profile from RNA sequence alone via a dilated "
+       "convolutional body + an additive target/control mixture head (a MultinomialNLL over the window).\n\n"
+       "Most such models use **only RNA sequence** and ignore *which* RBP. Our question is whether adding an "
+       "explicit **protein representation** (ESM-2 / ProtT5 over the RBP) improves prediction. We keep the "
+       "PARNET body **frozen** (transfer learning) and train only a small conditioning head:\n"
+       "- **concat** -- concatenate [protein, pooled RNA features] -> MLP (the baseline fusion),\n"
+       "- **FiLM** -- protein generates per-feature scale/shift (gamma, beta) on the RNA features,\n"
+       "- **cross-attention (xattn)** -- protein tokens attend to RNA positions (TFBindFormer-style),\n"
+       "- **per-residue (perres)** -- per-RNA-position cross-attention to the protein (nt-resolution)."),
+
+    md("## Definitions and controls (the math)\n"
+       "**M1 metric -- AUPRC** per RBP (positives are bound windows; class-imbalanced, so AUPRC not AUROC).\n\n"
+       "**M2 metric -- profile Pearson**: correlation between predicted and observed per-nt crosslink profile "
+       "within a window, $r(\\hat p, p)$.\n\n"
+       "A protein-conditioned score is only meaningful against **controls that remove exactly the thing we "
+       "claim**:\n"
+       "- **RNA-only baseline** (track-aware, equal budget, protein *absent*): the bar the protein must beat. "
+       "$\\text{gap}_{\\text{RNA}} = \\text{method} - \\text{RNA-only}$.\n"
+       "- **Protein-shuffle null** (derange the protein rep across RBPs): if a method beats this, it is using "
+       "protein *identity*. $\\text{gap}_{\\text{shuf}} = \\text{method} - \\text{shuffle}$.\n"
+       "- **Random-body control** (frozen randomly-initialised body): the RNA-only baseline minus this = the "
+       "share of the baseline attributable to **PARNET pretraining leakage** ($\\Delta_{\\text{leak}}$).\n"
+       "- **Fair optimization**: each mechanism is tuned to its own best learning rate before comparison, so a "
+       "gap reflects the architecture, not the optimizer (Q2)."),
+
+    code("import json, math\n"
+         "from pathlib import Path\n"
+         "import numpy as np, matplotlib\n"
+         "matplotlib.use('Agg'); import matplotlib.pyplot as plt\n"
+         "from IPython.display import Markdown, display, Image\n"
+         "plt.rcParams.update({'figure.dpi':110,'font.size':10,'axes.spines.top':False,'axes.spines.right':False})\n"
+         "OUT = Path('..')/'..'/'mmpartnet_out'\n"
+         "def J(n): return json.loads((OUT/n).read_text(encoding='utf-8'))\n"
+         "bf=J('binding_fair.json'); bm=J('binding_mechanism.json'); mp=J('m2_profile.json')\n"
+         "mz=J('m2_profile_zeroshot_hepg2.json'); xf=J('xattn_faithfulness.json')\n"
+         "print('M1 panel:', bf['K'], 'RBPs;', bf['n_train'],'train /',bf['n_test'],'test windows; parnet_body=',bf['parnet_body'])"),
+
+    md("## Q1a - M1: does the protein help *binary* binding?\n"
+       "Each conditioning head, per RBP, vs the RNA-only baseline and vs its own protein-shuffle."),
+    code("base=bf['baselines']; leak=bf['leakage_attributable_auprc']\n"
+         "order=['concat','film','xattn','perres']\n"
+         "tab='| method | AUPRC (real) | gap vs shuffle [95% CI] | gap vs RNA-only [95% CI] | #beat RNA-only / N | vs RNA-only |\\n|---|---|---|---|---|---|\\n'\n"
+         "for m in order:\n"
+         "    d=bf['methods'][m]; cs=d['gap_vs_shuffle_ci']; cr=d['gap_vs_rna_only_ci']\n"
+         "    tab+=f\"| {m} | {d['real']:.3f} | {d['gap_vs_shuffle']:+.3f} [{cs[0]:+.3f},{cs[1]:+.3f}] | {d['gap_vs_rna_only']:+.3f} [{cr[0]:+.3f},{cr[1]:+.3f}] | {d['n_beat_rna_only']}/{d['n_rbp']} | {d['direction_vs_rna_only']} |\\n\"\n"
+         "display(Markdown(tab))\n"
+         "display(Markdown(f\"**RNA-only baselines (AUPRC):** track-aware {base['rna_only_multitask']:.3f}, random-body {base['rna_only_randombody']:.3f}, \"\n"
+         "  f\"bindability {base['rna_only_bindability']:.3f}. **Leakage-attributable = {leak:.3f}** (PARNET-pretraining share of the RNA-only bar).\"))"),
+    code("fig,ax=plt.subplots(figsize=(7.5,4))\n"
+         "x=np.arange(len(order)); real=[bf['methods'][m]['real'] for m in order]; shuf=[bf['methods'][m]['shuffle'] for m in order]\n"
+         "ax.bar(x-0.2,real,0.4,label='protein-conditioned',color='#3b6ea5'); ax.bar(x+0.2,shuf,0.4,label='protein-shuffle null',color='#c0504d')\n"
+         "ax.axhline(base['rna_only_multitask'],ls='--',c='k',lw=1.2,label=f\"RNA-only baseline ({base['rna_only_multitask']:.3f})\")\n"
+         "ax.axhline(base['rna_only_randombody'],ls=':',c='gray',lw=1,label=f\"random-body ({base['rna_only_randombody']:.3f})\")\n"
+         "ax.set_xticks(x); ax.set_xticklabels(order); ax.set_ylabel('mean AUPRC (68 RBPs)'); ax.set_title('M1: protein-conditioned vs RNA-only + shuffle')\n"
+         "ax.legend(fontsize=8,loc='upper left'); fig.tight_layout(); fig.savefig('O1_m1.png'); plt.close(fig); display(Image('O1_m1.png'))"),
+    md("**Read (M1).** Every head beats its own protein-shuffle (gap-vs-shuffle CIs exclude 0) -- so the protein "
+       "*identity* carries in-distribution signal. **But the RNA-only baseline is the hard bar**: on binary AUPRC "
+       "the fusion heads largely *underperform* the track-aware RNA-only model (negative gap-vs-RNA-only), because "
+       "eCLIP bindability is dominated by RNA features the frozen body already encodes, and ~"
+       "`round(leak,3)` of that bar is itself PARNET pretraining leakage. Net M1: modeling the protein does not "
+       "beat RNA-alone on binary bindability in-distribution."),
+
+    md("## Q2 - is the cross-attention gain real, or just optimization?\n"
+       "The mechanism ladder with each head tuned to its **own best learning rate** (fair comparison), 3 seeds, "
+       "gap vs protein-shuffle with a 95% CI."),
+    code("tab='| mechanism | tuned LR | gap vs shuffle (mean +/- std) | 95% CI | #better/N |\\n|---|---|---|---|---|\\n'\n"
+         "for m,mm in bm['mechanisms'].items():\n"
+         "    lr=bm['lr'].get(m); ci=mm['gap_ci95']\n"
+         "    tab+=f\"| {m} | {lr} | {mm['gap_mean']:+.3f} +/- {mm['gap_std']:.3f} | [{ci[0]:+.3f},{ci[1]:+.3f}] | {mm['n_better']}/{mm['n_rbp']} |\\n\"\n"
+         "display(Markdown(tab))\n"
+         "fig,ax=plt.subplots(figsize=(6.5,3.6)); ms=list(bm['mechanisms']); g=[bm['mechanisms'][m]['gap_mean'] for m in ms]\n"
+         "er=[[g[i]-bm['mechanisms'][m]['gap_ci95'][0] for i,m in enumerate(ms)],[bm['mechanisms'][m]['gap_ci95'][1]-g[i] for i,m in enumerate(ms)]]\n"
+         "ax.bar(ms,g,color='#3b6ea5',yerr=er,capsize=4); ax.axhline(0,c='k',lw=0.6)\n"
+         "ax.set_ylabel('gap vs protein-shuffle (AUPRC)'); ax.set_title('Q2: architecture gap after fair per-mechanism LR tuning')\n"
+         "fig.tight_layout(); fig.savefig('O1_mech.png'); plt.close(fig); display(Image('O1_mech.png'))"),
+    md("**Read (Q2).** After tuning each head to its own LR, the protein-vs-shuffle gaps persist with CIs "
+       "excluding 0, so the effect is **not merely an optimization artifact** -- the heads genuinely use the "
+       "protein. However, the *ranking* among concat/FiLM/cross-attention is small relative to the seed spread: "
+       "cross-attention does not buy a decisive advantage over the simpler fusions on this in-distribution task."),
+
+    md("## Q1b - M2: does the protein help the per-nucleotide *profile*?\n"
+       "Profile-Pearson for the per-residue and FiLM heads, in-distribution and on a leave-out-RBP (zero-shot) "
+       "split, each vs a derangement (shuffle) and a within-family permutation."),
+    code("tab='| head | split | real r | shuffle r | within-family r | gap vs shuffle |\\n|---|---|---|---|---|---|\\n'\n"
+         "for lab,dd in [('in-distribution',mp),('zero-shot (leave-out-RBP)',mz)]:\n"
+         "    for a in ('perres','film'):\n"
+         "        v=dd['archs'][a]; tab+=f\"| {a} | {lab} | {v['real']:.3f} | {v['shuf']:.3f} | {v['fam']:.3f} | {v['gap_der']:+.3f} |\\n\"\n"
+         "display(Markdown(tab))\n"
+         "fig,ax=plt.subplots(figsize=(7,3.8)); labels=['perres\\nin-dist','film\\nin-dist','perres\\nzero-shot','film\\nzero-shot']\n"
+         "reals=[mp['archs']['perres']['real'],mp['archs']['film']['real'],mz['archs']['perres']['real'],mz['archs']['film']['real']]\n"
+         "shufs=[mp['archs']['perres']['shuf'],mp['archs']['film']['shuf'],mz['archs']['perres']['shuf'],mz['archs']['film']['shuf']]\n"
+         "x=np.arange(4); ax.bar(x-0.2,reals,0.4,label='real protein',color='#3b6ea5'); ax.bar(x+0.2,shufs,0.4,label='shuffle',color='#c0504d')\n"
+         "ax.set_xticks(x); ax.set_xticklabels(labels,fontsize=8); ax.set_ylabel('profile Pearson r'); ax.set_title('M2: per-nt profile, protein vs shuffle')\n"
+         "ax.legend(fontsize=8); fig.tight_layout(); fig.savefig('O1_m2.png'); plt.close(fig); display(Image('O1_m2.png'))"),
+    md("**Read (M2).** On the continuous profile the protein helps clearly **in-distribution** (per-residue "
+       "r 0.21 vs 0.10 shuffle) and retains a **small positive zero-shot** signal on unseen RBPs (0.16 vs 0.11, "
+       "gap +0.05) -- larger than the within-family permutation, i.e. beyond mere family-average. The profile-"
+       "shape task is where explicit protein modeling has real, if modest, value. (Zero-shot numbers are on the "
+       "leaked all-223 body, so they are proxy upper bounds; see the PB series.)"),
+
+    md("## Interpretability - is the protein attention faithful?\n"
+       "For per-residue cross-attention, does the protein->RNA attention agree with an independent importance "
+       "measure (in-silico mutagenesis, ISM)? Spearman(attention, ISM) for the real protein vs a shuffled one."),
+    code("sr=xf['spearman_real']; ss=xf['spearman_shuf']\n"
+         "display(Markdown(f\"**Attention-vs-ISM Spearman:** real {sr[0]:.2f} (+/- {sr[1]:.2f}) vs shuffle {ss[0]:.2f} (+/- {ss[1]:.2f}); \"\n"
+         "  f\"real > shuffle for **{xf['n_real_gt_shuf']}/{xf['n_rbp']}** RBPs. The head attends to positions ISM says matter -- the conditioning is mechanistically faithful, not a black-box shortcut.\"))"),
+
+    md("## Conclusion\n"
+       "**Q1 (does the protein help?)** -- *Binary M1:* the protein is genuinely used (beats its shuffle) but "
+       "does **not** beat a track-aware RNA-only baseline in-distribution; eCLIP bindability is RNA-dominated and "
+       "partly PARNET-leakage. *Profile M2:* the protein **does** help the per-nucleotide shape (r 0.21 vs 0.10 "
+       "in-dist; +0.05 zero-shot), and the attention is faithful to ISM. **So the honest answer is task-"
+       "dependent: no net gain on binary bindability, a real (modest) gain on profile shape.**\n\n"
+       "**Q2 (real gain vs optimization?)** -- the protein-conditioning effect survives fair per-mechanism LR "
+       "tuning (CIs exclude 0), so it is not an optimization artifact; but cross-attention does not decisively "
+       "beat the simpler concat/FiLM fusions in-distribution -- the coupling helps *use* the protein, not obtain "
+       "a large architectural edge.\n\n"
+       "**Takeaway for the project:** anchor the contribution on the **profile-shape task** (where protein "
+       "conditioning has real value and is interpretable), report binary M1 as the honest RNA-dominated ceiling, "
+       "and treat all zero-shot claims as proxy until the leave-out-pretrained PARNET body lands. Companion: O2 "
+       "quantifies how much of the profile is even protein-explainable (the identifiability ceiling)."),
+]
+
+if __name__ == "__main__":
+    build(ROOT/"notebooks"/"deliverables"/"O1_protein_benefit_and_architecture.ipynb",
+          ROOT/"notebooks"/"deliverables"/"executed"/"O1_protein_benefit_and_architecture_executed.ipynb",
+          CELLS, timeout=300)

@@ -1,0 +1,2116 @@
+{
+ "provenance": {
+  "metric": "per-held-family MCC vs nearest-train-family % identity (mmseqs easy-search, held rep vs fold train proteins); CORAL de-peek folds"
+ },
+ "per_family": [
+  {
+   "fold": 0,
+   "family": "coral_111",
+   "n": 2345,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1525",
+   "n": 256,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1464",
+   "n": 261,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2103",
+   "n": 549,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_185",
+   "n": 62,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_896",
+   "n": 114,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1644",
+   "n": 467,
+   "mcc": 0.25013023408759705,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2479",
+   "n": 199,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_725",
+   "n": 91,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_3093",
+   "n": 132,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1308",
+   "n": 67,
+   "mcc": 0.0,
+   "nearest_id": 27.3
+  },
+  {
+   "fold": 0,
+   "family": "coral_2592",
+   "n": 92,
+   "mcc": 0.02471766822064614,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2263",
+   "n": 327,
+   "mcc": 0.1404757518328415,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "moyon_FTO",
+   "n": 275,
+   "mcc": -0.015258633809879229,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_470",
+   "n": 193,
+   "mcc": 0.2721667111254688,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1934",
+   "n": 132,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_887",
+   "n": 145,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2770",
+   "n": 39,
+   "mcc": 0.0,
+   "nearest_id": 48.7
+  },
+  {
+   "fold": 0,
+   "family": "coral_2166",
+   "n": 211,
+   "mcc": -0.1264305464397121,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2676",
+   "n": 70,
+   "mcc": 0.14484136487558028,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2348",
+   "n": 104,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1913",
+   "n": 53,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_169",
+   "n": 68,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_228",
+   "n": 66,
+   "mcc": 0.19736110842595922,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1926",
+   "n": 130,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2540",
+   "n": 67,
+   "mcc": -0.21489661597046042,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_909",
+   "n": 410,
+   "mcc": 0.0,
+   "nearest_id": 38.6
+  },
+  {
+   "fold": 0,
+   "family": "coral_2411",
+   "n": 127,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1795",
+   "n": 64,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1340",
+   "n": 96,
+   "mcc": 0.20842877833369747,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_517",
+   "n": 72,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_460",
+   "n": 119,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1943",
+   "n": 46,
+   "mcc": 0.11952286093343938,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_456",
+   "n": 34,
+   "mcc": 0.225101084147303,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_133",
+   "n": 56,
+   "mcc": 0.1868706368604627,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_182",
+   "n": 59,
+   "mcc": -0.13816175285055887,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1607",
+   "n": 83,
+   "mcc": 0.0,
+   "nearest_id": 32.1
+  },
+  {
+   "fold": 0,
+   "family": "coral_82",
+   "n": 175,
+   "mcc": 0.2938042186560711,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_948",
+   "n": 33,
+   "mcc": -0.78065375798434,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2819",
+   "n": 36,
+   "mcc": -0.1,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_430",
+   "n": 102,
+   "mcc": 0.09429557231954579,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2832",
+   "n": 93,
+   "mcc": 0.1551582227085438,
+   "nearest_id": 33.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_3005",
+   "n": 116,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_587",
+   "n": 93,
+   "mcc": 0.030060180602107585,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2575",
+   "n": 71,
+   "mcc": -0.03386276710110382,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1083",
+   "n": 167,
+   "mcc": 0.0,
+   "nearest_id": 50.2
+  },
+  {
+   "fold": 0,
+   "family": "coral_1986",
+   "n": 70,
+   "mcc": -0.16666666666666666,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_190",
+   "n": 49,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_902",
+   "n": 38,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2786",
+   "n": 45,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2930",
+   "n": 35,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2967",
+   "n": 41,
+   "mcc": -0.11117722900515707,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_529",
+   "n": 32,
+   "mcc": -0.08627959628145762,
+   "nearest_id": 26.3
+  },
+  {
+   "fold": 0,
+   "family": "coral_327",
+   "n": 62,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_311",
+   "n": 49,
+   "mcc": 0.3864007706456543,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_384",
+   "n": 33,
+   "mcc": 0.32128233933443373,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2796",
+   "n": 25,
+   "mcc": 0.0,
+   "nearest_id": 27.5
+  },
+  {
+   "fold": 0,
+   "family": "coral_2083",
+   "n": 35,
+   "mcc": -0.2041241452319315,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_1552",
+   "n": 49,
+   "mcc": 0.05892556509887897,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 0,
+   "family": "coral_2768",
+   "n": 24,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_308",
+   "n": 104,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1265",
+   "n": 1151,
+   "mcc": 0.0,
+   "nearest_id": 27.3
+  },
+  {
+   "fold": 1,
+   "family": "coral_2429",
+   "n": 291,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2910",
+   "n": 148,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1352",
+   "n": 33,
+   "mcc": -0.015130688316720061,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_581",
+   "n": 315,
+   "mcc": 0.2609288328249162,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2808",
+   "n": 252,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1662",
+   "n": 38,
+   "mcc": 0.09158437663089954,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1162",
+   "n": 128,
+   "mcc": 0.06863148238113305,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_123",
+   "n": 886,
+   "mcc": -0.017807008193447226,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2296",
+   "n": 56,
+   "mcc": -0.15480678800427466,
+   "nearest_id": 22.5
+  },
+  {
+   "fold": 1,
+   "family": "coral_2446",
+   "n": 69,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_118",
+   "n": 175,
+   "mcc": 0.3576408488192953,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "moyon_RBM5",
+   "n": 157,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_937",
+   "n": 138,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1876",
+   "n": 60,
+   "mcc": 0.07647191129018725,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1473",
+   "n": 32,
+   "mcc": 0.18518518518518517,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_555",
+   "n": 39,
+   "mcc": -0.06917144638660747,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2943",
+   "n": 10,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1386",
+   "n": 106,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "moyon_U2AF2",
+   "n": 232,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1589",
+   "n": 153,
+   "mcc": -0.03498557142706598,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1763",
+   "n": 128,
+   "mcc": 0.24162274595468747,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_352",
+   "n": 32,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "moyon_ADAR",
+   "n": 47,
+   "mcc": 0.16791512356486687,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1243",
+   "n": 30,
+   "mcc": -0.08304547985373997,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2017",
+   "n": 48,
+   "mcc": 0.17712010693022207,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2765",
+   "n": 17,
+   "mcc": -0.5277777777777778,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1992",
+   "n": 81,
+   "mcc": 0.10181616234408031,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_234",
+   "n": 33,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_3132",
+   "n": 276,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1900",
+   "n": 38,
+   "mcc": -0.08489527199560178,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1456",
+   "n": 146,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_3092",
+   "n": 137,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_666",
+   "n": 182,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2331",
+   "n": 55,
+   "mcc": 0.0,
+   "nearest_id": 43.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1752",
+   "n": 39,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_386",
+   "n": 49,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2946",
+   "n": 63,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1046",
+   "n": 120,
+   "mcc": 0.06333004963811237,
+   "nearest_id": 27.6
+  },
+  {
+   "fold": 1,
+   "family": "coral_1431",
+   "n": 50,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2498",
+   "n": 102,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1282",
+   "n": 49,
+   "mcc": 0.10176028784914466,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_164",
+   "n": 63,
+   "mcc": 0.0,
+   "nearest_id": 29.8
+  },
+  {
+   "fold": 1,
+   "family": "coral_796",
+   "n": 25,
+   "mcc": 0.0,
+   "nearest_id": 35.7
+  },
+  {
+   "fold": 1,
+   "family": "coral_2938",
+   "n": 75,
+   "mcc": 0.0,
+   "nearest_id": 28.2
+  },
+  {
+   "fold": 1,
+   "family": "coral_2218",
+   "n": 73,
+   "mcc": 0.04419417382415922,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_2857",
+   "n": 14,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_753",
+   "n": 65,
+   "mcc": -0.30550541350255095,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_13",
+   "n": 35,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1057",
+   "n": 20,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1224",
+   "n": 39,
+   "mcc": -0.06487491201346024,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1619",
+   "n": 29,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_558",
+   "n": 46,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_1374",
+   "n": 32,
+   "mcc": 0.20672455764868078,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_804",
+   "n": 29,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "moyon_ILF3",
+   "n": 39,
+   "mcc": 0.10814761408717502,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_695",
+   "n": 27,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_361",
+   "n": 42,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 1,
+   "family": "coral_3039",
+   "n": 18,
+   "mcc": 0.15811388300841897,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "moyon_TIAL1",
+   "n": 287,
+   "mcc": 0.0,
+   "nearest_id": 27.4
+  },
+  {
+   "fold": 2,
+   "family": "coral_3098",
+   "n": 83,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_3083",
+   "n": 841,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2735",
+   "n": 54,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_3016",
+   "n": 66,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "moyon_SSB",
+   "n": 113,
+   "mcc": 0.2741328318968918,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2980",
+   "n": 37,
+   "mcc": 0.0,
+   "nearest_id": 23.8
+  },
+  {
+   "fold": 2,
+   "family": "coral_1429",
+   "n": 49,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2755",
+   "n": 23,
+   "mcc": 0.16265001215808886,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_3015",
+   "n": 77,
+   "mcc": 0.0,
+   "nearest_id": 48.1
+  },
+  {
+   "fold": 2,
+   "family": "coral_2485",
+   "n": 180,
+   "mcc": 0.0,
+   "nearest_id": 29.8
+  },
+  {
+   "fold": 2,
+   "family": "coral_1117",
+   "n": 26,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1013",
+   "n": 37,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2198",
+   "n": 47,
+   "mcc": 0.03461725937492032,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1452",
+   "n": 108,
+   "mcc": -0.0666087778423012,
+   "nearest_id": 22.6
+  },
+  {
+   "fold": 2,
+   "family": "coral_1116",
+   "n": 45,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_3014",
+   "n": 106,
+   "mcc": 0.24830158102042607,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2167",
+   "n": 36,
+   "mcc": -0.03999232221113245,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2040",
+   "n": 225,
+   "mcc": 0.19768033390764314,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_3137",
+   "n": 54,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1692",
+   "n": 39,
+   "mcc": 0.2746471090012757,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2783",
+   "n": 80,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_208",
+   "n": 41,
+   "mcc": -0.5353011218863133,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1541",
+   "n": 88,
+   "mcc": 0.0034401927919714237,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2957",
+   "n": 49,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_912",
+   "n": 57,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "moyon_HNRNPCL1",
+   "n": 43,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_886",
+   "n": 30,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2544",
+   "n": 85,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1678",
+   "n": 28,
+   "mcc": 0.26919095102908275,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1325",
+   "n": 37,
+   "mcc": 0.4097755995407859,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_893",
+   "n": 29,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1772",
+   "n": 28,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2493",
+   "n": 46,
+   "mcc": -0.07856742013183861,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_567",
+   "n": 48,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2433",
+   "n": 44,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2779",
+   "n": 108,
+   "mcc": 0.0,
+   "nearest_id": 25.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_768",
+   "n": 39,
+   "mcc": 0.04954150840221495,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1069",
+   "n": 45,
+   "mcc": -0.053300179088902604,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1408",
+   "n": 28,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "moyon_HNRNPK",
+   "n": 52,
+   "mcc": 0.0,
+   "nearest_id": 28.7
+  },
+  {
+   "fold": 2,
+   "family": "coral_368",
+   "n": 66,
+   "mcc": 0.17541160386140583,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2436",
+   "n": 35,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_91",
+   "n": 57,
+   "mcc": 0.0,
+   "nearest_id": 27.8
+  },
+  {
+   "fold": 2,
+   "family": "coral_552",
+   "n": 35,
+   "mcc": 0.5482835435184107,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_198",
+   "n": 50,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1824",
+   "n": 39,
+   "mcc": 0.1084652289093281,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1849",
+   "n": 24,
+   "mcc": 0.23904572186687872,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1177",
+   "n": 48,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_3004",
+   "n": 48,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2403",
+   "n": 35,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2831",
+   "n": 8,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1668",
+   "n": 35,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2892",
+   "n": 21,
+   "mcc": 0.35355339059327373,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_2042",
+   "n": 16,
+   "mcc": 0.0778498944161523,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_592",
+   "n": 16,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1365",
+   "n": 23,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1931",
+   "n": 40,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1532",
+   "n": 20,
+   "mcc": 0.24253562503633297,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 2,
+   "family": "coral_1937",
+   "n": 18,
+   "mcc": 0.1504142093990467,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1417",
+   "n": 307,
+   "mcc": 0.28893921890261387,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_172",
+   "n": 155,
+   "mcc": 0.26941009385989284,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "moyon_NCBP2",
+   "n": 59,
+   "mcc": 0.08967126447482839,
+   "nearest_id": 55.6
+  },
+  {
+   "fold": 3,
+   "family": "coral_2077",
+   "n": 407,
+   "mcc": 0.2941493716696083,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "moyon_PTBP2",
+   "n": 304,
+   "mcc": 0.2028144164215609,
+   "nearest_id": 28.7
+  },
+  {
+   "fold": 3,
+   "family": "coral_2281",
+   "n": 1207,
+   "mcc": 0.2015525287242543,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2680",
+   "n": 97,
+   "mcc": 0.3043617926271402,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_69",
+   "n": 1386,
+   "mcc": -0.40830746631214127,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_38",
+   "n": 120,
+   "mcc": 0.44348269509512445,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_89",
+   "n": 57,
+   "mcc": 0.3077432084594901,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_218",
+   "n": 306,
+   "mcc": 0.053372925634004795,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1728",
+   "n": 200,
+   "mcc": 0.5701823553076971,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1211",
+   "n": 59,
+   "mcc": 0.03380205052267014,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2576",
+   "n": 75,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2612",
+   "n": 175,
+   "mcc": 0.17337914721018494,
+   "nearest_id": 36.1
+  },
+  {
+   "fold": 3,
+   "family": "coral_380",
+   "n": 32,
+   "mcc": -0.1111111111111111,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_3017",
+   "n": 49,
+   "mcc": 0.03073181485764296,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "moyon_UPF1",
+   "n": 175,
+   "mcc": 0.384802575761095,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_14",
+   "n": 108,
+   "mcc": 0.20369813016981242,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2579",
+   "n": 84,
+   "mcc": 0.3473528377506516,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_3085",
+   "n": 303,
+   "mcc": 0.44201054619677277,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_455",
+   "n": 65,
+   "mcc": -0.07237703638750242,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2637",
+   "n": 443,
+   "mcc": 0.12116634882394564,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1377",
+   "n": 50,
+   "mcc": 0.4418993202399135,
+   "nearest_id": 44.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2203",
+   "n": 45,
+   "mcc": 0.12116920074132286,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1910",
+   "n": 44,
+   "mcc": 0.32479917717646006,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2836",
+   "n": 16,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2080",
+   "n": 196,
+   "mcc": 0.3489972582931386,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1624",
+   "n": 83,
+   "mcc": 0.32491656814589764,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_779",
+   "n": 66,
+   "mcc": 0.2776643759450143,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2228",
+   "n": 52,
+   "mcc": 0.39898070888278053,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2867",
+   "n": 92,
+   "mcc": -0.23062356394661365,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_527",
+   "n": 114,
+   "mcc": 0.5916180804739463,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_976",
+   "n": 31,
+   "mcc": -0.1076763804116331,
+   "nearest_id": 27.5
+  },
+  {
+   "fold": 3,
+   "family": "coral_459",
+   "n": 85,
+   "mcc": -0.13270812876699206,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1954",
+   "n": 90,
+   "mcc": 0.2946278254943948,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "moyon_PCBP1",
+   "n": 120,
+   "mcc": -0.1336306209562122,
+   "nearest_id": 28.6
+  },
+  {
+   "fold": 3,
+   "family": "coral_2733",
+   "n": 152,
+   "mcc": 0.8695345981055845,
+   "nearest_id": 24.2
+  },
+  {
+   "fold": 3,
+   "family": "coral_2325",
+   "n": 64,
+   "mcc": 0.20168187964479706,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2856",
+   "n": 245,
+   "mcc": 0.5453628770429854,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1317",
+   "n": 65,
+   "mcc": 0.1481141387840771,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_553",
+   "n": 46,
+   "mcc": 0.21712405933672374,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1028",
+   "n": 73,
+   "mcc": 0.5353708326186657,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2750",
+   "n": 43,
+   "mcc": 0.9451456227158637,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_450",
+   "n": 70,
+   "mcc": 0.24906774069335894,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2334",
+   "n": 56,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_3020",
+   "n": 48,
+   "mcc": 1.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2960",
+   "n": 49,
+   "mcc": 0.43122019282595603,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2400",
+   "n": 119,
+   "mcc": 0.1656735852883429,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "moyon_PABPN1",
+   "n": 31,
+   "mcc": 0.18856180831641267,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1506",
+   "n": 29,
+   "mcc": 0.6370559117099397,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1397",
+   "n": 40,
+   "mcc": 0.560112033611204,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1583",
+   "n": 29,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2424",
+   "n": 62,
+   "mcc": -0.21758261118717623,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2186",
+   "n": 64,
+   "mcc": 0.5042194840896107,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_1049",
+   "n": 36,
+   "mcc": 0.34527065131588947,
+   "nearest_id": 24.3
+  },
+  {
+   "fold": 3,
+   "family": "coral_318",
+   "n": 29,
+   "mcc": 0.44293978391414907,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2795",
+   "n": 59,
+   "mcc": 0.09243383228029042,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_2790",
+   "n": 39,
+   "mcc": 0.9116846116771036,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 3,
+   "family": "coral_802",
+   "n": 33,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_46",
+   "n": 98,
+   "mcc": 0.6647029903343877,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_126",
+   "n": 413,
+   "mcc": -0.4406204051827544,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_395",
+   "n": 155,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1108",
+   "n": 128,
+   "mcc": 0.0,
+   "nearest_id": 25.7
+  },
+  {
+   "fold": 4,
+   "family": "coral_2358",
+   "n": 39,
+   "mcc": 0.2903416015903251,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_669",
+   "n": 46,
+   "mcc": -0.06839855680567694,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "moyon_SRSF9",
+   "n": 251,
+   "mcc": 0.3892378284139365,
+   "nearest_id": 25.3
+  },
+  {
+   "fold": 4,
+   "family": "coral_77",
+   "n": 149,
+   "mcc": 0.624375199575055,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1410",
+   "n": 140,
+   "mcc": 0.22390553775994954,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2091",
+   "n": 260,
+   "mcc": 0.008912365619694997,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_3086",
+   "n": 34,
+   "mcc": 0.0,
+   "nearest_id": 32.7
+  },
+  {
+   "fold": 4,
+   "family": "coral_1646",
+   "n": 416,
+   "mcc": 0.1253340690607513,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_482",
+   "n": 54,
+   "mcc": 0.09052060501957755,
+   "nearest_id": 29.6
+  },
+  {
+   "fold": 4,
+   "family": "coral_899",
+   "n": 196,
+   "mcc": 0.1304771684930958,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_650",
+   "n": 184,
+   "mcc": -0.04329752787846095,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_64",
+   "n": 1150,
+   "mcc": -0.017474238790952584,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "moyon_QKI",
+   "n": 345,
+   "mcc": -0.0726234362188671,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1181",
+   "n": 33,
+   "mcc": 0.5590169943749475,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_434",
+   "n": 168,
+   "mcc": 0.2193447700458187,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2099",
+   "n": 65,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_3082",
+   "n": 115,
+   "mcc": 0.3500072843064828,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_3130",
+   "n": 51,
+   "mcc": 0.08110479849054814,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1259",
+   "n": 259,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_618",
+   "n": 177,
+   "mcc": 0.0,
+   "nearest_id": 48.3
+  },
+  {
+   "fold": 4,
+   "family": "coral_235",
+   "n": 102,
+   "mcc": -0.002432658027945206,
+   "nearest_id": 27.6
+  },
+  {
+   "fold": 4,
+   "family": "coral_3073",
+   "n": 33,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_7",
+   "n": 35,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_621",
+   "n": 64,
+   "mcc": 0.21341610326458507,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_3127",
+   "n": 179,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2454",
+   "n": 63,
+   "mcc": -0.04419920458704914,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1252",
+   "n": 48,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2418",
+   "n": 94,
+   "mcc": 0.6729502808144799,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_795",
+   "n": 100,
+   "mcc": 0.4091965235863554,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1262",
+   "n": 28,
+   "mcc": 0.7372097807744856,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "moyon_SLBP",
+   "n": 98,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1538",
+   "n": 30,
+   "mcc": 0.25298221281347033,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1558",
+   "n": 76,
+   "mcc": 0.21230991843282734,
+   "nearest_id": 23.6
+  },
+  {
+   "fold": 4,
+   "family": "coral_875",
+   "n": 51,
+   "mcc": 0.4180321236831189,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2456",
+   "n": 235,
+   "mcc": 0.07664996101535214,
+   "nearest_id": 35.1
+  },
+  {
+   "fold": 4,
+   "family": "coral_562",
+   "n": 77,
+   "mcc": 0.2783158078117172,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1148",
+   "n": 37,
+   "mcc": 0.34162973426147347,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_837",
+   "n": 31,
+   "mcc": 0.2916666666666667,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1585",
+   "n": 35,
+   "mcc": 0.3611111111111111,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2350",
+   "n": 30,
+   "mcc": 0.41522739926869984,
+   "nearest_id": 31.5
+  },
+  {
+   "fold": 4,
+   "family": "coral_2878",
+   "n": 47,
+   "mcc": -0.2088172673961392,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2586",
+   "n": 26,
+   "mcc": 0.0,
+   "nearest_id": 48.6
+  },
+  {
+   "fold": 4,
+   "family": "coral_226",
+   "n": 30,
+   "mcc": 0.6123724356957946,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1748",
+   "n": 24,
+   "mcc": 0.06005763395600164,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1736",
+   "n": 19,
+   "mcc": 0.20498001542269695,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1922",
+   "n": 17,
+   "mcc": 0.565685424949238,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_418",
+   "n": 48,
+   "mcc": 0.41349542330733496,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_888",
+   "n": 31,
+   "mcc": 0.21044478677689665,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_692",
+   "n": 25,
+   "mcc": -0.20634920634920634,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1915",
+   "n": 103,
+   "mcc": 0.12483660130718954,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1137",
+   "n": 22,
+   "mcc": -0.14907119849998599,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_1058",
+   "n": 23,
+   "mcc": 0.5490196078431373,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2737",
+   "n": 38,
+   "mcc": 0.0,
+   "nearest_id": 38.5
+  },
+  {
+   "fold": 4,
+   "family": "coral_2789",
+   "n": 17,
+   "mcc": 0.0,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "moyon_MATR3",
+   "n": 21,
+   "mcc": 0.1414213562373095,
+   "nearest_id": 0.0
+  },
+  {
+   "fold": 4,
+   "family": "coral_2176",
+   "n": 23,
+   "mcc": 0.03627381250550058,
+   "nearest_id": 0.0
+  }
+ ],
+ "summary": {
+  "n_families": 300,
+  "pearson_mcc_vs_nearest_id": -0.06132506904700837,
+  "slope_mcc_per_pctid": -0.001165740508937672,
+  "far_lt30id_n": 283,
+  "far_lt30id_meanMCC": 0.10404994558172936,
+  "near_ge30id_n": 17,
+  "near_ge30id_meanMCC": 0.07952854793632487
+ }
+}

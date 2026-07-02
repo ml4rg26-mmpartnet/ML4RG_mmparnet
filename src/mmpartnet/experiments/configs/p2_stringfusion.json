@@ -1,0 +1,12 @@
+{
+  "tag": "p2_stringfusion",
+  "scheme": "pureclip",
+  "seeds": 5,
+  "controls": ["random_body"],
+  "methods": [
+    {"name": "perres32",        "arch": "perres", "rep": "perres32"},
+    {"name": "perres32+string", "arch": "perres", "rep": "perres32", "add": ["string"]},
+    {"name": "perres32+prott5", "arch": "perres", "rep": "perres32", "add": ["prott5"]},
+    {"name": "perres32+both",   "arch": "perres", "rep": "perres32", "add": ["string", "prott5"]}
+  ]
+}

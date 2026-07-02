@@ -1,0 +1,9 @@
+{
+ "floor": 0.014137922194141509,
+ "identity_only": 0.038203737482787714,
+ "family_mean": 0.09861280199216343,
+ "shuffle": 0.09688327780076278,
+ "model": 0.15946992699520343,
+ "frac_variance_RBP_specific": 0.0015597963797367405,
+ "protein_modulation_gap_model_minus_shuffle": 0.06258664919444065
+}

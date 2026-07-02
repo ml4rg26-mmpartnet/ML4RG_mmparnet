@@ -1,0 +1,24 @@
+{
+ "sp_real_mean": 0.3011325263278388,
+ "sp_shuf_mean": 0.1558994391025641,
+ "n_real_gt_shuf": 55,
+ "n": 64,
+ "steering_by_class": {
+  "RRM (single)": [
+   40,
+   0.1460691391941392
+  ],
+  "KH (single)": [
+   16,
+   0.18352220695970695
+  ],
+  "RRM/KH multi": [
+   0,
+   null
+  ],
+  "non-canonical": [
+   8,
+   0.06447458791208793
+  ]
+ }
+}

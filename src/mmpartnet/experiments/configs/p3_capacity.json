@@ -1,0 +1,12 @@
+{
+  "tag": "p3_capacity",
+  "scheme": "pureclip",
+  "seeds": 5,
+  "controls": ["random_body"],
+  "methods": [
+    {"name": "perres_L2", "arch": "perres", "rep": "perres_full", "proj": 128, "layers": 2},
+    {"name": "perres_L4", "arch": "perres", "rep": "perres_full", "proj": 128, "layers": 4},
+    {"name": "bidir_L2",  "arch": "bidir",  "rep": "perres_full", "proj": 128, "layers": 2},
+    {"name": "bidir_L4",  "arch": "bidir",  "rep": "perres_full", "proj": 128, "layers": 4}
+  ]
+}
