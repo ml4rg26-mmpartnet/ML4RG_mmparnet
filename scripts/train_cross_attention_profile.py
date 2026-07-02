@@ -1,29 +1,26 @@
 #!/usr/bin/env python
-"""Train the first protein+cell FiLM profile head on frozen PARNET features.
+"""Train a protein-residue cross-attention profile head on frozen PARNET features.
 
-This is the minimal end-to-end multimodal experiment:
-
-    multimodal batch -> frozen PARNET body_feats -> ProteinCellFiLMProfileHead
-      -> RBPNet-style profile loss against eCLIP/control counts
-      -> binary binding loss against narrowPeak/pureCLIP labels
-
-By default, only exact seq_len windows are used to match PARNET pretraining.
-With --include-short, shorter windows are padded and passed with a valid-position
-mask; windows longer than seq_len are skipped so labels are not silently
-truncated.
-
-Modes:
-  multimodal       uses RNA + protein + cell conditioning
-  rna-only         zeros protein and cell conditions, leaving a global FiLM baseline
-  protein-shuffle  shuffles protein embeddings within each batch while keeping RNA/cell labels fixed
+The model uses RNA positions from the frozen PARNET body as queries and padded
+ProtT5 residue embeddings as keys/values. It keeps the FiLM baseline's
+multitask objective, sampler, validation metrics, and checkpoint names so runs
+can be compared directly.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Iterable
+
+REPO = Path(__file__).resolve().parents[1]
+SRC = REPO / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
 
 import torch
 from datasets import load_from_disk
@@ -35,106 +32,46 @@ from mmpartnet.data.multimodal import (
     build_cell_vocab,
     load_track_protein_map,
 )
-from mmpartnet.models import ProteinCellFiLMProfileHead, load_parnet
+from mmpartnet.models import load_parnet
+from mmpartnet.models.cross_attention_dgu import ProteinCellCrossAttentionProfileHead
 
-
-SHARED = Path("/home/dgu/storage_ml4rg26-shared")
-MMPARNET = Path("/home/dgu/storage_ml4rg26-mmparnet")
-REPO = Path(__file__).resolve().parents[1]
-DEFAULT_HFDS = (
-    SHARED
-    / "parnet-eclip/data-formatted-for-training/"
-    / "600nt_windows.no-one-hot.stripped/encode.filtered.hfds"
+from scripts.train_film_profile import (
+    BindingBalancedSampler,
+    DEFAULT_HFDS,
+    DEFAULT_TRACK_MAP,
+    binary_average_precision,
+    binary_stats,
+    parse_tracks,
+    pearson_sum,
 )
-DEFAULT_TRACK_MAP = REPO / "mmpartnet_out/prott5_track_map.tsv"
-DEFAULT_PROTEIN_H5 = MMPARNET / "manually_gathered/ProtT5_zenodo_datasets/reduced_embeddings_file.h5"
+
+
+MMPARNET = Path("/home/dgu/storage_ml4rg26-mmparnet")
+DEFAULT_PROTEIN_H5 = MMPARNET / "manually_gathered/ProtT5_zenodo_datasets/embeddings_file.h5"
 DEFAULT_BINDING = (
     MMPARNET
     / "manually_gathered/600nt_windows.no-one-hot.stripped.binding/"
-    / "600nt_windows.no-one-hot.stripped.binding.narrowpeak_intersect/dataset.pt"
+    / "600nt_windows.no-one-hot.stripped.binding.pureclip/dataset.pt"
 )
-DEFAULT_OUT = REPO / "mmpartnet_out/film_runs"
+DEFAULT_OUT = REPO / "mmpartnet_out/cross_attention_runs"
 
 
-class BindingBalancedSampler(Sampler[int]):
-    """Sample window-track pairs with a requested positive-label fraction.
+class FixedSubsetSampler(Sampler[int]):
+    """Iterate a fixed, deterministic subset of flattened dataset indices."""
 
-    The underlying dataset is flattened as:
-
-        dataset_index = window_offset * n_tracks + track_offset
-
-    Positive pairs are rare in the binary binding dataset, so plain shuffle often
-    creates batches with no positive examples. This sampler keeps all tensors and
-    labels unchanged; it only changes which flattened pair indices are visited.
-    """
-
-    def __init__(
-        self,
-        dataset: ParnetMultimodalDataset,
-        *,
-        positive_fraction: float,
-        num_samples: int,
-        seed: int,
-    ):
-        if dataset.binding_split is None:
-            raise ValueError("balanced sampling requires binding labels")
-        if not 0.0 < positive_fraction <= 1.0:
-            raise ValueError("positive_fraction must be in (0, 1]")
-        self.dataset = dataset
-        self.positive_fraction = positive_fraction
-        self.num_samples = int(num_samples)
-        self.seed = int(seed)
-        self.epoch = 0
-        self.n_tracks = len(dataset.track_indices)
-        self.track_indices_tensor = torch.tensor(dataset.track_indices, dtype=torch.long)
-        self.positive_indices = self._find_positive_indices()
-        if not self.positive_indices:
-            raise ValueError("no positive binding labels found for this split/track selection")
-
-    def _label_for_index(self, idx: int) -> float:
-        window_offset = idx // self.n_tracks
-        track_offset = idx % self.n_tracks
-        window_index = self.dataset.window_indices[window_offset]
-        track_index = self.dataset.track_indices[track_offset]
-        binding = self.dataset.binding_split[window_index]["outputs"]["binding"]
-        return float(binding[track_index])
-
-    def _find_positive_indices(self) -> list[int]:
-        positives = []
-        for window_offset, window_index in enumerate(self.dataset.window_indices):
-            binding = self.dataset.binding_split[window_index]["outputs"]["binding"]
-            base = window_offset * self.n_tracks
-            selected = binding[self.track_indices_tensor]
-            positive_offsets = torch.nonzero(selected > 0.5, as_tuple=False).flatten().tolist()
-            positives.extend(base + int(track_offset) for track_offset in positive_offsets)
-        return positives
+    def __init__(self, dataset_size: int, *, num_samples: int, seed: int):
+        if num_samples <= 0:
+            raise ValueError("num_samples must be positive")
+        generator = torch.Generator()
+        generator.manual_seed(int(seed))
+        keep = min(int(num_samples), int(dataset_size))
+        self.indices = torch.randperm(int(dataset_size), generator=generator)[:keep].tolist()
 
     def __iter__(self):
-        generator = torch.Generator()
-        generator.manual_seed(self.seed + self.epoch)
-        self.epoch += 1
-        total = len(self.dataset)
-        n_pos = len(self.positive_indices)
-        for _ in range(self.num_samples):
-            draw_positive = torch.rand((), generator=generator).item() < self.positive_fraction
-            if draw_positive:
-                pos_i = int(torch.randint(n_pos, (1,), generator=generator).item())
-                yield self.positive_indices[pos_i]
-                continue
-            while True:
-                idx = int(torch.randint(total, (1,), generator=generator).item())
-                if self._label_for_index(idx) <= 0.5:
-                    yield idx
-                    break
+        return iter(self.indices)
 
     def __len__(self) -> int:
-        return self.num_samples
-
-
-def parse_tracks(value: str) -> list[int] | None:
-    if value.lower() == "all":
-        return None
-    return [int(x) for x in value.split(",") if x.strip()]
+        return len(self.indices)
 
 
 def make_loader(
@@ -156,6 +93,9 @@ def make_loader(
     steps_per_epoch: int | None,
     seed: int,
     num_workers: int,
+    max_protein_len: int | None,
+    sample_size: int | None = None,
+    sample_seed: int = 0,
 ):
     dataset = ParnetMultimodalDataset(
         hfds[split],
@@ -176,7 +116,16 @@ def make_loader(
             seed=seed,
         )
         shuffle = False
-    collator = MultimodalCollator(protein_h5, seq_len=seq_len, cell_to_index=cell_to_index)
+    elif sample_size is not None:
+        sampler = FixedSubsetSampler(len(dataset), num_samples=sample_size, seed=sample_seed)
+        shuffle = False
+    collator = MultimodalCollator(
+        protein_h5,
+        seq_len=seq_len,
+        cell_to_index=cell_to_index,
+        return_residue_embeddings=True,
+        max_protein_len=max_protein_len,
+    )
     loader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -191,99 +140,60 @@ def make_loader(
 
 def move_batch(batch: dict, device: str) -> dict:
     out = dict(batch)
-    for key in ("onehot", "mask", "protein_embedding", "cell_index", "eclip", "control"):
+    for key in (
+        "onehot",
+        "mask",
+        "protein_embedding",
+        "protein_residue_embedding",
+        "protein_mask",
+        "cell_index",
+        "eclip",
+        "control",
+    ):
         out[key] = batch[key].to(device)
     if "binding" in batch:
         out["binding"] = batch["binding"].to(device)
     return out
 
 
-def apply_mode(batch: dict, mode: str) -> tuple[torch.Tensor, torch.Tensor]:
-    protein = batch["protein_embedding"]
+def apply_mode(batch: dict, mode: str) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    protein = batch["protein_residue_embedding"]
+    protein_mask = batch["protein_mask"]
     cell_index = batch["cell_index"]
     if mode == "multimodal":
-        return protein, cell_index
+        return protein, protein_mask, cell_index
     if mode == "rna-only":
-        return torch.zeros_like(protein), torch.zeros_like(cell_index)
+        return torch.zeros_like(protein), protein_mask, torch.full_like(cell_index, -1)
+    if mode == "no-cell":
+        return protein, protein_mask, torch.full_like(cell_index, -1)
     if mode == "protein-shuffle":
         if protein.shape[0] <= 1:
-            return protein, cell_index
-        return protein[torch.randperm(protein.shape[0], device=protein.device)], cell_index
+            return protein, protein_mask, cell_index
+        order = torch.randperm(protein.shape[0], device=protein.device)
+        return protein[order], protein_mask[order], cell_index
     raise ValueError(f"unknown mode {mode!r}")
 
 
-def pearson_sum(
-    pred: torch.Tensor,
-    counts: torch.Tensor,
-    min_count: float,
-    mask: torch.Tensor | None = None,
-    valid_mask: torch.Tensor | None = None,
-) -> tuple[torch.Tensor, torch.Tensor]:
-    depth = counts.sum(dim=-1)
-    true = counts / depth.clamp_min(1.0).unsqueeze(-1)
-    if mask is None:
-        mask_f = torch.ones_like(pred)
-    else:
-        mask_f = mask.to(dtype=pred.dtype)
-    valid_len = mask_f.sum(dim=-1, keepdim=True).clamp_min(1.0)
-    pred_mean = (pred * mask_f).sum(dim=-1, keepdim=True) / valid_len
-    true_mean = (true * mask_f).sum(dim=-1, keepdim=True) / valid_len
-    pred_centered = (pred - pred_mean) * mask_f
-    true_centered = (true - true_mean) * mask_f
-    numerator = (pred_centered * true_centered).sum(dim=-1)
-    denominator = torch.sqrt(
-        (pred_centered * pred_centered).sum(dim=-1)
-        * (true_centered * true_centered).sum(dim=-1)
-    )
-    valid = (depth >= min_count) & (denominator > 1e-9)
-    if valid_mask is not None:
-        valid = valid & valid_mask.bool()
-    corr = numerator / denominator.clamp_min(1e-9)
-    return torch.where(valid, corr, torch.zeros_like(corr)).sum(), valid.sum()
+def distribution_entropy(prob: torch.Tensor) -> torch.Tensor:
+    """Mean entropy of a batch of position distributions."""
+    return -(prob * prob.clamp_min(1e-12).log()).sum(dim=-1).mean()
 
 
-def binary_stats(logit: torch.Tensor, label: torch.Tensor) -> dict:
-    prob = torch.sigmoid(logit.detach())
-    label = label.detach().float()
-    pred = prob >= 0.5
-    correct = (pred == (label >= 0.5)).sum()
-    pos = label.sum()
-    pred_pos = pred.sum()
-    tp = ((pred == 1) & (label == 1)).sum()
-    precision = tp / pred_pos.clamp_min(1)
-    recall = tp / pos.clamp_min(1)
-    return {
-        "n": int(label.numel()),
-        "pos": int(pos.detach().cpu()),
-        "accuracy_sum": int(correct.detach().cpu()),
-        "precision_sum": float(precision.detach().cpu()),
-        "recall_sum": float(recall.detach().cpu()),
-    }
+def distribution_max(prob: torch.Tensor) -> torch.Tensor:
+    """Mean max position probability of a batch of position distributions."""
+    return prob.max(dim=-1).values.mean()
 
 
-def binary_average_precision(scores: torch.Tensor, labels: torch.Tensor) -> float:
-    """Average precision / AUPRC for binary labels.
-
-    Accuracy is misleading when positives are rare. Average precision asks:
-    among the samples the model ranks highly, how many are true positives?
-    """
-    labels = labels.float()
-    positives = labels.sum()
-    if int(positives.item()) == 0:
-        return 0.0
-    order = torch.argsort(scores, descending=True)
-    ranked_labels = labels[order]
-    true_positives = torch.cumsum(ranked_labels, dim=0)
-    ranks = torch.arange(1, ranked_labels.numel() + 1, dtype=torch.float32)
-    precision_at_k = true_positives / ranks
-    ap = (precision_at_k * ranked_labels).sum() / positives
-    return float(ap.item())
+def distribution_topk_mass(prob: torch.Tensor, k: int = 10) -> torch.Tensor:
+    """Mean probability mass in the top-k positions."""
+    k = min(k, prob.shape[-1])
+    return prob.topk(k, dim=-1).values.sum(dim=-1).mean()
 
 
 def save_training_checkpoint(
     path: Path,
     *,
-    head: ProteinCellFiLMProfileHead,
+    head: ProteinCellCrossAttentionProfileHead,
     optimizer: torch.optim.Optimizer,
     cell_to_index: dict[str, int],
     protein_dim: int,
@@ -302,6 +212,19 @@ def save_training_checkpoint(
             "cell_to_index": cell_to_index,
             "protein_dim": protein_dim,
             "rna_channels": rna_channels,
+            "model_type": "cross_attention",
+            "model_config": {
+                "hidden_dim": args.hidden_dim,
+                "num_heads": args.num_heads,
+                "num_blocks": args.num_blocks,
+                "cell_dim": args.cell_dim,
+                "dropout": args.dropout,
+                "protein_projection_hidden_dim": args.protein_projection_hidden_dim,
+                "protein_compression": args.protein_compression,
+                "protein_latent_len": args.protein_latent_len,
+                "binary_pooling": args.binary_pooling,
+                "binary_alpha_source": args.binary_alpha_source,
+            },
             "args": vars(args),
             "epoch": epoch,
             "best_pearson": best_pearson,
@@ -316,7 +239,7 @@ def save_training_checkpoint(
 def run_epoch(
     *,
     parnet,
-    head: ProteinCellFiLMProfileHead,
+    head: ProteinCellCrossAttentionProfileHead,
     loader: Iterable,
     optimizer: torch.optim.Optimizer | None,
     device: str,
@@ -324,9 +247,11 @@ def run_epoch(
     min_count: float,
     max_batches: int | None,
     mix_penalty: float,
+    lambda_profile: float,
     lambda_binary: float,
     binary_pos_weight: float | None,
     profile_mask_source: str,
+    task: str,
     progress_every: int,
 ) -> dict:
     training = optimizer is not None
@@ -343,12 +268,29 @@ def run_epoch(
     binding_correct = 0
     binary_scores = []
     binary_labels = []
+    gate_sum = 0.0
+    gate_sq_sum = 0.0
+    gate_n = 0
+    gate_pos_sum = 0.0
+    gate_pos_n = 0
+    gate_neg_sum = 0.0
+    gate_neg_n = 0
+    target_entropy_sum = 0.0
+    binary_entropy_sum = 0.0
+    alpha_entropy_sum = 0.0
+    target_max_sum = 0.0
+    binary_max_sum = 0.0
+    alpha_max_sum = 0.0
+    target_top10_sum = 0.0
+    binary_top10_sum = 0.0
+    alpha_top10_sum = 0.0
+    attention_summary_n = 0
 
     for step, raw_batch in enumerate(loader, start=1):
         if max_batches is not None and step > max_batches:
             break
         batch = move_batch(raw_batch, device)
-        protein, cell_index = apply_mode(batch, mode)
+        protein, protein_mask, cell_index = apply_mode(batch, mode)
         with torch.no_grad():
             rna_features = parnet.body_feats(batch["onehot"]).detach()
 
@@ -371,11 +313,14 @@ def run_epoch(
             batch["control"],
             binding_label=binding,
             mask=batch["mask"],
+            protein_mask=protein_mask,
             min_count=min_count,
             mix_penalty=mix_penalty,
+            lambda_profile=lambda_profile,
             lambda_binary=lambda_binary,
             profile_mask=profile_mask,
             binary_pos_weight=binary_pos_weight,
+            task=task,
         )
         loss = losses["loss"]
         if training:
@@ -389,12 +334,43 @@ def run_epoch(
         profile_mask_n += int(losses["profile_n"].detach().cpu())
         loss_n += 1
         with torch.no_grad():
-            out = head(rna_features, protein, cell_index, mask=batch["mask"])
-            pred = out["total"]
-            ps, pn = pearson_sum(pred, batch["eclip"], min_count, mask=batch["mask"], valid_mask=profile_mask)
-            pear_sum += ps
-            pear_n += pn
-            if binding is not None:
+            out = head(rna_features, protein, cell_index, mask=batch["mask"], protein_mask=protein_mask, task=task)
+            if "total" in out:
+                ps, pn = pearson_sum(out["total"], batch["eclip"], min_count, mask=batch["mask"], valid_mask=profile_mask)
+                pear_sum += ps
+                pear_n += pn
+            if "binding_gate" in out:
+                gate = out["binding_gate"].detach()
+                gate_sum += float(gate.sum().cpu())
+                gate_sq_sum += float((gate * gate).sum().cpu())
+                gate_n += int(gate.numel())
+                if binding is not None:
+                    pos_mask = binding.detach() > 0.5
+                    neg_mask = ~pos_mask
+                    if bool(pos_mask.any()):
+                        gate_pos_sum += float(gate[pos_mask].sum().cpu())
+                        gate_pos_n += int(pos_mask.sum().cpu())
+                    if bool(neg_mask.any()):
+                        gate_neg_sum += float(gate[neg_mask].sum().cpu())
+                        gate_neg_n += int(neg_mask.sum().cpu())
+            if "target" in out:
+                target_prob = out["target"].detach()
+                target_entropy_sum += float(distribution_entropy(target_prob).cpu())
+                target_max_sum += float(distribution_max(target_prob).cpu())
+                target_top10_sum += float(distribution_topk_mass(target_prob, k=10).cpu())
+            if "binary_position_prob" in out:
+                binary_prob = out["binary_position_prob"].detach()
+                binary_entropy_sum += float(distribution_entropy(binary_prob).cpu())
+                binary_max_sum += float(distribution_max(binary_prob).cpu())
+                binary_top10_sum += float(distribution_topk_mass(binary_prob, k=10).cpu())
+            if "alpha_bind" in out:
+                alpha_prob = out["alpha_bind"].detach()
+                alpha_entropy_sum += float(distribution_entropy(alpha_prob).cpu())
+                alpha_max_sum += float(distribution_max(alpha_prob).cpu())
+                alpha_top10_sum += float(distribution_topk_mass(alpha_prob, k=10).cpu())
+            if "target" in out or "binary_position_prob" in out or "alpha_bind" in out:
+                attention_summary_n += 1
+            if "binding_logit" in out and binding is not None:
                 bs = binary_stats(out["binding_logit"], binding)
                 binding_n += bs["n"]
                 binding_pos += bs["pos"]
@@ -430,6 +406,19 @@ def run_epoch(
         "binding_pos_rate": binding_pos / max(binding_n, 1),
         "binding_accuracy": binding_correct / max(binding_n, 1),
         "binding_auprc": binding_auprc,
+        "binding_gate_mean": gate_sum / max(gate_n, 1),
+        "binding_gate_std": max(gate_sq_sum / max(gate_n, 1) - (gate_sum / max(gate_n, 1)) ** 2, 0.0) ** 0.5,
+        "binding_gate_pos_mean": gate_pos_sum / max(gate_pos_n, 1),
+        "binding_gate_neg_mean": gate_neg_sum / max(gate_neg_n, 1),
+        "target_entropy": target_entropy_sum / max(attention_summary_n, 1),
+        "binary_position_entropy": binary_entropy_sum / max(attention_summary_n, 1),
+        "alpha_bind_entropy": alpha_entropy_sum / max(attention_summary_n, 1),
+        "target_max_prob": target_max_sum / max(attention_summary_n, 1),
+        "binary_position_max_prob": binary_max_sum / max(attention_summary_n, 1),
+        "alpha_bind_max_prob": alpha_max_sum / max(attention_summary_n, 1),
+        "target_top10_mass": target_top10_sum / max(attention_summary_n, 1),
+        "binary_position_top10_mass": binary_top10_sum / max(attention_summary_n, 1),
+        "alpha_bind_top10_mass": alpha_top10_sum / max(attention_summary_n, 1),
     }
 
 
@@ -445,48 +434,67 @@ def main() -> None:
     parser.add_argument("--max-train-windows", type=int, default=256)
     parser.add_argument("--max-valid-windows", type=int, default=128)
     parser.add_argument("--seq-len", type=int, default=600)
-    parser.add_argument(
-        "--include-short",
-        action="store_true",
-        help="Include windows shorter than seq_len using padding/mask. Default keeps only exact seq_len windows.",
-    )
+    parser.add_argument("--include-short", action="store_true")
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--balanced-train", action="store_true")
     parser.add_argument("--balanced-pos-fraction", type=float, default=0.5)
+    parser.add_argument("--steps-per-epoch", type=int, default=None)
+    parser.add_argument("--hidden-dim", type=int, default=512)
+    parser.add_argument("--num-heads", type=int, default=8)
+    parser.add_argument("--num-blocks", type=int, default=1)
+    parser.add_argument("--cell-dim", type=int, default=32)
+    parser.add_argument("--max-protein-len", type=int, default=None)
     parser.add_argument(
-        "--steps-per-epoch",
+        "--protein-projection-hidden-dim",
         type=int,
-        default=None,
-        help="Number of training batches per epoch when --balanced-train is used. Default: 1000.",
+        default=768,
+        help="Middle dimension for protein projection MLP. Use 0 for the old single Linear projection.",
     )
+    parser.add_argument("--protein-compression", default="latent", choices=["none", "latent"])
+    parser.add_argument("--protein-latent-len", type=int, default=256)
+    parser.add_argument(
+        "--binary-pooling",
+        default="position",
+        choices=["position", "mean"],
+        help="Pooling used by the binary-only binding head. Multitask keeps gated target/position pooling.",
+    )
+    parser.add_argument(
+        "--binary-alpha-source",
+        default="gated",
+        choices=["gated", "target", "target-detached", "binary"],
+        help="Position distribution used by the multitask binary head.",
+    )
+    parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--min-count", type=float, default=10.0)
     parser.add_argument("--mix-penalty", type=float, default=0.0)
-    parser.add_argument("--lambda-binary", type=float, default=1.0)
+    parser.add_argument("--lambda-profile", type=float, default=1.0)
+    parser.add_argument("--lambda-binary", type=float, default=20.0)
     parser.add_argument("--binary-pos-weight", type=float, default=None)
     parser.add_argument(
         "--profile-mask-source",
         default="binding",
         choices=["binding", "count", "binding-and-count"],
-        help="Which true labels decide where profile loss/Pearson are computed.",
     )
-    parser.add_argument("--mode", default="multimodal", choices=["multimodal", "rna-only", "protein-shuffle"])
+    parser.add_argument("--task", default="multitask", choices=["multitask", "profile-only", "binary-only"])
+    parser.add_argument("--mode", default="multimodal", choices=["multimodal", "rna-only", "protein-shuffle", "no-cell"])
     parser.add_argument("--device", default=None, choices=[None, "cpu", "cuda"])
     parser.add_argument("--num-workers", type=int, default=0)
     parser.add_argument("--max-train-batches", type=int, default=None)
     parser.add_argument("--max-valid-batches", type=int, default=None)
+    parser.add_argument(
+        "--valid-sample-size",
+        type=int,
+        default=None,
+        help="Use a fixed random subset of this many flattened validation samples.",
+    )
     parser.add_argument("--progress-every", type=int, default=25)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--run-name", default=None)
-    parser.add_argument(
-        "--resume",
-        type=Path,
-        default=None,
-        help="Resume head/optimizer/metrics from a full checkpoint, usually mmpartnet_out/film_runs/<run>/last.pt.",
-    )
+    parser.add_argument("--resume", type=Path, default=None)
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -517,6 +525,7 @@ def main() -> None:
         steps_per_epoch=args.steps_per_epoch,
         seed=args.seed,
         num_workers=args.num_workers,
+        max_protein_len=args.max_protein_len,
     )
     valid_dataset, valid_loader = make_loader(
         hfds,
@@ -536,12 +545,23 @@ def main() -> None:
         steps_per_epoch=None,
         seed=args.seed,
         num_workers=args.num_workers,
+        max_protein_len=args.max_protein_len,
+        sample_size=args.valid_sample_size,
+        sample_seed=args.seed,
     )
 
     print(f"device:         {device}")
+    print(f"task:           {args.task}")
     print(f"mode:           {args.mode}")
     print(f"include_short:  {args.include_short}")
     print(f"balanced_train: {args.balanced_train}")
+    print(f"max_protein_len:{args.max_protein_len}")
+    print(f"hidden_dim:     {args.hidden_dim}")
+    print(f"protein_proj_h: {args.protein_projection_hidden_dim}")
+    print(f"protein_comp:   {args.protein_compression}")
+    print(f"protein_latent: {args.protein_latent_len}")
+    print(f"binary_pooling: {args.binary_pooling}")
+    print(f"binary_alpha:   {args.binary_alpha_source}")
     if args.balanced_train:
         print(f"balanced_pos:   {args.balanced_pos_fraction}")
         print(f"steps/epoch:    {args.steps_per_epoch or 1000}")
@@ -549,23 +569,35 @@ def main() -> None:
     print(f"cell_vocab:     {cell_to_index}")
     print(f"train samples:  {len(train_dataset)}")
     print(f"valid samples:  {len(valid_dataset)}")
+    if args.valid_sample_size is not None:
+        print(f"valid sample:   {min(args.valid_sample_size, len(valid_dataset))} fixed random flattened samples")
     print("loading frozen PARNET...", flush=True)
     parnet = load_parnet(device=device)
 
     probe = move_batch(next(iter(train_loader)), device)
     with torch.no_grad():
         probe_features = parnet.body_feats(probe["onehot"])
-    head = ProteinCellFiLMProfileHead(
-        protein_dim=int(probe["protein_embedding"].shape[1]),
+    head = ProteinCellCrossAttentionProfileHead(
+        protein_dim=int(probe["protein_residue_embedding"].shape[-1]),
         rna_channels=int(probe_features.shape[1]),
         cell_count=len(cell_to_index),
+        cell_dim=args.cell_dim,
+        hidden_dim=args.hidden_dim,
+        num_heads=args.num_heads,
+        num_blocks=args.num_blocks,
+        dropout=args.dropout,
+        protein_projection_hidden_dim=args.protein_projection_hidden_dim,
+        protein_compression=args.protein_compression,
+        protein_latent_len=args.protein_latent_len,
+        binary_pooling=args.binary_pooling,
+        binary_alpha_source=args.binary_alpha_source,
     ).to(device)
     optimizer = torch.optim.AdamW(head.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
     if args.resume is not None and args.run_name is None:
         run_name = args.resume.parent.name
     else:
-        run_name = args.run_name or f"film_{args.mode}_seed{args.seed}"
+        run_name = args.run_name or f"cross_attention_{args.mode}_seed{args.seed}"
     out_dir = args.out_dir / run_name
     out_dir.mkdir(parents=True, exist_ok=True)
     metrics_config = {
@@ -620,9 +652,11 @@ def main() -> None:
             min_count=args.min_count,
             max_batches=args.max_train_batches,
             mix_penalty=args.mix_penalty,
+            lambda_profile=args.lambda_profile,
             lambda_binary=args.lambda_binary,
             binary_pos_weight=args.binary_pos_weight,
             profile_mask_source=args.profile_mask_source,
+            task=args.task,
             progress_every=args.progress_every,
         )
         with torch.no_grad():
@@ -636,9 +670,11 @@ def main() -> None:
                 min_count=args.min_count,
                 max_batches=args.max_valid_batches,
                 mix_penalty=args.mix_penalty,
+                lambda_profile=args.lambda_profile,
                 lambda_binary=args.lambda_binary,
                 binary_pos_weight=args.binary_pos_weight,
                 profile_mask_source=args.profile_mask_source,
+                task=args.task,
                 progress_every=0,
             )
         row = {"epoch": epoch, "train": train_stats, "valid": valid_stats}
@@ -657,68 +693,47 @@ def main() -> None:
             f"bind_acc={valid_stats['binding_accuracy']:.3f} bind_auprc={valid_stats['binding_auprc']:.4f}"
         )
 
+        checkpoint_kwargs = {
+            "head": head,
+            "optimizer": optimizer,
+            "cell_to_index": cell_to_index,
+            "protein_dim": int(probe["protein_residue_embedding"].shape[-1]),
+            "rna_channels": int(probe_features.shape[1]),
+            "args": args,
+            "epoch": epoch,
+            "metrics": metrics,
+            "valid_stats": valid_stats,
+        }
         if valid_stats["pearson"] > best_pearson:
             best_pearson = valid_stats["pearson"]
             save_training_checkpoint(
                 out_dir / "best.pt",
-                head=head,
-                optimizer=optimizer,
-                cell_to_index=cell_to_index,
-                protein_dim=int(probe["protein_embedding"].shape[1]),
-                rna_channels=int(probe_features.shape[1]),
-                args=args,
-                epoch=epoch,
                 best_pearson=best_pearson,
                 best_auprc=best_auprc,
-                metrics=metrics,
-                valid_stats=valid_stats,
+                **checkpoint_kwargs,
             )
             print(f"  saved new best checkpoint: {out_dir / 'best.pt'}", flush=True)
             save_training_checkpoint(
                 out_dir / "best_pearson.pt",
-                head=head,
-                optimizer=optimizer,
-                cell_to_index=cell_to_index,
-                protein_dim=int(probe["protein_embedding"].shape[1]),
-                rna_channels=int(probe_features.shape[1]),
-                args=args,
-                epoch=epoch,
                 best_pearson=best_pearson,
                 best_auprc=best_auprc,
-                metrics=metrics,
-                valid_stats=valid_stats,
+                **checkpoint_kwargs,
             )
             print(f"  saved new best Pearson checkpoint: {out_dir / 'best_pearson.pt'}", flush=True)
         if valid_stats["binding_auprc"] > best_auprc:
             best_auprc = valid_stats["binding_auprc"]
             save_training_checkpoint(
                 out_dir / "best_auprc.pt",
-                head=head,
-                optimizer=optimizer,
-                cell_to_index=cell_to_index,
-                protein_dim=int(probe["protein_embedding"].shape[1]),
-                rna_channels=int(probe_features.shape[1]),
-                args=args,
-                epoch=epoch,
                 best_pearson=best_pearson,
                 best_auprc=best_auprc,
-                metrics=metrics,
-                valid_stats=valid_stats,
+                **checkpoint_kwargs,
             )
             print(f"  saved new best AUPRC checkpoint: {out_dir / 'best_auprc.pt'}", flush=True)
         save_training_checkpoint(
             out_dir / "last.pt",
-            head=head,
-            optimizer=optimizer,
-            cell_to_index=cell_to_index,
-            protein_dim=int(probe["protein_embedding"].shape[1]),
-            rna_channels=int(probe_features.shape[1]),
-            args=args,
-            epoch=epoch,
             best_pearson=best_pearson,
             best_auprc=best_auprc,
-            metrics=metrics,
-            valid_stats=valid_stats,
+            **checkpoint_kwargs,
         )
 
     torch.save(head.state_dict(), out_dir / "last.statedict.pt")
@@ -728,6 +743,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # Keep PARNET import stubs and torch caches out of the repo when the script is run from a shared mount.
     os.environ.setdefault("PYTHONPYCACHEPREFIX", "/tmp/mmpartnet_pycache")
     main()
