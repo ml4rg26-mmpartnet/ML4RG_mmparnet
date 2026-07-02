@@ -1,0 +1,98 @@
+"""Build O2 (executed): the identifiability / ceiling map -- how much of the eCLIP per-nt profile is even
+attributable to RBP identity (the ceiling for protein conditioning), vs the dominant within-window RNA
+structure. Computed from committed observed+predicted profile dumps. RBP-genomics paper style.
+Run: python scripts/make_nb_option2.py"""
+from __future__ import annotations
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from nbgen import md, code, build  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
+
+CELLS = [
+    md("# O2 - Identifiability ceiling: how much of the eCLIP profile can the protein even explain?\n"
+       "Before asking whether a *better* protein head helps M2, ask the prior question: **how much of the per-"
+       "nucleotide eCLIP profile is attributable to RBP identity at all**, versus the RNA sequence within the "
+       "window (which any RNA model, protein-blind, already captures)? This bounds the achievable gain from "
+       "protein conditioning and is a ProofBind-clean deliverable whatever its sign.\n\n"
+       "*Data: committed `mmpartnet_out/m2_dump_zsdump_HepG2.npz` -- observed profiles + model/shuffle/family "
+       "predictions for 6000 windows over held-out RBPs (leave-out-RBP dump, HepG2), 600 nt each.*"),
+
+    md("## Background & the decomposition (the math)\n"
+       "An eCLIP window profile is a distribution over 600 nt, $p_w \\in \\Delta^{600}$ (we normalise each "
+       "window to sum 1). Decompose the observed profiles around the **global mean shape** $\\bar p$:\n\n"
+       "$$p_w = \\underbrace{\\bar p}_{\\text{generic}} + \\underbrace{(\\bar p_{r(w)}-\\bar p)}_{\\text{RBP-identity (window-agnostic)}} + \\underbrace{(p_w-\\bar p_{r(w)})}_{\\text{within-RBP (RNA-window)}}$$\n\n"
+       "where $\\bar p_{r}$ is RBP $r$'s mean profile. The **RBP-identity variance fraction** = "
+       "$\\frac{\\sum_w\\lVert\\bar p_{r(w)}-\\bar p\\rVert^2}{\\sum_w\\lVert p_w-\\bar p\\rVert^2}$ is the share a "
+       "*window-agnostic* protein/identity signal could add.\n\n"
+       "We also score predictors by **profile-Pearson** $r(\\hat p_w, p_w)$ (window-mean-centred): "
+       "**floor** = global mean shape (no RBP info); **identity-only** = the RBP mean shape (best a window-"
+       "agnostic identity predictor can do); **RNA+protein** = our per-residue model; **shuffle** = wrong "
+       "protein; **family-mean** = family-average prediction.\n\n"
+       "*Caveat: the RBP-identity fraction is the MARGINAL (window-agnostic) headroom. A protein-conditioned "
+       "model can additionally MODULATE the RNA->profile map per window, so it can exceed the identity-only "
+       "predictor -- the marginal fraction is a lower bound on protein-relevant signal, not the full conditional "
+       "ceiling. The full ceiling (assay-replicate Pearson + an independent-PWM motif fraction) needs eCLIP "
+       "replicates + RNAcompete/CISBP PWMs, flagged as extensions.*"),
+
+    code("import numpy as np, json\n"
+         "from pathlib import Path\n"
+         "import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt\n"
+         "from IPython.display import Markdown, display, Image\n"
+         "plt.rcParams.update({'figure.dpi':110,'font.size':10,'axes.spines.top':False,'axes.spines.right':False})\n"
+         "z=np.load(Path('..')/'..'/'mmpartnet_out'/'m2_dump_zsdump_HepG2.npz', allow_pickle=True)\n"
+         "obs=z['obs'].astype(float); rbp=z['rbp']; ptr=z['pt_real'].astype(float); pts=z['pt_shuf'].astype(float); ptf=z['pt_fam'].astype(float)\n"
+         "def norm(P):\n"
+         "    P=np.clip(P,0,None); s=P.sum(1,keepdims=True); s[s==0]=1; return P/s\n"
+         "O=norm(obs); gmean=O.mean(0); rbpmean=np.zeros_like(O)\n"
+         "for r in np.unique(rbp): m=rbp==r; rbpmean[m]=O[m].mean(0)\n"
+         "def rp(A,B):\n"
+         "    A=A-A.mean(1,keepdims=True); B=B-B.mean(1,keepdims=True)\n"
+         "    num=(A*B).sum(1); den=np.sqrt((A*A).sum(1)*(B*B).sum(1)); den[den==0]=1; return (num/den).mean()\n"
+         "G=np.tile(gmean,(len(O),1))\n"
+         "floor=rp(O,G); ident=rp(O,rbpmean); model=rp(O,norm(ptr)); shuf=rp(O,norm(pts)); fam=rp(O,norm(ptf))\n"
+         "tot=((O-gmean)**2).sum(); between=((rbpmean-gmean)**2).sum(); frac=between/tot\n"
+         "print(f'n_windows={len(O)} n_rbp={len(np.unique(rbp))}')\n"
+         "display(Markdown(f'**RBP-identity variance fraction = {frac*100:.2f}%** of profile variance is window-agnostic RBP identity; '\n"
+         "  f'the remaining {100-frac*100:.2f}% is within-window RNA structure.'))"),
+
+    code("tab='| predictor | info used | profile-Pearson r |\\n|---|---|---|\\n'\n"
+         "tab+=f'| global mean shape (floor) | none | {floor:.3f} |\\n'\n"
+         "tab+=f'| RBP mean shape (identity-only) | RBP identity, window-agnostic | {ident:.3f} |\\n'\n"
+         "tab+=f'| family-mean prediction | family | {fam:.3f} |\\n'\n"
+         "tab+=f'| protein-shuffle | RNA + WRONG protein | {shuf:.3f} |\\n'\n"
+         "tab+=f'| RNA + protein (our per-residue) | RNA window + protein | {model:.3f} |\\n'\n"
+         "display(Markdown(tab))\n"
+         "fig,ax=plt.subplots(figsize=(7,3.8))\n"
+         "labs=['global\\nmean','RBP mean\\n(identity)','family\\nmean','shuffle\\n(RNA+wrong P)','RNA+protein\\n(model)']\n"
+         "vals=[floor,ident,fam,shuf,model]; cols=['#bbbbbb','#8064a2','#9bbb59','#c0504d','#3b6ea5']\n"
+         "ax.bar(labs,vals,color=cols); ax.set_ylabel('profile Pearson r'); ax.set_title('What explains the eCLIP profile? (held-out RBPs)')\n"
+         "for i,v in enumerate(vals): ax.text(i,v+0.003,f'{v:.3f}',ha='center',fontsize=8)\n"
+         "fig.tight_layout(); fig.savefig('O2_ceiling.png'); plt.close(fig); display(Image('O2_ceiling.png'))\n"
+         "import json as _j; _j.dump({'floor':floor,'identity_only':ident,'family_mean':fam,'shuffle':shuf,'model':model,'frac_variance_RBP_specific':float(frac),'protein_modulation_gap_model_minus_shuffle':model-shuf},open(Path('..')/'..'/'mmpartnet_out'/'m2_identifiability_ceiling.json','w'),indent=1)"),
+
+    md("## Conclusion\n"
+       "**The eCLIP profile is overwhelmingly RNA-sequence-driven.** Only ~**0.2% of profile variance is window-"
+       "agnostic RBP identity**: a predictor that knows the RBP but not the RNA window reaches only r ~0.04 "
+       "(identity-only), barely above the global-mean floor (~0.01). The RNA+protein model reaches ~0.16 -- but "
+       "that is the **RNA within-window structure** talking (the frozen body), which the protein-shuffle already "
+       "gets to ~0.10.\n\n"
+       "**Implication for the protein question:** the headroom for adding *RBP identity* to the profile is small "
+       "by construction. The protein's genuine contribution is the **window-specific modulation** (model - "
+       "shuffle ~0.06), i.e. the protein slightly changes *how the RNA is read*, not a large identity offset -- "
+       "which is exactly why the M2 gains are modest (O1) and family-level transfer does not clear the RNA floor "
+       "(S1_depeek / S3). A general 'protein -> where it binds' predictor is capped by this: most of the signal "
+       "is not RBP-identity-specific.\n\n"
+       "**What would raise the ceiling / complete the map:** (1) the **assay-replicate Pearson** (intra-RBP "
+       "reproducibility) as the true upper bound -- needs eCLIP replicates; (2) the **motif-explainable fraction** "
+       "via an independent RNAcompete/CISBP-RNA PWM -- needs those DBs; (3) the **conditional** ceiling "
+       "$I(\\text{protein};\\text{profile}\\mid \\text{RNA})$ on a **leave-out-pretrained PARNET body** (so the "
+       "frozen features have not already seen the held-out RBP). These are the three data-gated extensions.\n\n"
+       "*Provenance: `mmpartnet_out/m2_dump_zsdump_HepG2.npz` (observed + predicted profiles, leave-out-RBP, "
+       "HepG2); decomposition committed to `mmpartnet_out/m2_identifiability_ceiling.json`.*"),
+]
+
+if __name__ == "__main__":
+    build(ROOT/"notebooks"/"deliverables"/"O2_identifiability_ceiling.ipynb",
+          ROOT/"notebooks"/"deliverables"/"executed"/"O2_identifiability_ceiling_executed.ipynb",
+          CELLS, timeout=300)

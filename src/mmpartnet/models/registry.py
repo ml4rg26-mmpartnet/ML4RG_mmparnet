@@ -45,6 +45,15 @@ REGISTRY: dict[str, HeadSpec] = {
     "xattn2": HeadSpec(
         "xattn2", "cross_attention_dfra", "TFBindCrossAttentionProfileHead", "profile", "perres", "dfra",
         "residue-level ProtT5 cross-attention + position-weighted pool (A/B variant B vs xattn)."),
+    "conditioned": HeadSpec(
+        "conditioned", "heads", "ConditionedHead", "binary", "pooled", "ours",
+        "FiLM-modulated pooled PARNET features -> binding logit (M1 binary; the leave-out-RBP gate head)."),
+    "perres": HeadSpec(
+        "perres", "cross_attn_head", "CrossAttnHead", "profile", "perres", "ours",
+        "per-residue protein cross-attention over PARNET features -> profile (our M2 winner)."),
+    "perres_bidir": HeadSpec(
+        "perres_bidir", "cross_attn_head", "BidirCrossAttnHead", "profile", "perres", "ours",
+        "bidirectional per-residue cross-attention (ties per-residue in-distribution)."),
 }
 
 

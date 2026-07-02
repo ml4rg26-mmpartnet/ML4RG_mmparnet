@@ -10,8 +10,9 @@ from __future__ import annotations
 from .film import ProteinCellFiLMProfileHead
 from .parnet import ParnetModel, load_parnet
 from .early_fusion import EarlyFusion
+from .heads import ConditionedHead
 # the plug-in seam; head classes load lazily via build_head(name) so unused heads cost no import
 from .registry import REGISTRY as HEAD_REGISTRY, HeadSpec, list_heads, head_spec, build_head
 
-__all__ = ["ParnetModel", "ProteinCellFiLMProfileHead", "load_parnet", "EarlyFusion",
+__all__ = ["ParnetModel", "ProteinCellFiLMProfileHead", "load_parnet", "EarlyFusion", "ConditionedHead",
            "HEAD_REGISTRY", "HeadSpec", "list_heads", "head_spec", "build_head"]
