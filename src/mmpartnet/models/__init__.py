@@ -7,6 +7,8 @@ checkpoint is a one-line config change (CONTRACT.md swap-in #1).
 """
 from __future__ import annotations
 
+from .early_fusion import EarlyFusionConcatHead
+from .film import ProteinCellFiLMProfileHead
 from .parnet import ParnetModel, load_parnet
 from .registry import REGISTRY as HEAD_REGISTRY, HeadSpec, list_heads, head_spec, build_head
 # head classes are torch-only imports (no data deps) — export the common ones so teammate modules can
@@ -15,6 +17,6 @@ from .heads import ConditionedHead
 from .early_fusion import EarlyFusion, fit_predict
 from .film import ProteinCellFiLMProfileHead
 
-__all__ = ["ParnetModel", "load_parnet",
+__all__ = ["EarlyFusionConcatHead", "ParnetModel", "load_parnet",
            "HEAD_REGISTRY", "HeadSpec", "list_heads", "head_spec", "build_head",
            "ConditionedHead", "EarlyFusion", "fit_predict", "ProteinCellFiLMProfileHead"]

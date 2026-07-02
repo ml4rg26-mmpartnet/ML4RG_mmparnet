@@ -496,6 +496,9 @@ def train_main() -> None:
     parser.add_argument("--min-count", type=float, default=10.0)
     parser.add_argument("--mix-penalty", type=float, default=0.0)
     parser.add_argument("--task", default="multitask", choices=["multitask", "binary-only", "profile-only"])
+    parser.add_argument("--arch", default="film", choices=["film", "concat"],
+                    help="Head architecture: film = ProteinCellFiLMProfileHead, "
+                         "concat = EarlyFusionConcatHead (binary-only baseline).")
     parser.add_argument("--lambda-profile", type=float, default=1.0)
     parser.add_argument("--lambda-binary", type=float, default=1.0)
     parser.add_argument("--binary-pos-weight", type=float, default=None)
@@ -594,7 +597,9 @@ def train_main() -> None:
     probe = move_batch(next(iter(train_loader)), device)
     with torch.no_grad():
         probe_features = parnet.body_feats(probe["onehot"])
-    head = ProteinCellFiLMProfileHead(
+    
+    head_cls = EarlyFusionConcatHead if args.arch == "concat" else ProteinCellFiLMProfileHead
+    head = head_cls(
         protein_dim=int(probe["protein_embedding"].shape[1]),
         rna_channels=int(probe_features.shape[1]),
         cell_count=len(cell_to_index),
@@ -790,6 +795,7 @@ def eval_main() -> None:
     )
     parser.add_argument("--checkpoint", type=Path, required=True, help="Full checkpoint, usually best.pt or last.pt.")
     parser.add_argument("--split", default="valid", choices=["train", "valid", "test"])
+    parser.add_argument("--arch", default="film", choices=["film", "concat"], help="Head architecture (must match how the checkpoint was trained).")
     parser.add_argument("--hfds", type=Path, default=None)
     parser.add_argument("--binding-dataset", type=Path, default=None)
     parser.add_argument("--track-map", type=Path, default=None)
@@ -882,7 +888,8 @@ def eval_main() -> None:
     print("loading frozen PARNET...", flush=True)
     parnet = load_parnet(device=device)
 
-    head = ProteinCellFiLMProfileHead(
+    head_cls = EarlyFusionConcatHead if args.arch == "concat" else ProteinCellFiLMProfileHead
+    head = head_cls(
         protein_dim=int(checkpoint["protein_dim"]),
         rna_channels=int(checkpoint["rna_channels"]),
         cell_count=len(cell_to_index),
