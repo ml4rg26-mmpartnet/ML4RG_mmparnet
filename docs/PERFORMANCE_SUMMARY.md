@@ -47,6 +47,38 @@ is PARNET-leakage. Methods vs RNA-only:
 All methods beat the protein-shuffle null (specificity holds). In-distribution the RNA-only baseline is
 leakage-inflated; the decisive test is the same harness under leave-out PARNET.
 
+
+### Per-RBP distribution — the pooled mean hides variance
+
+![Per-RBP AUPRC across the 5 conditioning setups (K=68)](img/per_rbp_distribution.svg)
+
+Every dot is one RBP; the pooled mean masks a heavy right-skew. The bottom-10% of the panel is near
+chance (AUPRC ≤ 0.02) for every architecture — sparse-data RBPs where no protein-specific signal is
+learnable from this data. The top-10% widens sharply with conditioning quality.
+
+| setup       | mean       | median     | top-10%    | bottom-10% |
+|-------------|-----------:|-----------:|-----------:|-----------:|
+| RNA-only    | 0.1058     | 0.0823     | 0.2346     | 0.0144     |
+| Concat      | 0.0846     | 0.0567     | 0.2044     | 0.0094     |
+| FiLM        | 0.1035     | 0.0715     | 0.2344     | 0.0125     |
+| Cross-attn  | 0.1162     | 0.0777     | 0.2839     | 0.0179     |
+| **Per-res** | **0.1210** | **0.0827** | **0.3097** | 0.0129     |
+
+Two things the pooled row in §"Fair comparison" doesn't show:
+
+1. **Concat loses on every summary statistic — including bottom-10%** — consistent with the reading
+   that concat routes around the protein via the RNA features, and the RNA leakage it exploits is a
+   *weaker* signal than the one the multitask RNA-only baseline already extracts.
+2. **Per-residue's advantage is a top-decile phenomenon.** Median is essentially tied with RNA-only
+   (0.083 vs 0.082); the gap opens in the top 10% (0.31 vs 0.23). Cross-attn shows the same pattern
+   more mildly. "Conditioning helps" therefore reads as *"some RBPs benefit strongly, most are
+   unaffected"* — not *"everything gets a little better."*
+
+Figure source: `scripts/plot_per_rbp_distribution.py`, per-RBP data from `mmpartnet_out/binding_fair.json`.
+
+
+
+
 ## Scaling the conditioned head toward CORAL (notebook 14)
 Three M1 architecture/representation levers, each a config of the one leakage-controlled `binding_x` harness
 (K=68, RNA-only baseline 0.106, random-body 0.057). **All null in-distribution:**
