@@ -416,6 +416,8 @@ def main() -> None:
     parser.add_argument("--hidden-dim", type=int, default=256)
     parser.add_argument("--num-heads", type=int, default=8)
     parser.add_argument("--num-blocks", type=int, default=1)
+    parser.add_argument("--protein-latent-len", type=int, default=None,
+                        help="protein compression length; original->protein_latent_len, tfbind->target_prot_len")
     parser.add_argument("--cell-dim", type=int, default=32)
     parser.add_argument("--max-protein-len", type=int, default=None)
     parser.add_argument("--dropout", type=float, default=0.1)
@@ -513,7 +515,7 @@ def main() -> None:
         probe_features = parnet.body_feats(probe["onehot"])
     model_class = MODEL_CLASSES[args.model]
     print(f"model:          {args.model} ({model_class.__name__})", flush=True)
-    head = model_class(
+    model_kwargs = dict(
         protein_dim=int(probe["protein_residue_embedding"].shape[-1]),
         rna_channels=int(probe_features.shape[1]),
         cell_count=len(cell_to_index),
@@ -522,7 +524,13 @@ def main() -> None:
         num_heads=args.num_heads,
         num_blocks=args.num_blocks,
         dropout=args.dropout,
-    ).to(device)
+    )
+    if args.protein_latent_len is not None:
+        # same knob, different kwarg name per model
+        key = "target_prot_len" if args.model == "tfbind" else "protein_latent_len"
+        model_kwargs[key] = args.protein_latent_len
+        print(f"protein_latent: {args.protein_latent_len} ({key})", flush=True)
+    head = model_class(**model_kwargs).to(device)
     optimizer = torch.optim.AdamW(head.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
     if args.resume is not None and args.run_name is None:
