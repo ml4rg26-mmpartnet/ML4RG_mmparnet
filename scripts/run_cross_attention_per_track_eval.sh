@@ -5,6 +5,8 @@ PYTHON="${PYTHON:-python}"
 OUT_DIR="${OUT_DIR:-/home/dgu/workspace/cross_attention_runs/per_track_test}"
 WINDOW_SEED="${WINDOW_SEED:-2026}"
 DEVICE="${DEVICE:-cuda}"
+export ML4RG_REFS="${ML4RG_REFS:-/home/dgu/workspace/parnet_refs}"
+export ML4RG_PARNET_WEIGHTS="${ML4RG_PARNET_WEIGHTS:-/home/dgu/storage_ml4rg26-shared/parnet-eclip/models-full-rbp-set/parnet.7m-0.0.pt}"
 
 RUNS=/home/dgu/workspace/cross_attention_runs
 PROFILE="$RUNS/profile_only_lr3e4_latent256_15x500_seed0/best_pearson.pt"
