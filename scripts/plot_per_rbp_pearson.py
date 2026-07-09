@@ -39,8 +39,12 @@ for ax, (cell, series) in zip(axes, series_by_cell.items()):
     labels = list(series.keys())
     values = [series[k] for k in labels]
     positions = np.arange(len(labels))
-    ax.boxplot(values, positions=positions, widths=0.5, patch_artist=True,
-               medianprops={"color": "black"})
+    vp = ax.violinplot(values, positions=positions, widths=0.75,
+                       showmeans=False, showmedians=True, showextrema=False)
+    for body in vp["bodies"]:
+        body.set_alpha(0.4)
+        body.set_edgecolor("black")
+    vp["cmedians"].set_color("black")
     for i, v in enumerate(values):
         ax.scatter(np.random.normal(i, 0.06, size=len(v)), v, s=10, alpha=0.5, color="C0")
     ax.set_xticks(positions); ax.set_xticklabels(labels, rotation=15)

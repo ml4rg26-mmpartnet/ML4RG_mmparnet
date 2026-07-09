@@ -27,12 +27,16 @@ values = [methods[k] for k in labels]
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 
-# left: box+strip
+# left: violin + strip (density shape + individual RBPs)
 positions = np.arange(len(labels))
-bp = ax1.boxplot(values, positions=positions, widths=0.5, patch_artist=True,
-                 medianprops={"color": "black"})
+vp = ax1.violinplot(values, positions=positions, widths=0.75,
+                    showmeans=False, showmedians=True, showextrema=False)
+for body in vp["bodies"]:
+    body.set_alpha(0.4)
+    body.set_edgecolor("black")
+vp["cmedians"].set_color("black")
 for i, v in enumerate(values):
-    ax1.scatter(np.random.normal(i, 0.06, size=len(v)), v, s=8, alpha=0.4, color="C0")
+    ax1.scatter(np.random.normal(i, 0.06, size=len(v)), v, s=8, alpha=0.5, color="C0")
 ax1.set_xticks(positions); ax1.set_xticklabels(labels)
 ax1.set_ylabel("per-RBP AUPRC (K=68)"); ax1.set_title("Distribution — every dot is one RBP")
 ax1.grid(axis="y", alpha=0.3)
