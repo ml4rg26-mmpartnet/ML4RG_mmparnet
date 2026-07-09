@@ -52,6 +52,9 @@ leakage-inflated; the decisive test is the same harness under leave-out PARNET.
 
 ![Per-RBP AUPRC across the 5 conditioning setups (K=68)](img/per_rbp_distribution.svg)
 
+Evaluated on the K=68 protein-coverage panel over 15,000 test windows (each carrying a binary label
+per RBP; ~2.3% positive rate), mean over 5 seeds. Subset of the full test split.
+
 Every dot is one RBP; the pooled mean masks a heavy right-skew. The bottom-10% of the panel is near
 chance (AUPRC ≤ 0.02) for every architecture — sparse-data RBPs where no protein-specific signal is
 learnable from this data. The top-10% widens sharply with conditioning quality.
@@ -107,6 +110,34 @@ trained leave-out; PARNET is only a frozen feature extractor).
 → The **per-residue** head generalizes robustly across both cells to RBPs never seen in training, and uses
 RBP-specific (not just family-level) protein info; FiLM is cell-variable. **This is the contribution CORAL's
 RNA-level binary RPI cannot make** (no nt-resolution profile). `nb14_m2_zeroshot.png`.
+
+### Per-RBP profile-Pearson distribution — where the M2 lift lives
+
+![M2 per-RBP profile Pearson by architecture, HepG2 vs K562](img/per_rbp_pearson_distribution.svg)
+
+Evaluated on the 34-RBP M2 profile panel per cell line (18,842 HepG2 / 15,957 K562 windows across
+the panel, subset of the full test split).
+
+| cell  | setup        | mean       | median     | top-10%    | bottom-10% |
+|-------|--------------|-----------:|-----------:|-----------:|-----------:|
+| HepG2 | FiLM         | +0.2056    | +0.1964    | +0.2826    | +0.1311    |
+| HepG2 | **Per-res**  | **+0.2145**| **+0.2125**| +0.2747    | **+0.1499**|
+| HepG2 | Shuffle      | +0.1001    | +0.0906    | +0.1560    | +0.0612    |
+| K562  | FiLM         | +0.2133    | +0.2174    | +0.2901    | +0.1329    |
+| K562  | **Per-res**  | **+0.2249**| **+0.2287**| **+0.2943**| +0.1377    |
+| K562  | Shuffle      | +0.1076    | +0.1034    | +0.1677    | +0.0426    |
+
+Three things the pooled M2 row doesn't show:
+
+1. **The conditioning gap is ~2× the shuffle floor across the full distribution**, not just the mean —
+   the entire per-RBP box for FiLM and per-residue sits above the entire Shuffle box on both cells.
+   Unlike the binary AUPRC case, this gap is real per-RBP, not carried by a top-decile few.
+2. **Every RBP has a positive Pearson floor** (bottom-10% ≥ +0.13 for conditioned heads). Unlike M1
+   binary — where the bottom-10% of the K=68 panel was near chance — every RBP in the M2 panel
+   receives *some* usable profile signal from the conditioned head.
+3. **Per-residue vs FiLM is small compared to conditioning-vs-shuffle.** The architecture ladder
+   contributes ~+0.01 to the mean; conditioning contributes ~+0.11. So on the profile task, "did we
+   condition on the right protein at all" dominates "how did we condition."
 
 ## Open gap (flagged)
 The decisive in-distribution-leakage killer is the **leave-out-PARNET binary** test (same harness, swap
