@@ -4,6 +4,9 @@ This document summarizes the cross-attention task comparison on the 68 shared
 RBP-cell tracks using 15,000 test windows. The purpose is to compare the
 profile-only, binary-only, and multitask heads at the per RBP-cell track level.
 
+Here, `common-68` means the 68 RBP-cell tracks that are shared across the
+comparison setup and can be evaluated consistently for this head comparison.
+
 ## Evaluation Setup
 
 - Dataset split: test split.
