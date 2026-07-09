@@ -30,10 +30,10 @@ run_eval() {
     2>&1 | tee "$OUT_DIR/$name.log"
 }
 
-# Lucas-compatible panel: exactly his first 15k length-600 test windows and 68 tracks.
-run_eval lucas68_profile_only profile-only "$PROFILE" lucas68 lucas-first
-run_eval lucas68_binary_only binary-only "$BINARY" lucas68 lucas-first
-run_eval lucas68_multitask multitask "$MULTI_PEARSON" lucas68 lucas-first
+# Common comparison panel: first 15k length-600 test windows and 68 shared tracks.
+run_eval common68_profile_only profile-only "$PROFILE" common68 reference-first
+run_eval common68_binary_only binary-only "$BINARY" common68 reference-first
+run_eval common68_multitask multitask "$MULTI_PEARSON" common68 reference-first
 
 # Expanded panel: one fixed random 15k-window subset shared by every checkpoint.
 run_eval alltracks_profile_only profile-only "$PROFILE" all random
@@ -41,10 +41,10 @@ run_eval alltracks_binary_only binary-only "$BINARY" all random
 run_eval alltracks_multitask multitask "$MULTI_PEARSON" all random
 
 "$PYTHON" scripts/plot_cross_attention_per_track.py \
-  "$OUT_DIR/lucas68_profile_only.json" \
-  "$OUT_DIR/lucas68_binary_only.json" \
-  "$OUT_DIR/lucas68_multitask.json" \
-  --out "$OUT_DIR/lucas68_task_distributions.png"
+  "$OUT_DIR/common68_profile_only.json" \
+  "$OUT_DIR/common68_binary_only.json" \
+  "$OUT_DIR/common68_multitask.json" \
+  --out "$OUT_DIR/common68_task_distributions.png"
 
 "$PYTHON" scripts/plot_cross_attention_per_track.py \
   "$OUT_DIR/alltracks_profile_only.json" \

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Evaluate one Diyi cross-attention checkpoint per RBP-cell track."""
+"""Evaluate one cross-attention checkpoint per RBP-cell track."""
 from __future__ import annotations
 
 import argparse
@@ -47,8 +47,8 @@ def resolve_path(cli_value: Path | None, saved: dict, name: str, default: Path) 
     return Path(cli_value if cli_value is not None else saved.get(name, default))
 
 
-def load_lucas_track_indices(binding_fair: Path, track_map) -> list[int]:
-    """Recover Lucas's ordered 68-track panel from binding_fair.json."""
+def load_common68_track_indices(binding_fair: Path, track_map) -> list[int]:
+    """Recover the ordered 68-track comparison panel from binding_fair.json."""
     data = json.loads(binding_fair.read_text(encoding="utf-8"))
     rbps = data.get("rbps")
     if data.get("K") != 68 or not isinstance(rbps, list):
@@ -56,14 +56,14 @@ def load_lucas_track_indices(binding_fair: Path, track_map) -> list[int]:
     rbp_set = set(rbps)
     selected = [row for row in track_map if row.rbp in rbp_set]
     if [row.rbp for row in selected] != rbps:
-        raise ValueError("Could not reproduce Lucas's ordered 68-track panel from the track map")
+        raise ValueError("Could not reproduce the ordered 68-track panel from the track map")
     return [row.track_index for row in selected]
 
 
 def choose_windows(dataset: ParnetMultimodalDataset, selection: str, count: int, seed: int) -> list[int]:
     eligible = dataset.window_indices
     keep = min(count, len(eligible))
-    if selection == "lucas-first":
+    if selection == "reference-first":
         return eligible[:keep]
     generator = torch.Generator().manual_seed(seed)
     offsets = torch.randperm(len(eligible), generator=generator)[:keep].tolist()
@@ -125,8 +125,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--task", required=True, choices=["profile-only", "binary-only", "multitask"])
-    parser.add_argument("--panel", required=True, choices=["lucas68", "all"])
-    parser.add_argument("--window-selection", required=True, choices=["lucas-first", "random"])
+    parser.add_argument("--panel", required=True, choices=["common68", "all"])
+    parser.add_argument("--window-selection", required=True, choices=["reference-first", "random"])
     parser.add_argument("--window-count", type=int, default=15000)
     parser.add_argument("--window-seed", type=int, default=2026)
     parser.add_argument("--hfds", type=Path)
@@ -157,17 +157,17 @@ def main() -> None:
 
     track_map = load_track_protein_map(track_map_path)
     track_indices = (
-        load_lucas_track_indices(args.binding_fair, track_map)
-        if args.panel == "lucas68"
+        load_common68_track_indices(args.binding_fair, track_map)
+        if args.panel == "common68"
         else [row.track_index for row in track_map]
     )
     cell_to_index = checkpoint.get("cell_to_index") or build_cell_vocab(track_map)
     hfds = load_from_disk(str(hfds_path))
     binding_data = torch.load(binding_path, map_location="cpu", weights_only=False)
 
-    # Lucas used the first 15k exactly-600-nt test windows. The expanded panel
+    # The comparison panel uses the first 15k exactly-600-nt test windows. The expanded panel
     # uses a saved deterministic random sample from every test window <=600 nt.
-    exact_length = seq_len if args.window_selection == "lucas-first" else None
+    exact_length = seq_len if args.window_selection == "reference-first" else None
     dataset = ParnetMultimodalDataset(
         hfds["test"],
         track_map,

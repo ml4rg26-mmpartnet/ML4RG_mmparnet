@@ -17,14 +17,19 @@ def main() -> None:
     args = parser.parse_args()
 
     records = [json.loads(path.read_text(encoding="utf-8")) for path in args.results]
-    labels = [record["task"] for record in records]
+    display_labels = {
+        "profile-only": "Profile-only head",
+        "binary-only": "Binary-only head",
+        "multitask": "Multitask head",
+    }
+    labels = [display_labels.get(record["task"], record["task"]) for record in records]
     metric_data = {
-        "Pearson": [
-            [row["pearson"] for row in record["rows"] if row["pearson"] is not None]
-            for record in records
-        ],
         "AUPRC": [
             [row["auprc"] for row in record["rows"] if row["auprc"] is not None]
+            for record in records
+        ],
+        "Pearson": [
+            [row["pearson"] for row in record["rows"] if row["pearson"] is not None]
             for record in records
         ],
     }
@@ -34,7 +39,7 @@ def main() -> None:
     rng = np.random.default_rng(0)
     for ax, (metric, groups) in zip(axes, metric_data.items()):
         present = [(i, values) for i, values in enumerate(groups) if values]
-        positions = [i + 1 for i, _ in present]
+        positions = list(range(1, len(present) + 1))
         values = [values for _, values in present]
         if values:
             violin = ax.violinplot(values, positions=positions, showextrema=False)
@@ -45,14 +50,19 @@ def main() -> None:
             for position, (i, group) in zip(positions, present):
                 jitter = rng.normal(position, 0.035, len(group))
                 ax.scatter(jitter, group, s=12, alpha=0.55, color=colors[i % len(colors)])
-        ax.set_xticks(range(1, len(labels) + 1), labels, rotation=18, ha="right")
+        ax.set_xticks(
+            positions,
+            [labels[i] for i, _ in present],
+            rotation=12,
+            ha="right",
+        )
         ax.set_ylabel(metric)
-        ax.set_title(f"Per RBP-cell {metric}")
-        ax.grid(axis="y", alpha=0.25)
+        ax.set_title(
+            "Binary task: per RBP-cell AUPRC"
+            if metric == "AUPRC"
+            else "Profile task: per RBP-cell Pearson"
+        )
 
-    panel = records[0]["panel"]
-    n_windows = records[0]["n_windows"]
-    fig.suptitle(f"Cross-attention task comparison: {panel}, {n_windows:,} test windows")
     fig.tight_layout()
     args.out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(args.out, dpi=200, bbox_inches="tight")
