@@ -1,4 +1,4 @@
-# Cross-Attention Common-68 Per RBP-Cell Evaluation
+# Cross-Attention Head Comparison on Common-68 RBP-Cell Tracks
 
 This document summarizes the cross-attention task comparison on the 68 shared
 RBP-cell tracks using 15,000 test windows. The purpose is to compare the
