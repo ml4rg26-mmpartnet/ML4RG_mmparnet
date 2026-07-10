@@ -6,15 +6,16 @@ and multitask heads on two test panels:
 
 - `common-68`: 68 shared RBP-cell tracks using the first 15,000 exactly 600 nt
   test windows.
-- `alltracks`: all 223 evaluable RBP-cell tracks using a fixed random subset of
-  15,000 test windows.
+- `alltracks`: all 223 evaluable RBP-cell tracks evaluated on a fixed random
+  subset of 15,000 windows sampled from the full test split.
 
 ## Evaluation Setup
 
 - Dataset split: test split.
 - Window panels:
   - `common-68`: first 15,000 exactly 600 nt test windows.
-  - `alltracks`: fixed random subset of 15,000 test windows.
+  - `alltracks`: fixed random subset of 15,000 windows sampled from the full
+    test split.
 - Track panels:
   - `common-68`: 68 shared RBP-cell tracks.
   - `alltracks`: 223 evaluable RBP-cell tracks.
