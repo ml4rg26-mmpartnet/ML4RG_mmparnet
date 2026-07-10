@@ -1,18 +1,23 @@
-# Cross-Attention Head Comparison on Common-68 RBP-Cell Tracks
+# Cross-Attention Head Comparison by RBP-Cell Track
 
-This document summarizes the cross-attention task comparison on the 68 shared
-RBP-cell tracks using 15,000 test windows. The purpose is to compare the
-profile-only, binary-only, and multitask heads at the per RBP-cell track level.
+This document summarizes the cross-attention task comparison at the per
+RBP-cell track level. The purpose is to compare the profile-only, binary-only,
+and multitask heads on two test panels:
 
-Here, `common-68` means the 68 RBP-cell tracks that are shared across the
-comparison setup and can be evaluated consistently for this head comparison.
+- `common-68`: 68 shared RBP-cell tracks using the first 15,000 exactly 600 nt
+  test windows.
+- `alltracks`: all 223 evaluable RBP-cell tracks using a fixed random subset of
+  15,000 test windows.
 
 ## Evaluation Setup
 
 - Dataset split: test split.
-- Window panel: first 15,000 exactly 600 nt test windows used for the common
-  comparison panel.
-- Track panel: 68 shared RBP-cell tracks.
+- Window panels:
+  - `common-68`: first 15,000 exactly 600 nt test windows.
+  - `alltracks`: fixed random subset of 15,000 test windows.
+- Track panels:
+  - `common-68`: 68 shared RBP-cell tracks.
+  - `alltracks`: 223 evaluable RBP-cell tracks.
 - Evaluation unit: one RBP-cell track, for example `QKI_HepG2` and `QKI_K562`
   are treated as different tracks.
 - Binary metric: per RBP-cell AUPRC.
@@ -37,7 +42,7 @@ Multitask head:
 /home/dgu/workspace/cross_attention_runs/multitask_l10_lr3e4_latent256_5x1000_seed0/best_pearson.pt
 ```
 
-## Result Summary
+## Common-68 Result Summary
 
 | Head | Mean per RBP-cell Pearson | Median per RBP-cell Pearson | Mean per RBP-cell AUPRC | Median per RBP-cell AUPRC |
 | --- | ---: | ---: | ---: | ---: |
@@ -58,13 +63,33 @@ Main interpretation:
   tracks improve substantially under multitask learning, while many tracks
   remain low.
 
-## Figure
+## Common-68 Figure
 
 ![Cross-attention common-68 per RBP-cell task distributions](figures/cross_attention_common68_task_distributions.png)
 
 The left panel shows per RBP-cell AUPRC for the binary task. The right panel
 shows per RBP-cell Pearson correlation for the profile task. Each dot is one
 RBP-cell track.
+
+## All-Tracks Result Summary
+
+| Head | Mean per RBP-cell Pearson | Median per RBP-cell Pearson | Mean per RBP-cell AUPRC | Median per RBP-cell AUPRC |
+| --- | ---: | ---: | ---: | ---: |
+| Profile-only head | 0.4115 | 0.4429 | n/a | n/a |
+| Binary-only head | n/a | n/a | 0.0508 | 0.0277 |
+| Multitask head | 0.3667 | 0.3922 | 0.0823 | 0.0396 |
+
+The all-track panel shows the same qualitative pattern as the common-68 panel:
+profile-only gives stronger profile Pearson, while multitask gives stronger
+binary AUPRC than binary-only. The multitask gain on binary classification does
+not transfer into better profile prediction.
+
+## All-Tracks Figure
+
+![Cross-attention all-tracks per RBP-cell task distributions](figures/cross_attention_alltracks_task_distributions.png)
+
+The all-track figure uses the same layout as the common-68 figure, but includes
+all 223 evaluable RBP-cell tracks.
 
 ## Output Files
 
@@ -78,6 +103,12 @@ directory:
 /home/dgu/workspace/cross_attention_runs/per_track_test/common68_binary_only.tsv
 /home/dgu/workspace/cross_attention_runs/per_track_test/common68_multitask.json
 /home/dgu/workspace/cross_attention_runs/per_track_test/common68_multitask.tsv
+/home/dgu/workspace/cross_attention_runs/per_track_test/alltracks_profile_only.json
+/home/dgu/workspace/cross_attention_runs/per_track_test/alltracks_profile_only.tsv
+/home/dgu/workspace/cross_attention_runs/per_track_test/alltracks_binary_only.json
+/home/dgu/workspace/cross_attention_runs/per_track_test/alltracks_binary_only.tsv
+/home/dgu/workspace/cross_attention_runs/per_track_test/alltracks_multitask.json
+/home/dgu/workspace/cross_attention_runs/per_track_test/alltracks_multitask.tsv
 ```
 
 The figure files copied into this repository are:
@@ -85,6 +116,8 @@ The figure files copied into this repository are:
 ```text
 docs/figures/cross_attention_common68_task_distributions.png
 docs/figures/cross_attention_common68_task_distributions.svg
+docs/figures/cross_attention_alltracks_task_distributions.png
+docs/figures/cross_attention_alltracks_task_distributions.svg
 ```
 
 ## Related Scripts
