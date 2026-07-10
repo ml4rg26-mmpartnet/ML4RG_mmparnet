@@ -87,6 +87,23 @@ profile-only gives stronger profile Pearson, while multitask gives stronger
 binary AUPRC than binary-only. The multitask gain on binary classification does
 not transfer into better profile prediction.
 
+All-track interpretation:
+
+- For the binary task, multitask improves over the binary-only head. Mean
+  per-track AUPRC increases from 0.0508 to 0.0823, and median per-track AUPRC
+  increases from 0.0277 to 0.0396. This suggests that profile supervision gives
+  useful signal for binding classification.
+- For the profile task, profile-only remains stronger than multitask. Mean
+  per-track Pearson decreases from 0.4115 to 0.3667 under multitask training,
+  and median per-track Pearson decreases from 0.4429 to 0.3922. This suggests
+  that adding the binary objective hurts profile prediction in the current
+  setup.
+- The multitask binary improvement is not uniform across RBP-cell tracks. The
+  AUPRC distribution has a long tail: some tracks improve substantially, while
+  many tracks remain in a low-AUPRC range.
+- Overall, the profile task transfers useful signal to binary classification,
+  but the binary objective does not improve profile prediction.
+
 ## All-Tracks Figure
 
 ![Cross-attention all-tracks per RBP-cell task distributions](figures/cross_attention_alltracks_task_distributions.png)
