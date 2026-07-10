@@ -7,7 +7,7 @@ and multitask heads on two test panels:
 - `common-68`: 68 shared RBP-cell tracks evaluated on the first 15,000 test
   windows whose RNA sequence length is exactly 600 nt.
 - `alltracks`: all 223 evaluable RBP-cell tracks evaluated on a fixed random
-  subset of 15,000 windows sampled from the eligible test split, including RNA
+  subset of 15,000 windows sampled from the test split, including RNA
   windows shorter than 600 nt.
 
 ## Evaluation Setup
@@ -16,8 +16,8 @@ and multitask heads on two test panels:
 - Window panels:
   - `common-68`: first 15,000 test windows whose RNA sequence length is exactly
     600 nt.
-  - `alltracks`: fixed random subset of 15,000 windows sampled from the full
-    eligible test split, including RNA windows shorter than 600 nt.
+  - `alltracks`: fixed random subset of 15,000 windows sampled from the test
+    split, including RNA windows shorter than 600 nt.
 - Track panels:
   - `common-68`: 68 shared RBP-cell tracks.
   - `alltracks`: 223 evaluable RBP-cell tracks.
