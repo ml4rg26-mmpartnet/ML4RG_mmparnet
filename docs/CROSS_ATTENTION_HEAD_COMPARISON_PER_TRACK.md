@@ -4,18 +4,20 @@ This document summarizes the cross-attention task comparison at the per
 RBP-cell track level. The purpose is to compare the profile-only, binary-only,
 and multitask heads on two test panels:
 
-- `common-68`: 68 shared RBP-cell tracks evaluated on the first 15,000 exactly
-  600 nt windows from the test split.
+- `common-68`: 68 shared RBP-cell tracks evaluated on the first 15,000 test
+  windows whose RNA sequence length is exactly 600 nt.
 - `alltracks`: all 223 evaluable RBP-cell tracks evaluated on a fixed random
-  subset of 15,000 windows sampled from the full test split.
+  subset of 15,000 windows sampled from the eligible test split, allowing RNA
+  windows with length up to 600 nt.
 
 ## Evaluation Setup
 
 - Dataset split: test split.
 - Window panels:
-  - `common-68`: first 15,000 exactly 600 nt test windows.
+  - `common-68`: first 15,000 test windows whose RNA sequence length is exactly
+    600 nt.
   - `alltracks`: fixed random subset of 15,000 windows sampled from the full
-    test split.
+    eligible test split, allowing RNA windows with length up to 600 nt.
 - Track panels:
   - `common-68`: 68 shared RBP-cell tracks.
   - `alltracks`: 223 evaluable RBP-cell tracks.
