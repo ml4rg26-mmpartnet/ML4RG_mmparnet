@@ -4,8 +4,8 @@ This document summarizes the cross-attention task comparison at the per
 RBP-cell track level. The purpose is to compare the profile-only, binary-only,
 and multitask heads on two test panels:
 
-- `common-68`: 68 shared RBP-cell tracks using the first 15,000 exactly 600 nt
-  test windows.
+- `common-68`: 68 shared RBP-cell tracks evaluated on the first 15,000 exactly
+  600 nt windows from the test split.
 - `alltracks`: all 223 evaluable RBP-cell tracks evaluated on a fixed random
   subset of 15,000 windows sampled from the full test split.
 
